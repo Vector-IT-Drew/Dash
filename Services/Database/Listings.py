@@ -2,6 +2,7 @@ import os
 from flask import Blueprint, jsonify, Flask, request
 import logging
 from .Connect import get_db_connection
+import decimal
 
 # Create a Blueprint
 listings_bp = Blueprint('Listings', __name__)
@@ -62,14 +63,15 @@ def get_filtered_listings():
         connection = db_result["connection"]
         cursor = connection.cursor(dictionary=True)
         
-        # Start building the query with JOIN to units table
+        # Start building the query to get vacant units and units with expiring deals
         query = """
-            SELECT l.listing_id, l.unit_id, l.listing_status, l.listing_gross,
-                   u.address, u.unit, u.beds, u.baths, u.sqft, u.exposure,
-                   u.floor_num
-            FROM listings l
-            JOIN units u ON l.unit_id = u.unit_id
-            WHERE 1=1
+            SELECT u.unit_id, u.address, u.unit, u.beds, u.baths, u.sqft, u.exposure,
+                   u.floor_num, u.unit_status, d.expiry, d.actual_rent
+            FROM units u
+            LEFT JOIN deals d ON u.unit_id = d.unit_id
+            WHERE (u.unit_status = 'Vacant' OR 
+                  (d.deal_status = 'Occupied' AND d.expiry <= DATE_ADD(CURDATE(), INTERVAL 1 MONTH)))
+                  AND d.actual_rent IS NOT NULL AND d.actual_rent != ''
         """
         
         # Add filter conditions
@@ -91,25 +93,25 @@ def get_filtered_listings():
             query += " AND u.baths = %s"
             params.append(float(baths))
             
-        if neighborhood:  # Note: neighborhood isn't in the schema, might need to extract from address
+        if neighborhood:
             query += " AND u.address LIKE %s"
             params.append(f"%{neighborhood}%")
             
         if min_price:
-            query += " AND l.listing_gross >= %s"
+            query += " AND d.actual_rent >= %s"
             params.append(float(min_price))
             
         if max_price:
-            query += " AND l.listing_gross <= %s"
+            query += " AND d.actual_rent <= %s"
             params.append(float(max_price))
         
         # Add order by and limit
-        query += " ORDER BY l.listing_id DESC LIMIT %s"
+        query += " ORDER BY u.unit_id DESC LIMIT %s"
         params.append(int(limit))
         
         # Execute the query
         cursor.execute(query, params)
-        listings = cursor.fetchall()
+        units = cursor.fetchall()
         
         # Convert Decimal objects to float for JSON serialization
         def decimal_to_float(obj):
@@ -117,29 +119,28 @@ def get_filtered_listings():
                 return float(obj)
             return obj
         
-        # Process each listing to convert Decimal values to float
-        processed_listings = []
-        for listing in listings:
-            processed_listing = {}
-            for key, value in listing.items():
-                processed_listing[key] = decimal_to_float(value)
-            processed_listings.append(processed_listing)
+        # Process each unit to convert Decimal values to float
+        processed_units = []
+        for unit in units:
+            processed_unit = {}
+            for key, value in unit.items():
+                processed_unit[key] = decimal_to_float(value)
+            processed_units.append(processed_unit)
         
         # Close cursor and connection
         cursor.close()
         connection.close()
         
-        logger.info(f"Retrieved {len(listings)} filtered listings from database")
+        logger.info(f"Retrieved {len(units)} filtered units from database")
         return jsonify({
             "status": "success", 
-            "count": len(processed_listings),
-            "data": processed_listings
+            "count": len(processed_units),
+            "data": processed_units
         })
     
     except Exception as e:
-        logger.error(f"Error retrieving filtered listings: {str(e)}")
+        logger.error(f"Error retrieving filtered units: {str(e)}")
         return jsonify({"status": "error", "message": str(e)}), 500
-
 
 
 # For local testing only
