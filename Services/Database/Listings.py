@@ -3,6 +3,7 @@ from flask import Blueprint, jsonify, Flask, request
 import logging
 from .Connect import get_db_connection
 import decimal
+import json
 
 # Create a Blueprint
 listings_bp = Blueprint('Listings', __name__)
@@ -138,6 +139,15 @@ def get_filtered_listings():
                     except Exception as e : 
                         print('expiry_date', e)
                         # Handle date objects directly
+                elif key == 'unit_images' and value is not None:
+                    try:
+                        # Parse the JSON string to get the list of URLs
+                        image_urls = json.loads(value)
+                        # Get the first URL if available, otherwise empty string
+                        processed_unit[key] = image_urls[0] if image_urls and len(image_urls) > 0 else ""
+                    except Exception as e:
+                        logger.error(f"Error processing unit_images: {str(e)}")
+                        processed_unit[key] = ""
                 else:
                     processed_unit[key] = decimal_to_float(value)
             processed_units.append(processed_unit)
