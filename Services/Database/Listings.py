@@ -94,7 +94,7 @@ def get_filtered_listings():
             params.append(float(baths))
             
         if neighborhood:
-            query += " AND u.address LIKE %s"
+            query += " AND a.neighborhood LIKE %s"
             params.append(f"%{neighborhood}%")
             
         if min_price:
@@ -119,12 +119,22 @@ def get_filtered_listings():
                 return float(obj)
             return obj
         
-        # Process each unit to convert Decimal values to float
+        # Process each unit to convert Decimal values to float and set past expiry to blank
         processed_units = []
+        from datetime import datetime
+        today = datetime.now().date()
+        
         for unit in units:
             processed_unit = {}
             for key, value in unit.items():
-                processed_unit[key] = decimal_to_float(value)
+                if key == 'expiry' and value is not None:
+                    # Check if expiry is in the past
+                    if isinstance(value, datetime) and value.date() < today:
+                        processed_unit[key] = ""
+                    else:
+                        processed_unit[key] = value
+                else:
+                    processed_unit[key] = decimal_to_float(value)
             processed_units.append(processed_unit)
         
         # Close cursor and connection
