@@ -128,8 +128,22 @@ def get_filtered_listings():
             processed_unit = {}
             for key, value in unit.items():
                 if key == 'expiry' and value is not None:
+                    # Convert string to datetime if needed
+                    if isinstance(value, str):
+                        try:
+                            expiry_date = datetime.strptime(value, '%Y-%m-%d').date()
+                        except ValueError:
+                            # If conversion fails, keep original value
+                            processed_unit[key] = value
+                            continue
+                    elif isinstance(value, datetime):
+                        expiry_date = value.date()
+                    else:
+                        # Handle date objects directly
+                        expiry_date = value if hasattr(value, 'date') else None
+                    
                     # Check if expiry is in the past
-                    if isinstance(value, datetime) and value.date() < today:
+                    if expiry_date and expiry_date < today:
                         processed_unit[key] = ""
                     else:
                         processed_unit[key] = value
