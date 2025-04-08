@@ -71,7 +71,7 @@ def get_filtered_listings():
             LEFT JOIN deals d ON u.unit_id = d.unit_id
             WHERE (u.unit_status = 'Vacant' OR 
                   (d.deal_status = 'Occupied' AND d.expiry <= DATE_ADD(CURDATE(), INTERVAL 1 MONTH)))
-                  AND d.actual_rent IS NOT NULL AND d.actual_rent != ''
+                  AND d.actual_rent IS NOT NULL AND d.actual_rent != '' AND d.actual_rent != 0
         """
         
         # Add filter conditions
