@@ -129,7 +129,7 @@ def get_filtered_listings():
         for unit in units:
             processed_unit = {}
             for key, value in unit.items():
-                if key == 'expiry' and value is not None:
+                if key == 'move_out' and value is not None:
                     try:
                         if value > today:
                             processed_unit[key] = value.strftime('%m/%d/%Y')
@@ -137,7 +137,7 @@ def get_filtered_listings():
                             processed_unit[key] = ""
 
                     except Exception as e : 
-                        print('expiry_date', e)
+                        print('move_out', e)
                         # Handle date objects directly
                 elif key == 'unit_images' and value is not None:
                     try:
