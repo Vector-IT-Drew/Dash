@@ -73,6 +73,7 @@ def get_filtered_listings():
             WHERE (u.unit_status = 'Vacant' OR 
                   (d.deal_status = 'Occupied' AND d.expiry <= DATE_ADD(CURDATE(), INTERVAL 2 MONTH)))
                   AND d.actual_rent IS NOT NULL AND d.actual_rent != '' AND d.actual_rent != 0
+                  AND u.address IN ('525 East 72nd Street', '1113 York Avenue', '420 East 61st Street')
         """
         # Add filter conditions
         params = []
