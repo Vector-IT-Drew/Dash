@@ -52,7 +52,7 @@ def get_filtered_listings():
         neighborhood = request.args.get('neighborhood')
         min_price = request.args.get('min_price')
         max_price = request.args.get('max_price')
-        limit = request.args.get('limit', 100)  # Default limit of 100
+        limit = request.args.get('limit', 1000)  # Default limit of 100
         
         # Get database connection
         db_result = get_db_connection()
@@ -70,7 +70,7 @@ def get_filtered_listings():
             FROM units u
             LEFT JOIN deals d ON u.unit_id = d.unit_id
             WHERE (u.unit_status = 'Vacant' OR 
-                  (d.deal_status = 'Occupied' AND d.expiry <= DATE_ADD(CURDATE(), INTERVAL 1 MONTH)))
+                  (d.deal_status = 'Occupied' AND d.expiry <= DATE_ADD(CURDATE(), INTERVAL 2 MONTH)))
                   AND d.actual_rent IS NOT NULL AND d.actual_rent != '' AND d.actual_rent != 0
         """
         
