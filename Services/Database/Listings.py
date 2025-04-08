@@ -131,7 +131,7 @@ def get_filtered_listings():
                     # Convert string to datetime if needed
                     if isinstance(value, str):
                         try:
-                            expiry_date = datetime.strptime(value, '%Y-%m-%d').date()
+                            expiry_date = datetime.strptime(value, '%a, %d %b %Y %H:%M:%S %Z').date()
                         except ValueError:
                             # If conversion fails, keep original value
                             processed_unit[key] = value
