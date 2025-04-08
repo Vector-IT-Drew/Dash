@@ -67,14 +67,14 @@ def get_filtered_listings():
         # Start building the query to get vacant units and units with expiring deals
         query = """
             SELECT u.unit_id, u.address, u.unit, u.beds, u.baths, u.sqft, u.exposure,
-                   u.floor_num, u.unit_status, d.expiry, d.actual_rent, u.unit_images, a.building_name, a.neighborhood, a.borough, d.deal_status
+                    u.floor_num, u.unit_status, d.expiry, d.actual_rent, u.unit_images, a.building_name, a.neighborhood, a.borough, d.deal_status, d.move_out
             FROM units u
             LEFT JOIN deals d ON u.unit_id = d.unit_id
             LEFT JOIN addresses a ON u.address_id = a.address_id
             WHERE (u.unit_status = 'Vacant' OR 
-                  (d.deal_status = 'Occupied' AND d.expiry <= DATE_ADD(CURDATE(), INTERVAL 2 MONTH)))
-                  AND d.actual_rent IS NOT NULL AND d.actual_rent != '' AND d.actual_rent != 0
-                  AND u.address IN ('525 East 72nd Street', '1113 York Avenue', '420 East 61st Street')
+                (u.unit_status = 'Occupied' AND d.move_out <= DATE_ADD(CURDATE(), INTERVAL 3 MONTH)))
+                AND d.actual_rent IS NOT NULL AND d.actual_rent != '' AND d.actual_rent != 0
+                AND u.address IN ('525 East 72nd Street', '1113 York Avenue', '420 East 61st Street')
         """
         # Add filter conditions
         params = []
@@ -165,6 +165,76 @@ def get_filtered_listings():
     
     except Exception as e:
         logger.error(f"Error retrieving filtered units: {str(e)}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
+@listings_bp.route('/get_listing', methods=['GET'])
+def get_listing():
+    try:
+        unit_id = request.args.get('unit_id')
+
+        # Get database connection
+        db_result = get_db_connection()
+        
+        if db_result["status"] != "connected":
+            return jsonify({"status": "error", "message": "Database connection failed"})
+        
+        connection = db_result["connection"]
+        cursor = connection.cursor(dictionary=True)
+        
+        # Query to get all details for a specific unit
+        query = """
+            SELECT u.*, d.*, a.*,
+                   u.unit_id, u.address, u.unit, u.beds, u.baths, u.sqft, u.exposure,
+                   u.floor_num, u.unit_status, u.unit_images,
+                   d.deal_id, d.expiry, d.actual_rent, d.deal_status, 
+                   a.building_name, a.neighborhood, a.borough, a.zip_code
+            FROM units u
+            LEFT JOIN deals d ON u.unit_id = d.unit_id
+            LEFT JOIN addresses a ON u.address_id = a.address_id
+            WHERE u.unit_id = %s
+        """
+        
+        # Execute the query
+        cursor.execute(query, (unit_id,))
+        unit = cursor.fetchone()
+        
+        if not unit:
+            cursor.close()
+            connection.close()
+            return jsonify({"status": "error", "message": "Listing not found"}), 404
+        
+        # Process the unit to handle special data types
+        processed_unit = {}
+        from datetime import datetime
+        today = datetime.now().date()
+        
+        for key, value in unit.items():
+            if key == 'expiry' and value is not None:
+                try:
+                    processed_unit[key] = value.strftime('%m/%d/%Y')
+                except Exception as e:
+                    logger.error(f"Error formatting expiry date: {str(e)}")
+                    processed_unit[key] = ""
+            else:
+                # Convert Decimal objects to float
+                if isinstance(value, decimal.Decimal):
+                    processed_unit[key] = float(value)
+                else:
+                    processed_unit[key] = value
+        
+        # Close cursor and connection
+        cursor.close()
+        connection.close()
+        
+        logger.info(f"Retrieved details for unit_id: {unit_id}")
+        return jsonify({
+            "status": "success",
+            "data": processed_unit
+        })
+    
+    except Exception as e:
+        logger.error(f"Error retrieving listing details: {str(e)}")
         return jsonify({"status": "error", "message": str(e)}), 500
 
 
