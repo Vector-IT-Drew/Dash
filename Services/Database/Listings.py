@@ -73,9 +73,11 @@ def get_filtered_listings():
             LEFT JOIN deals d ON u.unit_id = d.unit_id
             LEFT JOIN addresses a ON u.address_id = a.address_id
             WHERE 
-                d.actual_rent IS NOT NULL AND d.actual_rent != '' AND d.actual_rent != 0
+                d.actual_rent IS NOT NULL 
+                AND d.actual_rent != '' 
+                AND d.actual_rent != 0
                 AND u.address IN ('525 East 72nd Street', '1113 York Avenue', '420 East 61st Street')
-                AND (d.move_out IS NOT NULL
+                AND ((d.move_out IS NOT NULL
                     AND u.rentable = True
                     AND u.unit_status = 'Occupied' 
                     AND d.move_out <= DATE_ADD(CURDATE(), INTERVAL 3 MONTH) 
@@ -86,7 +88,7 @@ def get_filtered_listings():
                 ) OR (
                     u.rentable = True
                     AND u.unit_status = 'Vacant' 
-                ) 
+                ) )
         """
         # Add filter conditions
         params = []
