@@ -55,6 +55,7 @@ def get_filtered_listings():
         max_price = request.args.get('max_price')
         limit = request.args.get('limit', 1000)  # Default limit of 100
         available = request.args.get('available', False)  # Default limit of 100
+        sort = request.args.get('sort', 'ORDER BY d.actual_rent DESC')  # Default limit of 100
         
         # Get database connection
         db_result = get_db_connection()
@@ -122,8 +123,8 @@ def get_filtered_listings():
             params.append(float(max_price))
         
         # Add order by and limit
-        query += " ORDER BY u.unit_id DESC LIMIT %s"
-        params.append(int(limit))
+        if sort:
+            query += sort
         
         # Execute the query
         cursor.execute(query, params)
