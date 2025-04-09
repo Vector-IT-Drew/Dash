@@ -54,6 +54,7 @@ def get_filtered_listings():
         min_price = request.args.get('min_price')
         max_price = request.args.get('max_price')
         limit = request.args.get('limit', 1000)  # Default limit of 100
+        available = request.args.get('available', False)  # Default limit of 100
         
         # Get database connection
         db_result = get_db_connection()
@@ -65,27 +66,27 @@ def get_filtered_listings():
         cursor = connection.cursor(dictionary=True)
         
         # Start building the query to get vacant units and units with expiring deals
-        query = """
+        query = f"""
             SELECT u.unit_id, u.address, u.unit, u.beds, u.baths, u.sqft, u.exposure,
                     u.floor_num, u.unit_status, d.expiry, d.actual_rent, u.unit_images, a.building_name, a.neighborhood, a.borough, d.deal_status, d.move_out, u.rentable
             FROM units u
             LEFT JOIN deals d ON u.unit_id = d.unit_id
             LEFT JOIN addresses a ON u.address_id = a.address_id
             WHERE 
-                (d.move_out IS NOT NULL
-                AND u.rentable = True
-                AND u.unit_status = 'Occupied' 
-                AND d.move_out <= DATE_ADD(CURDATE(), INTERVAL 3 MONTH) 
-                AND d.deal_status != 'Closed' 
-                AND d.deal_status != 'Renewal Check'
-                AND d.actual_rent IS NOT NULL AND d.actual_rent != '' AND d.actual_rent != 0
+                d.actual_rent IS NOT NULL AND d.actual_rent != '' AND d.actual_rent != 0
                 AND u.address IN ('525 East 72nd Street', '1113 York Avenue', '420 East 61st Street')
+                AND (d.move_out IS NOT NULL
+                    AND u.rentable = True
+                    AND u.unit_status = 'Occupied' 
+                    AND d.move_out <= DATE_ADD(CURDATE(), INTERVAL 3 MONTH) 
+                    AND d.deal_status != 'Closed' 
+                    AND d.deal_status != 'Renewal Check'
+                    {f'AND move_out <= DATE_ADD(CURDATE())' if available else ''}
+                    
                 ) OR (
                     u.rentable = True
                     AND u.unit_status = 'Vacant' 
-                    AND d.actual_rent IS NOT NULL AND d.actual_rent != '' AND d.actual_rent != 0
-                    AND u.address IN ('525 East 72nd Street', '1113 York Avenue', '420 East 61st Street')
-                )
+                ) 
         """
         # Add filter conditions
         params = []
