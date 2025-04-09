@@ -83,7 +83,7 @@ def get_filtered_listings():
                     AND d.move_out <= DATE_ADD(CURDATE(), INTERVAL 3 MONTH) 
                     AND d.deal_status != 'Closed' 
                     AND d.deal_status != 'Renewal Check'
-                    {f'AND move_out <= DATE_ADD(CURDATE())' if available else ''}
+                    {f'AND move_out <= DATE_ADD(CURDATE()' if available else ''}
                     
                 ) OR (
                     u.rentable = True
