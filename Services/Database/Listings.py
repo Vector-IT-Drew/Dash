@@ -124,7 +124,7 @@ def get_filtered_listings():
         
         # Add order by and limit
         if sort:
-            query += sort
+            query += f' {sort}'
         
         # Execute the query
         cursor.execute(query, params)
