@@ -102,7 +102,7 @@ def get_filtered_listings():
             params.append(unit)
             
         if beds:
-            query += " AND u.beds = %s"
+            query += " AND u.beds >= %s"
             params.append(float(beds))
             
         if baths:
