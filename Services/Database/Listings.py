@@ -106,7 +106,7 @@ def get_filtered_listings():
             params.append(float(beds))
             
         if baths:
-            query += " AND u.baths = %s"
+            query += " AND u.baths >= %s"
             params.append(float(baths))
             
         if neighborhood:
