@@ -123,8 +123,15 @@ def get_filtered_listings():
             params.append(float(max_price))
         
         # Add order by and limit
-        if sort:
-            query += f' {sort}'
+        # {% if request.args.get('sort') == 'price_asc' %}selected{% endif %}
+        if sort == 'price_asc':
+            query += f' ORDER BY d.actual_rent ASC  '
+        elif sort == 'price_desc':
+            query += f' ORDER BY d.actual_rent DESC'
+        elif sort == 'size_desc':
+            query += f' ORDER BY d.sqft DESC'
+        else:
+            query += f' ORDER BY d.actual_rent DESC'
         
         # Execute the query
         cursor.execute(query, params)
