@@ -129,7 +129,7 @@ def get_filtered_listings():
         elif sort == 'price_desc':
             query += f' ORDER BY d.actual_rent DESC'
         elif sort == 'size_desc':
-            query += f' ORDER BY d.sqft DESC'
+            query += f' ORDER BY u.sqft DESC'
         else:
             query += f' ORDER BY d.actual_rent DESC'
         
