@@ -102,7 +102,8 @@ def get_filtered_listings_data(
         # Start building the query to get vacant units and units with expiring deals
         query = f"""
             SELECT u.unit_id, u.address, u.unit, u.beds, u.baths, u.sqft, u.exposure,
-                    u.floor_num, u.unit_status, d.expiry, d.actual_rent, u.unit_images, a.building_name, a.neighborhood, a.borough, d.deal_status, d.move_out, u.rentable
+                    u.floor_num, u.unit_status, d.expiry, d.actual_rent, u.unit_images, a.building_name, 
+                    a.neighborhood, a.borough, d.deal_status, d.move_out, u.rentable, a.building_amenities
             {f', u.*, d.*, a.*' if include_all else ''}  
             FROM units u
             LEFT JOIN deals d ON u.unit_id = d.unit_id
