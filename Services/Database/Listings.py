@@ -55,11 +55,12 @@ def get_filtered_listings():
     limit = request.args.get('limit', 1000)
     available = request.args.get('available', False)
     sort = request.args.get('sort', 'ORDER BY d.actual_rent DESC')
+    include_all = request.args.get('include_all', False)
     
     # Call the reusable function with parameters from request
     result = get_filtered_listings_data(
         address, unit, beds, baths, neighborhood, 
-        min_price, max_price, limit, available, sort
+        min_price, max_price, limit, available, sort, include_all
     )
     
     # Return JSON response for the API endpoint
