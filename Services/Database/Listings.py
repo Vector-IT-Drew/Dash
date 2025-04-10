@@ -206,11 +206,7 @@ def get_listing():
         
         # Query to get all details for a specific unit
         query = """
-            SELECT u.*, d.*, a.*,
-                   u.unit_id, u.address, u.unit, u.beds, u.baths, u.sqft, u.exposure,
-                   u.floor_num, u.unit_status, u.unit_images,
-                   d.deal_id, d.expiry, d.actual_rent, d.deal_status, 
-                   a.building_name, a.neighborhood, a.borough, a.zip_code
+            SELECT u.*, d.*, a.*
             FROM units u
             LEFT JOIN deals d ON u.unit_id = d.unit_id
             LEFT JOIN addresses a ON u.address_id = a.address_id
