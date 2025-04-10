@@ -513,7 +513,7 @@ def chat():
         if len(filtered_listings) < 15:
             detailed_listings_info = "DETAILED LISTING INFORMATION (FOR YOUR REFERENCE ONLY, DO NOT SHARE THESE DETAILS WITH USER):\n"
             for idx, listing in filtered_listings.iterrows():
-                amenities_str = ", ".join(listing['building_amenities']) if isinstance(listing['building_amenities'], list) else ""
+                amenities_str = ", ".join(listing.get('building_amenities', [])) if isinstance(listing.get('building_amenities'), list) else ""
                 detailed_listings_info += f"Listing {idx+1}: {listing['address']} Unit {listing['unit']}, {listing['borough']}, {listing['neighborhood']}\n"
                 detailed_listings_info += f"  - {listing['beds']} bed, {listing['baths']} bath, ${listing['actual_rent']}/month, {listing['sqft']} sqft\n"
                 detailed_listings_info += f"  - Pet policy: {listing.get('pet_friendly', 'N/A')}\n"
