@@ -212,7 +212,7 @@ def extract_preferences_from_chat(chat_history, listings_df):
         'exposure', 'floor_num', 'floor_type', 'countertop_type', 'dishwasher',
         'laundry_in_unit', 'laundry_in_building', 'outdoor_space', 'elevator',
         'wheelchair_access', 'smoke_free', 'heat_type', 'stove_type', 
-        'pet_friendly', 'lease_type'
+        'pet_friendly', 'lease_type', 'building_amenities'
     ]
     
     # Filter to only include columns that exist in the DataFrame
@@ -485,7 +485,7 @@ def chat():
             'beds', 'baths', 'borough', 'neighborhood', 'exposure', 'floor_num', 
             'floor_type', 'countertop_type', 'dishwasher', 'laundry_in_unit', 
             'laundry_in_building', 'outdoor_space', 'elevator', 'wheelchair_access', 
-            'smoke_free', 'heat_type', 'stove_type', 'pet_friendly', 'lease_type'
+            'smoke_free', 'heat_type', 'stove_type', 'pet_friendly', 'lease_type', 'building_amenities'
         ]
         
         # Filter to only include columns that exist in the DataFrame
