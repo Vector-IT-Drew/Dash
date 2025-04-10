@@ -8,6 +8,8 @@ from functools import wraps
 from dotenv import load_dotenv
 from Services.Database import connect_bp, listings_bp
 from Services.Logging import log_viewer_bp
+from Services.Chatbot import chat_bp
+from flask_session import Session
 
 load_dotenv()
 
@@ -15,6 +17,16 @@ app = Flask(__name__)
 app.register_blueprint(connect_bp)
 app.register_blueprint(listings_bp)
 app.register_blueprint(log_viewer_bp)
+app.register_blueprint(chat_bp)
+
+app.config['SECRET_KEY'] = 'your_secure_secret_key_here'  # Use a strong random key in production
+app.config["SESSION_TYPE"] = "filesystem"  # Store sessions in files
+app.config["SESSION_FILE_DIR"] = "/tmp/flask_session"  # Directory for session files
+app.config["SESSION_PERMANENT"] = True  # Make sessions persist
+app.config["SESSION_USE_SIGNER"] = True  # Add a signature for security
+app.config["SESSION_KEY_PREFIX"] = "vector_"  # Prefix for session keys
+
+Session(app)
 
 # Create logs directory if it doesn't exist
 os.makedirs('logs', exist_ok=True)
@@ -105,3 +117,13 @@ def after_request(response):
 if __name__ == '__main__':
     port = int(os.getenv('PORT', 5001))
     app.run(host='0.0.0.0', port=port, debug=True)
+
+
+
+
+# git init
+# git add .
+# git commit -m "Initial commit"
+# git branch -M main 
+# git remote add origin https://github.com/Vector-IT-Drew/Dash.git   
+# git push -u origin main

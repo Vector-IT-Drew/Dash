@@ -44,24 +44,57 @@ def get_listings():
 
 @listings_bp.route('/get_filtered_listings', methods=['GET'])
 def get_filtered_listings():
-    try:
-        # Get filter parameters from query string
-        address = request.args.get('address')
-        unit = request.args.get('unit')
-        beds = request.args.get('beds')
-        baths = request.args.get('baths')
-        neighborhood = request.args.get('neighborhood')
-        min_price = request.args.get('min_price')
-        max_price = request.args.get('max_price')
-        limit = request.args.get('limit', 1000)  # Default limit of 100
-        available = request.args.get('available', False)  # Default limit of 100
-        sort = request.args.get('sort', 'ORDER BY d.actual_rent DESC')  # Default limit of 100
+    # Get filter parameters from query string
+    address = request.args.get('address')
+    unit = request.args.get('unit')
+    beds = request.args.get('beds')
+    baths = request.args.get('baths')
+    neighborhood = request.args.get('neighborhood')
+    min_price = request.args.get('min_price')
+    max_price = request.args.get('max_price')
+    limit = request.args.get('limit', 1000)
+    available = request.args.get('available', False)
+    sort = request.args.get('sort', 'ORDER BY d.actual_rent DESC')
+    
+    # Call the reusable function with parameters from request
+    result = get_filtered_listings_data(
+        address, unit, beds, baths, neighborhood, 
+        min_price, max_price, limit, available, sort
+    )
+    
+    # Return JSON response for the API endpoint
+    return jsonify(result)
+
+
+def get_filtered_listings_data(
+    address=None, unit=None, beds=None, baths=None, 
+    neighborhood=None, min_price=None, max_price=None, 
+    limit=10000, available=False, sort='ORDER BY d.actual_rent DESC', include_all=False
+):
+    """
+    Get filtered listings data that can be called from other Python files.
+    
+    Args:
+        address (str, optional): Filter by address
+        unit (str, optional): Filter by unit number
+        beds (float, optional): Minimum number of bedrooms
+        baths (float, optional): Minimum number of bathrooms
+        neighborhood (str, optional): Filter by neighborhood
+        min_price (float, optional): Minimum price
+        max_price (float, optional): Maximum price
+        limit (int, optional): Maximum number of results to return
+        available (bool, optional): Only show currently available units
+        sort (str, optional): Sort order for results
         
+    Returns:
+        dict: Dictionary with status, count, and data keys
+    """
+    try:
         # Get database connection
         db_result = get_db_connection()
         
         if db_result["status"] != "connected":
-            return jsonify({"status": "error", "message": "Database connection failed"})
+            return {"status": "error", "message": "Database connection failed"}
         
         connection = db_result["connection"]
         cursor = connection.cursor(dictionary=True)
@@ -70,6 +103,7 @@ def get_filtered_listings():
         query = f"""
             SELECT u.unit_id, u.address, u.unit, u.beds, u.baths, u.sqft, u.exposure,
                     u.floor_num, u.unit_status, d.expiry, d.actual_rent, u.unit_images, a.building_name, a.neighborhood, a.borough, d.deal_status, d.move_out, u.rentable
+            {f', u.*, d.*, a.*' if include_all else ''}  
             FROM units u
             LEFT JOIN deals d ON u.unit_id = d.unit_id
             LEFT JOIN addresses a ON u.address_id = a.address_id
@@ -123,7 +157,6 @@ def get_filtered_listings():
             params.append(float(max_price))
         
         # Add order by and limit
-        # {% if request.args.get('sort') == 'price_asc' %}selected{% endif %}
         if sort == 'price_asc':
             query += f' ORDER BY d.actual_rent ASC  '
         elif sort == 'price_desc':
@@ -136,12 +169,6 @@ def get_filtered_listings():
         # Execute the query
         cursor.execute(query, params)
         units = cursor.fetchall()
-        
-        # Convert Decimal objects to float for JSON serialization
-        def decimal_to_float(obj):
-            if isinstance(obj, decimal.Decimal):
-                return float(obj)
-            return obj
         
         # Process each unit to convert Decimal values to float and set past expiry to blank
         processed_units = []
@@ -171,7 +198,10 @@ def get_filtered_listings():
                         logger.error(f"Error processing unit_images: {str(e)}")
                         processed_unit[key] = ""
                 else:
-                    processed_unit[key] = decimal_to_float(value)
+                    if isinstance(value, decimal.Decimal):
+                        processed_unit[key] = float(value)
+                    else:
+                        processed_unit[key] = value
             processed_units.append(processed_unit)
         
         # Close cursor and connection
@@ -179,15 +209,15 @@ def get_filtered_listings():
         connection.close()
         
         logger.info(f"Retrieved {len(units)} filtered units from database")
-        return jsonify({
+        return {
             "status": "success", 
             "count": len(processed_units),
             "data": processed_units
-        })
+        }
     
     except Exception as e:
         logger.error(f"Error retrieving filtered units: {str(e)}")
-        return jsonify({"status": "error", "message": str(e)}), 500
+        return {"status": "error", "message": str(e)}
 
 
 @listings_bp.route('/get_listing', methods=['GET'])
