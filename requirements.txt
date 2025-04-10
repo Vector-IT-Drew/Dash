@@ -1,3 +1,7 @@
+# Basic build tools
+setuptools>=65.5.0
+wheel>=0.40.0
+
 # Web framework and related
 flask==2.3.3
 gunicorn==21.2.0
@@ -5,9 +9,9 @@ gunicorn==21.2.0
 # Database
 mysql-connector-python==8.1.0
 
-# Data processing
-numpy==1.24.3  # Specific version to avoid compatibility issues
-pandas==2.0.3  # Compatible with numpy 1.24.3
+# Data processing - use binary distributions when possible
+numpy==1.24.3 --only-binary=numpy
+pandas==2.0.3 --only-binary=pandas
 
 # API and authentication
 openai==1.3.0
