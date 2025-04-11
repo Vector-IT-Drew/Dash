@@ -21,7 +21,6 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Initialize OpenAI client
-print('key:',os.getenv("OPENAI_API_KEY"))
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def filter_listings(listings_data, filters):
@@ -218,9 +217,13 @@ def extract_preferences_from_chat(chat_history, listings_df):
     # Filter to only include columns that exist in the DataFrame
     existing_columns = [col for col in relevant_columns if col in listings_df.columns]
     
-    unique_values = {col: listings_df[col].dropna().unique().tolist() 
-                    for col in existing_columns 
-                    if col not in ['building_amenities', 'actual_rent', 'sqft']}
+    unique_values = {}
+    for col in existing_columns:
+        try:
+            unique_values[col] = listings_df[col].dropna().unique().tolist()
+        except TypeError:
+            # Skip columns with unhashable types like lists
+            print(f"Skipping unique values for column {col} due to unhashable type")
     
     # Add available amenities to the context with proper case
     amenities_context = f"Available amenities in the database (CASE SENSITIVE, USE EXACT CASE): {', '.join(sorted(amenity_case_map.values()))}"
@@ -491,8 +494,13 @@ def chat():
         # Filter to only include columns that exist in the DataFrame
         existing_columns = [col for col in relevant_columns if col in filtered_listings.columns]
         
-        unique_values = {col: filtered_listings[col].dropna().unique().tolist() 
-                        for col in existing_columns}
+        unique_values = {}
+        for col in existing_columns:
+            try:
+                unique_values[col] = filtered_listings[col].dropna().unique().tolist()
+            except TypeError:
+                # Skip columns with unhashable types like lists
+                print(f"Skipping unique values for column {col} due to unhashable type")
         
         # Extract all unique amenities from the building_amenities column (which contains lists)
         all_amenities = []
