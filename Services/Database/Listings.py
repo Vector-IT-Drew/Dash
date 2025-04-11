@@ -9,37 +9,37 @@ import json
 listings_bp = Blueprint('Listings', __name__)
 logger = logging.getLogger(__name__)
 
-@listings_bp.route('/listings', methods=['GET'])
-def get_listings():
-    try:
-        # Get database connection from connect
-        db_result = get_db_connection()
+# @listings_bp.route('/listings', methods=['GET'])
+# def get_listings():
+#     try:
+#         # Get database connection from connect
+#         db_result = get_db_connection()
         
-        if db_result["status"] != "connected":
-            return {"status": "error", "message": "Database connection failed"}
+#         if db_result["status"] != "connected":
+#             return {"status": "error", "message": "Database connection failed"}
         
-        connection = db_result["connection"]
-        cursor = connection.cursor(dictionary=True)
+#         connection = db_result["connection"]
+#         cursor = connection.cursor(dictionary=True)
         
-        # Execute a test query to get listings
-        query = """
-            SELECT l.unit_id, l.listing_status, l.listing_gross 
-            FROM listings l 
-            LIMIT 10
-        """
+#         # Execute a test query to get listings
+#         query = """
+#             SELECT l.unit_id, l.listing_status, l.listing_gross 
+#             FROM listings l 
+#             LIMIT 10
+#         """
         
-        cursor.execute(query)
-        listings = cursor.fetchall()
+#         cursor.execute(query)
+#         listings = cursor.fetchall()
         
-        cursor.close()
-        connection.close()
+#         cursor.close()
+#         connection.close()
         
-        logger.info(f"Retrieved {len(listings)} listings from database")
-        return {"status": "success", "data": listings}
+#         logger.info(f"Retrieved {len(listings)} listings from database")
+#         return {"status": "success", "data": listings}
     
-    except Exception as e:
-        logger.error(f"Error retrieving listings: {str(e)}")
-        return {"status": "error", "message": str(e)}
+#     except Exception as e:
+#         logger.error(f"Error retrieving listings: {str(e)}")
+#         return {"status": "error", "message": str(e)}
 
 
 @listings_bp.route('/get_filtered_listings', methods=['GET'])
@@ -260,7 +260,7 @@ def get_listing():
         today = datetime.now().date()
         
         for key, value in unit.items():
-            if key == 'expiry' and value is not None:
+            if key == 'move_out' and value is not None:
                 try:
                     processed_unit[key] = value.strftime('%m/%d/%Y')
                 except Exception as e:
