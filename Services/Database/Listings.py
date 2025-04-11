@@ -138,7 +138,9 @@ def get_filtered_listings_data(
             query += " AND u.unit = %s"
             params.append(unit)
             
-        if beds:
+        if beds == 0:
+            query += " AND u.beds = 0"
+        elif beds:
             query += " AND u.beds >= %s"
             params.append(float(beds))
             
@@ -264,7 +266,7 @@ def get_listing():
                 try:
                     processed_unit[key] = value.strftime('%m/%d/%Y')
                 except Exception as e:
-                    logger.error(f"Error formatting expiry date: {str(e)}")
+                    logger.error(f"Error formatting move_out date: {str(e)}")
                     processed_unit[key] = ""
             else:
                 # Convert Decimal objects to float
