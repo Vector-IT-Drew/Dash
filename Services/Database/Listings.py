@@ -137,7 +137,7 @@ def get_filtered_listings_data(
         if unit:
             query += " AND u.unit = %s"
             params.append(unit)
-            
+        print('beds', beds, type(beds))
         if beds == 0:
             query += " AND u.beds = 0"
         elif beds:
