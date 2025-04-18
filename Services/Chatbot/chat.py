@@ -367,25 +367,28 @@ def start_chat():
     
     return jsonify({"message": welcome_message})
 
-@chat_bp.route("/chat", methods=["POST", "GET"])
+@chat_bp.route("/chat", methods=["POST"])
 def chat():
-    # Log the caller information
-    print(f"Chat endpoint called by: {request.remote_addr}")
-    print(f"User agent: {request.headers.get('User-Agent')}")
-    print(f"Referrer: {request.headers.get('Referer')}")
+    """Process chat message and return response"""
+    # Print request information for debugging
+    print(f"Request method: {request.method}")
+    print(f"Request headers: {dict(request.headers)}")
+    print(f"Request data: {request.get_data(as_text=True)}")
     
-    if request.method == "GET":
-
-        return jsonify({"message": f"Please use POST method to send chat messages {request}!!!"})
+    # Check if the request method is POST
+    if request.method != 'POST':
+        return jsonify({"error": "Please use POST method to send chat messages !!!"}), 405
     
-    print('Hello@')
+    # Get the message from the request
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "No JSON data received"}), 400
     
     # Get the user's message from the request
     follow_up = request.json.get("message", "").strip()
     
-    # Debug session info
-    print(f"Session ID: {session.sid if hasattr(session, 'sid') else 'No session ID'}")
-    print(f"Session contains: {dict(session)}")
+    # Get preferences if provided
+    preferences = data.get('preferences', {})
     
     # Get listings data only once and store in session if not already there
     if 'listings_data' not in session:
@@ -749,4 +752,7 @@ def chat():
             session['preferences']['show_listings'] = True
             response_data["show_listings"] = True
 
-    return jsonify(response_data)
+    return jsonify({
+        "response": f"Received your message: {message}",
+        "preferences": preferences
+    })
