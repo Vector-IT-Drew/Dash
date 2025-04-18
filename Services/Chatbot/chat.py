@@ -15,8 +15,12 @@ import requests
 import ast
 import re
 
-# Load environment variables from .env file
-load_dotenv()
+# Get the absolute path to the root directory (2 folders up)
+root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+dotenv_path = os.path.join(root_dir, '.env')
+
+# Load environment variables from .env file with explicit path
+load_dotenv(dotenv_path)
 
 # Create a Blueprint instead of a Flask app
 chat_bp = Blueprint('Chatbot', __name__)
@@ -25,7 +29,21 @@ logger = logging.getLogger(__name__)
 
 # Initialize OpenAI client
 try:
+    print("=== ENVIRONMENT VARIABLES ===")
+    for key, value in os.environ.items():
+        # Mask sensitive values like API keys
+        if 'key' in key.lower() or 'secret' in key.lower() or 'password' in key.lower():
+            # Show just the first and last few characters
+            if value and len(value) > 8:
+                masked_value = value[:4] + '*' * (len(value) - 8) + value[-4:]
+            else:
+                masked_value = '****'
+            print(f"{key}: {masked_value}")
+        else:
+            print(f"{key}: {value}")
+    print('Getting api key...')
     api_key = os.getenv("OPENAI_API_KEY")
+    print('api_key', api_key)
     if not api_key:
         raise ValueError("OPENAI_API_KEY environment variable is not set")
     
