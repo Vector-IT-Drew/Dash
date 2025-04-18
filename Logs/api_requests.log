@@ -766,3 +766,17 @@
 2025-04-18 18:07:22,604 - api - INFO - RESPONSE b0d37758-fbee-43bb-a11b-a93bc4674cbe: 200 957ms - {"status_code": 200, "duration_ms": 956.88, "body": {"listing_count": 11, "preferences": {"beds": 2,
 2025-04-18 18:07:24,493 - api - INFO - REQUEST 7287441a-38df-49f8-8668-4b08d9fe2ffd: POST /chat - {"method": "POST", "url": "http://192.168.86.16:5001/chat", "path": "/chat", "client_ip": "192.168.8
 2025-04-18 18:07:25,550 - api - INFO - RESPONSE 7287441a-38df-49f8-8668-4b08d9fe2ffd: 200 1057ms - {"status_code": 200, "duration_ms": 1056.67, "body": {"listing_count": 11, "listings": [{"actual_ren
+2025-04-18 19:05:22,672 - api - INFO - REQUEST 4650d14e-aedf-4792-9472-99d76c795f53: POST /chat - {"method": "POST", "url": "http://192.168.86.16:5003/chat", "path": "/chat", "client_ip": "192.168.8
+2025-04-18 19:05:25,520 - api - INFO - RESPONSE 4650d14e-aedf-4792-9472-99d76c795f53: 200 2849ms - {"status_code": 200, "duration_ms": 2848.95, "body": {"preferences": {}, "response": "Received your 
+2025-04-18 19:05:40,492 - api - INFO - REQUEST 2f5a3c7f-037f-4bdf-9477-3e6b493b97a0: POST /chat - {"method": "POST", "url": "http://192.168.86.16:5003/chat", "path": "/chat", "client_ip": "192.168.8
+2025-04-18 19:05:43,200 - api - INFO - RESPONSE 2f5a3c7f-037f-4bdf-9477-3e6b493b97a0: 200 2708ms - {"status_code": 200, "duration_ms": 2707.9, "body": {"preferences": {}, "response": "Received your m
+2025-04-18 19:05:57,861 - api - INFO - REQUEST c6a338ad-ddba-4300-9f46-ed8976fad06b: POST /chat - {"method": "POST", "url": "http://192.168.86.16:5003/chat", "path": "/chat", "client_ip": "192.168.8
+2025-04-18 19:06:00,746 - api - INFO - RESPONSE c6a338ad-ddba-4300-9f46-ed8976fad06b: 200 2885ms - {"status_code": 200, "duration_ms": 2884.95, "body": {"preferences": {}, "response": "Received your 
+2025-04-18 19:06:46,588 - api - INFO - REQUEST c78c609d-36aa-4dbf-87f5-98dacfe59652: POST /chat - {"method": "POST", "url": "http://192.168.86.16:5003/chat", "path": "/chat", "client_ip": "192.168.8
+2025-04-18 19:06:49,108 - api - INFO - RESPONSE c78c609d-36aa-4dbf-87f5-98dacfe59652: 200 2520ms - {"status_code": 200, "duration_ms": 2520.12, "body": {"listing_count": 11, "preferences": {"baths": 
+2025-04-18 19:07:55,363 - api - INFO - REQUEST 7968736d-f1f3-4446-a4fc-41051bd23e4a: POST /chat - {"method": "POST", "url": "http://192.168.86.16:5003/chat", "path": "/chat", "client_ip": "192.168.8
+2025-04-18 19:07:57,836 - api - INFO - RESPONSE 7968736d-f1f3-4446-a4fc-41051bd23e4a: 200 2473ms - {"status_code": 200, "duration_ms": 2473.15, "body": {"listing_count": 11, "preferences": {"baths": 
+2025-04-18 19:08:28,513 - api - INFO - REQUEST 476caf65-fcd8-4a21-ace9-60d063bdddb0: POST /chat - {"method": "POST", "url": "http://192.168.86.16:5003/chat", "path": "/chat", "client_ip": "192.168.8
+2025-04-18 19:08:30,244 - api - INFO - RESPONSE 476caf65-fcd8-4a21-ace9-60d063bdddb0: 200 1731ms - {"status_code": 200, "duration_ms": 1731.2, "body": {"listing_count": 7, "preferences": {"baths": 2.
+2025-04-18 19:08:50,742 - api - INFO - REQUEST 61d339af-823d-4171-9cfa-0dae3ff38904: POST /chat - {"method": "POST", "url": "http://192.168.86.16:5003/chat", "path": "/chat", "client_ip": "192.168.8
+2025-04-18 19:08:52,405 - api - INFO - RESPONSE 61d339af-823d-4171-9cfa-0dae3ff38904: 200 1662ms - {"status_code": 200, "duration_ms": 1662.5, "body": {"listing_count": 7, "listings": [{"actual_rent"
