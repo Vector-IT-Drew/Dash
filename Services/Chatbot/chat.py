@@ -753,6 +753,6 @@ def chat():
             response_data["show_listings"] = True
 
     return jsonify({
-        "response": f"Received your message: {message}",
+        "response": f"Received your message: {follow_up}",
         "preferences": preferences
     })
