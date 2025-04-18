@@ -357,7 +357,8 @@ def chat():
     print(f"Referrer: {request.headers.get('Referer')}")
     
     if request.method == "GET":
-        return jsonify({"message": "Please use POST method to send chat messages"})
+
+        return jsonify({"message": f"Please use POST method to send chat messages{request}"})
     
     print('Hello@')
     
