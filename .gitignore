@@ -1,7 +1,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
-.env
+
 .env.local
 venv/
 .vscode/
@@ -10,7 +10,7 @@ venv/
 
 *.so
 .Python
-env/
+
 build/
 develop-eggs/
 dist/
