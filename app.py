@@ -122,7 +122,7 @@ def after_request(response):
     
     # Convert to JSON string and log it
     response_json = json.dumps(response_data)
-    api_logger.info(f"RESPONSE {request_id}: {response.status_code} {round(duration * 1000)}ms - {response_json}")
+    api_logger.info(f"RESPONSE {request_id}: {response.status_code} {round(duration * 1000)}ms - {str(response_json)[:100]}")
     
     return response
 

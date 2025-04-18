@@ -368,10 +368,12 @@ def chat():
     if 'listings_data' not in session:
         try:
             # Add timeout to prevent hanging requests
+            print('Getting listings data')
             listings_info = requests.get(
                 'https://dash-production-b25c.up.railway.app/get_filtered_listings?include_all=True',
                 timeout=10  # 10 second timeout
             )
+            print('listings_info', listings_info.json())
             listings_data = listings_info.json()
             listings = pd.DataFrame(listings_data['data'])
             
