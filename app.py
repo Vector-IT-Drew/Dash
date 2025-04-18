@@ -93,7 +93,7 @@ def before_request():
     
     # Convert to JSON string and log it
     request_json = json.dumps(request_data)
-    api_logger.info(f"REQUEST {request_id}: {request.method} {request.path} - {request_json}")
+    api_logger.info(f"REQUEST {request_id}: {request.method} {request.path} - {str(request_json)[:100]}")
 
 @app.after_request
 def after_request(response):
