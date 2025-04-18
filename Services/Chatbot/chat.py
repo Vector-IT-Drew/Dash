@@ -367,17 +367,37 @@ def start_chat():
     
     return jsonify({"message": welcome_message})
 
-@chat_bp.route("/chat", methods=["POST"])
+@chat_bp.route("/chat", methods=["GET", "POST"])
 def chat():
     """Process chat message and return response"""
-    # Print request information for debugging
+    # Handle GET requests
+    if request.method == "GET":
+        return jsonify({
+            "message": "This endpoint requires a POST request with a JSON body containing a 'message' field.",
+            "example": {
+                "message": "Hello, I'm looking for an apartment"
+            }
+        })
+    
+    # Detailed request logging
+    print("=" * 50)
+    print(f"CHAT ENDPOINT ACCESSED")
     print(f"Request method: {request.method}")
+    print(f"Request path: {request.path}")
+    print(f"Request URL: {request.url}")
     print(f"Request headers: {dict(request.headers)}")
     print(f"Request data: {request.get_data(as_text=True)}")
+    print(f"Request JSON: {request.get_json(silent=True)}")
+    print(f"Allowed methods: {request.url_rule.methods if request.url_rule else 'N/A'}")
+    print("=" * 50)
+    
+    # Handle OPTIONS requests for CORS preflight
+    if request.method == "OPTIONS":
+        return "", 200
     
     # Check if the request method is POST
     if request.method != 'POST':
-        return jsonify({"error": "Please use POST method to send chat messages !!!"}), 405
+        return jsonify({"error": f"Please use POST method to send chat messages. You used: {request.method}"}), 405
     
     # Get the message from the request
     data = request.get_json()

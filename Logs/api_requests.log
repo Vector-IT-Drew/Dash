@@ -780,3 +780,5 @@
 2025-04-18 19:08:30,244 - api - INFO - RESPONSE 476caf65-fcd8-4a21-ace9-60d063bdddb0: 200 1731ms - {"status_code": 200, "duration_ms": 1731.2, "body": {"listing_count": 7, "preferences": {"baths": 2.
 2025-04-18 19:08:50,742 - api - INFO - REQUEST 61d339af-823d-4171-9cfa-0dae3ff38904: POST /chat - {"method": "POST", "url": "http://192.168.86.16:5003/chat", "path": "/chat", "client_ip": "192.168.8
 2025-04-18 19:08:52,405 - api - INFO - RESPONSE 61d339af-823d-4171-9cfa-0dae3ff38904: 200 1662ms - {"status_code": 200, "duration_ms": 1662.5, "body": {"listing_count": 7, "listings": [{"actual_rent"
+2025-04-18 19:10:41,580 - api - INFO - REQUEST 86912673-541f-4796-bd88-a66564a98d93: GET / - {"method": "GET", "url": "http://192.168.86.16:5003/", "path": "/", "client_ip": "192.168.86.16"}
+2025-04-18 19:10:41,619 - api - INFO - RESPONSE 86912673-541f-4796-bd88-a66564a98d93: 200 40ms - {"status_code": 200, "duration_ms": 39.69, "body": {"endpoints": {"/connect": "GET - Test database c
