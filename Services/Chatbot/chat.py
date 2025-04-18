@@ -26,6 +26,7 @@ logger = logging.getLogger(__name__)
 # Initialize OpenAI client
 try:
     api_key = os.getenv("OPENAI_API_KEY")
+    api_key = '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'
     if not api_key:
         raise ValueError("OPENAI_API_KEY environment variable is not set")
     
@@ -152,6 +153,11 @@ def filter_listings_by_preferences(listings_df, preferences):
 
 @chat_bp.route("/start-chat", methods=["POST"])
 def start_chat():
+    print('Start chat')
+    
+    # Clear any existing session data
+    session.clear()
+    
     # Get listings data only once
     try:
         # Add timeout to prevent hanging requests
@@ -163,7 +169,6 @@ def start_chat():
 
         print('listings_data', listings_data.keys() )
         listings = pd.DataFrame(listings_data['data'])
-
         
         # Store listings in the session for future use
         session['listings_data'] = listings_data
@@ -373,7 +378,6 @@ def chat():
                 'https://dash-production-b25c.up.railway.app/get_filtered_listings?include_all=True',
                 timeout=10  # 10 second timeout
             )
-            print('listings_info', listings_info.json())
             listings_data = listings_info.json()
             listings = pd.DataFrame(listings_data['data'])
             
@@ -444,8 +448,11 @@ def chat():
     # Convert conversation history to a string for the preferences extraction prompt
     convo = '\n'.join([(f"{mes['role']}: {mes['content']}") for mes in session['messages'][1:]])
     
-    # Extract preferences using your existing prompt
-    prompt = f"""Your goal is to take this conversation history, and extract all the users preferences. 
+    # Only extract preferences if this is not the first user message
+    # Check if there are at least 3 messages (system prompt, assistant welcome, and at least one user message)
+    if len(session['messages']) >= 3:  # Changed from >= 3 to > 3 to skip the first user message
+        # Extract preferences using your existing prompt
+        prompt = f"""Your goal is to take this conversation history, and extract all the users preferences. 
 
         The user may change their preferences over time, so be sure to set these values using the most up to date conversation sentences.
         Only make assumptions for things like ("5k" should be 5000 , correct misspellings, make sure their selected amenities exist in the current options.)
@@ -552,64 +559,80 @@ def chat():
             IMPORTANT: Include ALL preferences from the entire conversation, not just the most recent message.
     """
 
-    response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=[{"role": "user", "content": prompt}]
-    )
-    
-    # Print token usage for preferences extraction
-    pref_prompt_tokens = response.usage.prompt_tokens
-    pref_completion_tokens = response.usage.completion_tokens
-    pref_total_tokens = response.usage.total_tokens
-    print(f"\n--- Preferences Extraction Token Usage ---")
-    print(f"Prompt tokens: {pref_prompt_tokens}")
-    print(f"Completion tokens: {pref_completion_tokens}")
-    print(f"Total tokens: {pref_total_tokens}")
-    print(f"Estimated cost: ${(pref_prompt_tokens * 0.00003) + (pref_completion_tokens * 0.00006):.4f}")
-    print(f"-------------------------------------------\n")
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": prompt}]
+        )
+        
+        # Print token usage for preferences extraction
+        pref_prompt_tokens = response.usage.prompt_tokens
+        pref_completion_tokens = response.usage.completion_tokens
+        pref_total_tokens = response.usage.total_tokens
+        print(f"\n--- Preferences Extraction Token Usage ---")
+        print(f"Prompt tokens: {pref_prompt_tokens}")
+        print(f"Completion tokens: {pref_completion_tokens}")
+        print(f"Total tokens: {pref_total_tokens}")
+        print(f"Estimated cost: ${(pref_prompt_tokens * 0.0000015) + (pref_completion_tokens * 0.000002):.6f}")
+        print(f"-------------------------------------------\n")
 
-    raw_response = response.choices[0].message.content
-    
-    try:
-        # Try to parse as JSON first (handles lowercase true/false)
+        raw_response = response.choices[0].message.content
+        
         try:
-            new_preferences = json.loads(raw_response)
-        except json.JSONDecodeError:
-            # If that fails, try to extract JSON from the response
-            match = re.search(r'```(?:json)?\s*({.*?})\s*```', raw_response, re.DOTALL)
-            if match:
-                new_preferences = json.loads(match.group(1))
-            else:
-                # If still no JSON found, raise an error
-                raise ValueError("Could not extract JSON from response")
-        
-        print(f"Extracted new preferences: {new_preferences}")
-        
-        # Special handling for building_amenities to accumulate them
-        if 'building_amenities' in new_preferences and isinstance(new_preferences['building_amenities'], list):
-            # If we already have amenities, add the new ones
-            if 'building_amenities' in current_preferences and isinstance(current_preferences['building_amenities'], list):
-                # Create a set to avoid duplicates
-                existing_amenities = set(current_preferences['building_amenities'])
-                for amenity in new_preferences['building_amenities']:
-                    existing_amenities.add(amenity)
-                new_preferences['building_amenities'] = list(existing_amenities)
-        
-        # Update the current preferences with the new ones
-        current_preferences.update(new_preferences)
-        
-        # Save the updated preferences to the session
-        session['preferences'] = current_preferences
-        session.modified = True
-        print(f"Updated preferences in session: {session['preferences']}")
-        
-    except Exception as e:
-        print(f"Error parsing preferences: {e}")
-        print(f"Raw response: {raw_response}")
+            # Try to parse as JSON first (handles lowercase true/false)
+            try:
+                new_preferences = json.loads(raw_response)
+            except json.JSONDecodeError:
+                # If that fails, try to extract JSON from the response
+                match = re.search(r'```(?:json)?\s*({.*?})\s*```', raw_response, re.DOTALL)
+                if match:
+                    new_preferences = json.loads(match.group(1))
+                else:
+                    # If still no JSON found, raise an error
+                    raise ValueError("Could not extract JSON from response")
+            
+            print(f"Extracted new preferences: {new_preferences}")
+            
+            # Special handling for building_amenities to accumulate them
+            if 'building_amenities' in new_preferences and isinstance(new_preferences['building_amenities'], list):
+                # If we already have amenities, add the new ones
+                if 'building_amenities' in current_preferences and isinstance(current_preferences['building_amenities'], list):
+                    # Create a set to avoid duplicates
+                    existing_amenities = set(current_preferences['building_amenities'])
+                    for amenity in new_preferences['building_amenities']:
+                        existing_amenities.add(amenity)
+                    new_preferences['building_amenities'] = list(existing_amenities)
+            
+            # Update the current preferences with the new ones
+            current_preferences.update(new_preferences)
+            
+            # Save the updated preferences to the session
+            session['preferences'] = current_preferences
+            session.modified = True
+            print(f"Updated preferences in session: {session['preferences']}")
+            
+        except Exception as e:
+            print(f"Error parsing preferences: {e}")
+            print(f"Raw response: {raw_response}")
+    else:
+        print("First user message - skipping preference extraction")
     
-    # Filter listings based on preferences
+    # After filtering listings and removing invalid preferences
     filtered_listings, valid_preferences = filter_listings_by_preferences(listings, current_preferences)
-    
+
+    # Check if any preferences were removed during filtering
+    removed_preferences = {k: current_preferences[k] for k in current_preferences if k not in valid_preferences and k != 'listing_count' and k != 'show_listings'}
+
+    # If preferences were removed, add a system message to inform the model
+    if removed_preferences:
+        removed_prefs_msg = f"The user requested {', '.join([f'{k}={v}' for k, v in removed_preferences.items()])}, but these preferences resulted in zero available listings. Please inform the user that these options are not available and suggest alternatives based on the current database information."
+        session['messages'].append({"role": "system", "content": removed_prefs_msg})
+        session.modified = True
+        print(f"Added system message about removed preferences: {removed_prefs_msg}")
+
+    # Preserve the show_listings flag if it was set
+    if 'show_listings' in current_preferences and current_preferences['show_listings'] == True:
+        valid_preferences['show_listings'] = True
+
     # Update the session with valid preferences
     session['preferences'] = valid_preferences
     session.modified = True
@@ -660,7 +683,7 @@ def chat():
     
     # Get response from the model
     response = client.chat.completions.create(
-        model="gpt-4",
+        model="gpt-3.5-turbo",
         messages=session['messages']
     )
     
@@ -672,7 +695,7 @@ def chat():
     print(f"Prompt tokens: {prompt_tokens}")
     print(f"Completion tokens: {completion_tokens}")
     print(f"Total tokens: {total_tokens}")
-    print(f"Estimated cost: ${(prompt_tokens * 0.00003) + (completion_tokens * 0.00006):.4f}")
+    print(f"Estimated cost: ${(prompt_tokens * 0.0000015) + (completion_tokens * 0.000002):.6f}")
     print(f"-------------------\n")
     
     # Extract response text
@@ -687,11 +710,25 @@ def chat():
     session['preferences']['listing_count'] = len(filtered_listings)
     session.modified = True
     
-    # Return the response as JSON
+    # Prepare the response data
     response_data = {
-        "message": response_text,
+        "response": response_text,
         "preferences": session['preferences'],
         "listing_count": len(filtered_listings)
     }
-    
+
+    # If show_listings is True, include listings in the response
+    if 'show_listings' in session['preferences'] and session['preferences']['show_listings'] == True:
+        # Get the top listings to show (limit to 5 or 10)
+        top_listings = filtered_listings.head(5).to_dict('records') if not filtered_listings.empty else []
+        response_data["listings"] = top_listings
+        print(f"Including {len(top_listings)} listings in response")
+        print(f"First listing: {top_listings[0] if top_listings else 'None'}")
+        
+        # Force show_listings to True for testing
+        if len(top_listings) > 0:
+            print("Forcing show_listings to True for testing")
+            session['preferences']['show_listings'] = True
+            response_data["show_listings"] = True
+
     return jsonify(response_data)
