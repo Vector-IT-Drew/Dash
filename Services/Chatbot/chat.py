@@ -26,7 +26,6 @@ logger = logging.getLogger(__name__)
 # Initialize OpenAI client
 try:
     api_key = os.getenv("OPENAI_API_KEY")
-    api_key = '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'
     if not api_key:
         raise ValueError("OPENAI_API_KEY environment variable is not set")
     
