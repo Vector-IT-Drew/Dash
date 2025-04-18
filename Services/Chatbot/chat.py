@@ -160,7 +160,10 @@ def start_chat():
             timeout=10  # 10 second timeout
         )
         listings_data = listings_info.json()
+
+        print('listings_data', listings_data.keys() )
         listings = pd.DataFrame(listings_data['data'])
+
         
         # Store listings in the session for future use
         session['listings_data'] = listings_data
