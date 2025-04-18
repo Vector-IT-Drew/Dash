@@ -376,7 +376,7 @@ def chat():
     
     if request.method == "GET":
 
-        return jsonify({"message": f"Please use POST method to send chat messages{request}"})
+        return jsonify({"message": f"Please use POST method to send chat messages {request}!!!"})
     
     print('Hello@')
     
