@@ -140,6 +140,8 @@ def start_chat():
         
         # This assumes get_filtered_listings_data returns the data directly, not a Response object
         listings_data = get_filtered_listings_data(include_all=True, direct_response=True)
+
+        print('Got listings data', len(listings_data))
         
         # Check if we got valid data
         if isinstance(listings_data, dict) and 'data' in listings_data and 'count' in listings_data:
@@ -149,6 +151,7 @@ def start_chat():
             session['listings_count'] = listings_data['count']
             session.modified = True
         else:
+            print('Invalid data format returned from get_filtered_listings_data')
             raise ValueError("Invalid data format returned from get_filtered_listings_data")
             
     except Exception as e:
