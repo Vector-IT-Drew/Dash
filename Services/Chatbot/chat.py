@@ -137,25 +137,29 @@ def start_chat():
     
     # Get listings data only once
     try:
-        # Add timeout to prevent hanging requests
-        listings_info = requests.get(
-            'https://dash-production-b25c.up.railway.app/get_filtered_listings?include_all=True',
-            timeout=10  # 10 second timeout
-        )
-        listings_data = listings_info.json()
-        listings = pd.DataFrame(listings_data['data'])
-
-        session['listings_data'] = listings_data
-        session['listings_count'] = listings_data['count']
-        session.modified = True
+        
+        # This assumes get_filtered_listings_data returns the data directly, not a Response object
+        listings_data = get_filtered_listings_data(include_all=True, direct_response=True)
+        
+        # Check if we got valid data
+        if isinstance(listings_data, dict) and 'data' in listings_data and 'count' in listings_data:
+            listings = pd.DataFrame(listings_data['data'])
+            
+            session['listings_data'] = listings_data
+            session['listings_count'] = listings_data['count']
+            session.modified = True
+        else:
+            raise ValueError("Invalid data format returned from get_filtered_listings_data")
+            
     except Exception as e:
         print(f"Error fetching listings: {e}")
        
+        # Set empty defaults
         session['listings_data'] = {'data': [], 'count': 0}
         session['listings_count'] = 0
         session.modified = True
 
-        return jsonify({"error": f"Haveing trouble fetching listings, please try again later. {e}"}), 500
+        return jsonify({"error": f"Having trouble fetching listings, please try again later. {e}"}), 500
     
     system_prompt = f"""
     You are Vector Assistant, a helpful and friendly real estate agent chatbot for Vector Properties in NYC. 
