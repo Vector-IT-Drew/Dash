@@ -57,8 +57,7 @@ def filter_listings_by_preferences(listings_df, preferences):
     if 'show_listings' in preferences:
         valid_preferences['show_listings'] = preferences['show_listings']
     
-    if 'listing_count' in preferences:
-        valid_preferences['listing_count'] = preferences['listing_count']
+    valid_preferences['listing_count'] = preferences['listing_count']
     
     # Pre-validate preferences to remove any that would result in zero listings
     if 'maximum_rent' in valid_preferences and valid_preferences['maximum_rent'] is not None:
