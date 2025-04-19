@@ -328,7 +328,6 @@ def start_chat():
 
 @chat_bp.route("/chat", methods=["GET", "POST"])
 def chat():
-
     # Detailed request logging
     print("=" * 50)
     print(f"CHAT ENDPOINT ACCESSED")
@@ -343,20 +342,14 @@ def chat():
     if request.method != 'POST':
         return jsonify({"error": f"Please use POST method to send chat messages. You used: {request.method}"}), 405
     
-    # Check Content-Type header and handle accordingly
-    content_type = request.headers.get('Content-Type', '')
-    if 'application/json' not in content_type:
-        print(f"Warning: Content-Type is not application/json: {content_type}")
-        # Try to get data anyway, but return helpful error if it fails
-        try:
-            data = request.get_json(force=True)  # Force parsing even if Content-Type is wrong
-        except Exception as e:
-            return jsonify({
-                "error": "Invalid Content-Type. Please set Content-Type to 'application/json'",
-                "details": f"Received Content-Type: {content_type}"
-            }), 415
-    else:
-        data = request.get_json()
+    # Get data from request
+    try:
+        data = request.get_json(force=True)
+    except Exception as e:
+        return jsonify({
+            "error": "Invalid Content-Type. Please set Content-Type to 'application/json'",
+            "details": f"Received Content-Type: {request.headers.get('Content-Type', '')}"
+        }), 415
     
     if not data:
         return jsonify({"error": "No JSON data received"}), 400
@@ -367,26 +360,33 @@ def chat():
     # Check if session exists - if not, initialize it by calling start_chat
     if 'messages' not in session:
         print("Initializing new session with messages")
+        
+        # Configure Flask to use a more secure session cookie
+        from flask import current_app
+        current_app.config.update(
+            SESSION_COOKIE_SECURE=True,
+            SESSION_COOKIE_HTTPONLY=True,
+            SESSION_COOKIE_SAMESITE='None'
+        )
+        
+        # Call start_chat but don't return its response directly
+        # Instead, store its result and continue with this request
         start_response = start_chat()
         
-        # Handle the case where start_response is a tuple (response, status_code)
-        if isinstance(start_response, tuple):
-            start_data = start_response[0].get_json()
-        else:
-            start_data = start_response.get_json()
+        # Make sure session is saved
+        session.modified = True
         
-        session.modified = True
-
-        # Return the full response data, not just the message
-        return jsonify(start_data)
+        # If start_chat returned an error, pass it through
+        if isinstance(start_response, tuple) and start_response[1] >= 400:
+            return start_response
     
-    else:
-        # Session exists, add the user's message to the conversation history
-        print("Adding message to existing session")
-        session['messages'].append({"role": "user", "content": message})
-        session.modified = True
+    # Rest of your existing code...
+    # Add the user's message to the conversation history
+    print("Adding message to existing session")
+    session['messages'].append({"role": "user", "content": message})
+    session.modified = True
 
-        listings = pd.DataFrame(session['listings_data']['data'])
+    listings = pd.DataFrame(session['listings_data']['data'])
     
     # Initialize preferences if not already in session
     if 'preferences' not in session:
