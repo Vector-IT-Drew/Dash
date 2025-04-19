@@ -699,26 +699,5 @@ def chat():
 
         session['preferences']['show_listings'] = False
 
-    # Add this debugging code where preferences are being extracted/updated
-
-    # Debug the show_listings preference
-    print("\n==== DEBUGGING SHOW_LISTINGS PREFERENCE ====")
-    print(f"Original preferences from request: {preferences}")
-    print(f"Current session preferences: {session.get('preferences', {})}")
-
-    # Check if show_listings is being set in the extracted preferences
-    if 'show_listings' in preferences:
-        print(f"show_listings in request preferences: {preferences['show_listings']}")
-        print(f"Request message that might have triggered this: '{message}'")
-
-    # Check if it's in the session preferences
-    if 'preferences' in session and 'show_listings' in session['preferences']:
-        print(f"show_listings in session preferences: {session['preferences']['show_listings']}")
-
-    print("==== END SHOW_LISTINGS DEBUGGING ====\n")
-
-    # Fix the logic for setting show_listings
-    # This should be where you're updating preferences based on the extracted ones
-
-   
+    
     return jsonify(response_data)
