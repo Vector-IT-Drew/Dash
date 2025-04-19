@@ -271,14 +271,15 @@ def start_chat():
     - When the user asks to see listings, your job is to acknowledge their request positively and indicate that listings are being shown.
 
     # PRICE VALIDATION - EXTREMELY IMPORTANT:
-    - When a user mentions a budget or maximum price, IMMEDIATELY check if it's within our available range
-    - This price range will be updated in future prompts. Use the new values indicated in future prompts, for the logic below.
-    - Our minimum price is ${listings['actual_rent'].min()} and maximum is ${listings['actual_rent'].max()} .
-    - If they say any value below ${listings['actual_rent'].min()}, tell them:
-      "I'm sorry, but that budget is below our minimum available price of ${listings['actual_rent'].min()}. 
-       Our apartments range from ${listings['actual_rent'].min()} to ${listings['actual_rent'].max()}. 
-       Would you be able to adjust your budget?"
-    - NEVER say "Perfect" or "Great" to acknowledge an invalid budget
+    - If the user specifies a maximum_rent that is below the minimum available price, DO NOT set maximum_rent.
+    - If the user specifies a minimum_rent that is above the maximum available price, DO NOT set minimum_rent.
+    - For example, if the minimum price in the database is $8000 and the user says "my budget is $7500", DO NOT set maximum_rent=$7500.
+    - If the user says "my budget is $7500" but the minimum price is $8000, DO NOT set maximum_rent=$7500.
+    - ALWAYS check that the user's maximum_rent is >= the minimum available price in the database.
+    - ALWAYS check that the user's minimum_rent is <= the maximum available price in the database.
+    - IMPORTANT: If the user's maximum_rent is ABOVE the maximum available price, that's GOOD! In this case, DO set maximum_rent to the user's specified value.
+    - For example, if the maximum price in the database is $9000 and the user says "my budget is $10000", DO set maximum_rent=$10000.
+    - A high budget is never a problem - only a budget that's too low is problematic.
 
     CRITICAL INSTRUCTION ABOUT SHOW_LISTINGS:
     - ONLY set show_listings=true if the user EXPLICITLY asks to see listings with phrases like:
