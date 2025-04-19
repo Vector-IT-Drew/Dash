@@ -84,6 +84,8 @@ def filter_listings_by_preferences(listings_df, preferences):
         
         # Apply the filter based on the preference type
         temp_df = filtered_df.copy()
+
+        print('temp_df.columns', temp_df.columns)
         
         # Filter logic for different preference types
         if key == 'maximum_rent' and 'actual_rent' in temp_df.columns:
