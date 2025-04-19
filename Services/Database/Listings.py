@@ -70,7 +70,7 @@ def get_filtered_listings():
 def get_filtered_listings_data(
     address=None, unit=None, beds=None, baths=None, 
     neighborhood=None, min_price=None, max_price=None, 
-    limit=10000, available=False, sort='ORDER BY d.actual_rent DESC', include_all=False
+    limit=10000, available=False, sort='ORDER BY d.actual_rent DESC', include_all=False, direct_response=False
 ):
     """
     Get filtered listings data that can be called from other Python files.
@@ -86,6 +86,8 @@ def get_filtered_listings_data(
         limit (int, optional): Maximum number of results to return
         available (bool, optional): Only show currently available units
         sort (str, optional): Sort order for results
+        include_all (bool, optional): Include all fields in the response
+        direct_response (bool, optional): Return data directly instead of jsonify
         
     Returns:
         dict: Dictionary with status, count, and data keys
@@ -219,15 +221,27 @@ def get_filtered_listings_data(
         connection.close()
         
         logger.info(f"Retrieved {len(units)} filtered units from database")
-        return {
+        result = {
             "status": "success", 
             "count": len(processed_units),
             "data": processed_units
         }
+        
+        # Return the raw result if direct_response is True
+        if direct_response:
+            return result
+        else:
+            return result  # This will be jsonified by the route handler
     
     except Exception as e:
         logger.error(f"Error retrieving filtered units: {str(e)}")
-        return {"status": "error", "message": str(e)}
+        error_result = {"status": "error", "message": str(e)}
+        
+        # Return the raw error result if direct_response is True
+        if direct_response:
+            return error_result
+        else:
+            return error_result  # This will be jsonified by the route handler
 
 
 @listings_bp.route('/get_listing', methods=['GET'])
