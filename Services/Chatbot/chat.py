@@ -400,6 +400,8 @@ def chat():
         print("Initializing new preferences")
         session['preferences'] = {}
         session.modified = True
+
+    session['preferences']['show_listings'] = False
     
     
     # # Check if the previous preferences had show_listings set to True
@@ -691,13 +693,15 @@ def chat():
     }
 
     if len(filtered_listings) <= 5:
+        top_listings = filtered_listings.head(5).to_dict('records') if not filtered_listings.empty else []
+        response_data["listings"] = top_listings
+
         session['preferences']['show_listings'] = True
 
     if 'show_listings' in session['preferences'] and session['preferences']['show_listings'] == True:
         top_listings = filtered_listings.head(5).to_dict('records') if not filtered_listings.empty else []
         response_data["listings"] = top_listings
 
-        session['preferences']['show_listings'] = False
+        session['preferences']['show_listings'] = True
 
-    
     return jsonify(response_data)
