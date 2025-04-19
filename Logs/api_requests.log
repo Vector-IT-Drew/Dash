@@ -782,3 +782,150 @@
 2025-04-18 19:08:52,405 - api - INFO - RESPONSE 61d339af-823d-4171-9cfa-0dae3ff38904: 200 1662ms - {"status_code": 200, "duration_ms": 1662.5, "body": {"listing_count": 7, "listings": [{"actual_rent"
 2025-04-18 19:10:41,580 - api - INFO - REQUEST 86912673-541f-4796-bd88-a66564a98d93: GET / - {"method": "GET", "url": "http://192.168.86.16:5003/", "path": "/", "client_ip": "192.168.86.16"}
 2025-04-18 19:10:41,619 - api - INFO - RESPONSE 86912673-541f-4796-bd88-a66564a98d93: 200 40ms - {"status_code": 200, "duration_ms": 39.69, "body": {"endpoints": {"/connect": "GET - Test database c
+2025-04-19 12:50:17,966 - api - INFO - REQUEST c4a22871-db10-4409-805c-9a6f03f4dbf4: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 12:50:18,735 - api - INFO - RESPONSE c4a22871-db10-4409-805c-9a6f03f4dbf4: 200 770ms - {"status_code": 200, "duration_ms": 769.52, "body": "Hi there! I'm Vector Assistant, your personal N
+2025-04-19 12:51:16,982 - api - INFO - REQUEST a442d8ce-5af0-4838-9959-c1f9a78f0ffa: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 12:51:16,982 - api - INFO - RESPONSE a442d8ce-5af0-4838-9959-c1f9a78f0ffa: 415 1ms - {"status_code": 415, "duration_ms": 0.75, "body": "<!doctype html>\n<html lang=en>\n<title>415 Unsup
+2025-04-19 12:51:27,181 - api - INFO - REQUEST 4754a0c1-cc96-48e2-b6ee-92d0b4663368: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 12:51:27,181 - api - INFO - RESPONSE 4754a0c1-cc96-48e2-b6ee-92d0b4663368: 415 1ms - {"status_code": 415, "duration_ms": 0.58, "body": "<!doctype html>\n<html lang=en>\n<title>415 Unsup
+2025-04-19 12:52:29,231 - api - INFO - REQUEST db4cd298-0167-49b0-b8a5-eab7b14254a1: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 12:52:29,232 - api - INFO - RESPONSE db4cd298-0167-49b0-b8a5-eab7b14254a1: 415 1ms - {"status_code": 415, "duration_ms": 0.72, "body": "<!doctype html>\n<html lang=en>\n<title>415 Unsup
+2025-04-19 12:52:38,935 - api - INFO - REQUEST 60cd756b-d266-4e48-a007-85441d8b91a2: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 12:52:38,935 - api - INFO - RESPONSE 60cd756b-d266-4e48-a007-85441d8b91a2: 415 1ms - {"status_code": 415, "duration_ms": 0.58, "body": "<!doctype html>\n<html lang=en>\n<title>415 Unsup
+2025-04-19 12:52:57,658 - api - INFO - REQUEST 29f820fe-6184-407e-8313-360333e96dd7: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 12:52:57,659 - api - INFO - RESPONSE 29f820fe-6184-407e-8313-360333e96dd7: 415 1ms - {"status_code": 415, "duration_ms": 0.63, "body": "<!doctype html>\n<html lang=en>\n<title>415 Unsup
+2025-04-19 12:55:00,752 - api - INFO - REQUEST 8385d256-c121-4239-860b-5fa7589de67a: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 12:55:00,760 - api - INFO - RESPONSE 8385d256-c121-4239-860b-5fa7589de67a: 415 8ms - {"status_code": 415, "duration_ms": 7.56, "body": {"details": "Received Content-Type: ", "error": "I
+2025-04-19 12:55:43,217 - api - INFO - REQUEST 67a9a0bb-f89e-4fdd-b493-d6d7e46fa449: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 12:55:45,344 - api - INFO - RESPONSE 67a9a0bb-f89e-4fdd-b493-d6d7e46fa449: 200 2127ms - {"status_code": 200, "duration_ms": 2127.09, "body": {"listing_count": 11, "message": "Great choice!
+2025-04-19 12:56:17,628 - api - INFO - REQUEST fd69a034-db6b-4b10-9115-28215fcac65d: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 12:56:21,795 - api - INFO - RESPONSE fd69a034-db6b-4b10-9115-28215fcac65d: 200 4166ms - {"status_code": 200, "duration_ms": 4166.12, "body": {"listing_count": 4, "listings": [{"actual_rent
+2025-04-19 13:00:39,924 - api - INFO - REQUEST 75ac9f9e-ae31-4138-af63-c4f1e4e4f17b: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 13:00:42,277 - api - INFO - RESPONSE 75ac9f9e-ae31-4138-af63-c4f1e4e4f17b: 200 2354ms - {"status_code": 200, "duration_ms": 2353.88, "body": {"listing_count": 4, "listings": [{"actual_rent
+2025-04-19 13:00:54,628 - api - INFO - REQUEST d4c2958b-e5a3-4ec4-938f-9b7c592fb1f5: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 13:00:55,740 - api - INFO - RESPONSE d4c2958b-e5a3-4ec4-938f-9b7c592fb1f5: 200 1113ms - {"status_code": 200, "duration_ms": 1112.7, "body": "Hi there! I'm Vector Assistant, your personal N
+2025-04-19 13:01:02,455 - api - INFO - REQUEST 5b689b0b-9358-47f8-a06f-f0869858dc31: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 13:01:03,208 - api - INFO - RESPONSE 5b689b0b-9358-47f8-a06f-f0869858dc31: 200 753ms - {"status_code": 200, "duration_ms": 752.7, "body": "Hi there! I'm Vector Assistant, your personal NY
+2025-04-19 13:01:10,030 - api - INFO - REQUEST 27bef4df-c769-43b7-b441-b226cd1650ac: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 13:01:12,502 - api - INFO - RESPONSE 27bef4df-c769-43b7-b441-b226cd1650ac: 200 2472ms - {"status_code": 200, "duration_ms": 2472.2, "body": {"listing_count": 10, "message": "Great choice! 
+2025-04-19 13:01:32,084 - api - INFO - REQUEST beae93ed-8329-4e99-9ea1-1f763a838172: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 13:01:35,037 - api - INFO - RESPONSE beae93ed-8329-4e99-9ea1-1f763a838172: 200 2953ms - {"status_code": 200, "duration_ms": 2953.1, "body": {"listing_count": 10, "message": "Having a doorm
+2025-04-19 13:03:12,554 - api - INFO - REQUEST 7875fc3c-b4ec-494d-a85b-f3605d2590d0: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 13:03:13,293 - api - INFO - RESPONSE 7875fc3c-b4ec-494d-a85b-f3605d2590d0: 200 739ms - {"status_code": 200, "duration_ms": 739.47, "body": "Hi there! I'm Vector Assistant, your personal N
+2025-04-19 13:03:15,264 - api - INFO - REQUEST 655ee50d-22c5-48b0-8e04-6d1b00a3c40e: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 13:03:15,903 - api - INFO - RESPONSE 655ee50d-22c5-48b0-8e04-6d1b00a3c40e: 200 639ms - {"status_code": 200, "duration_ms": 639.19, "body": "Hi there! I'm Vector Assistant, your personal N
+2025-04-19 13:03:27,630 - api - INFO - REQUEST 21c37875-c9b4-4c8d-8033-201538c8c1c1: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 13:03:35,271 - api - INFO - RESPONSE 21c37875-c9b4-4c8d-8033-201538c8c1c1: 200 7641ms - {"status_code": 200, "duration_ms": 7640.63, "body": {"listing_count": 4, "listings": [{"actual_rent
+2025-04-19 13:05:41,494 - api - INFO - REQUEST 7546b747-40af-4742-9d24-f62ec79e15cd: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 13:05:42,136 - api - INFO - RESPONSE 7546b747-40af-4742-9d24-f62ec79e15cd: 200 642ms - {"status_code": 200, "duration_ms": 642.49, "body": "Hi there! I'm Vector Assistant, your personal N
+2025-04-19 13:05:43,329 - api - INFO - REQUEST 6356d57b-46ca-400a-a211-b9c98a3cc3b4: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 13:05:44,079 - api - INFO - RESPONSE 6356d57b-46ca-400a-a211-b9c98a3cc3b4: 200 750ms - {"status_code": 200, "duration_ms": 750.18, "body": "Hi there! I'm Vector Assistant, your personal N
+2025-04-19 13:05:51,289 - api - INFO - REQUEST ab82d53f-75be-451a-a0bf-f1afdac851d7: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 13:05:53,499 - api - INFO - RESPONSE ab82d53f-75be-451a-a0bf-f1afdac851d7: 200 2211ms - {"status_code": 200, "duration_ms": 2210.66, "body": {"listing_count": 10, "message": "Perfect! We h
+2025-04-19 13:17:39,807 - api - INFO - REQUEST 5eb38f1a-32c1-445f-ad1b-77ce004ca74d: OPTIONS /start-chat - {"method": "OPTIONS", "url": "http://192.168.0.19:5003/start-chat", "path": "/start-chat", "client_i
+2025-04-19 13:17:39,831 - api - INFO - RESPONSE 5eb38f1a-32c1-445f-ad1b-77ce004ca74d: 200 25ms - {"status_code": 200, "duration_ms": 24.98, "body": ""}
+2025-04-19 13:17:39,841 - api - INFO - REQUEST 0db53da5-2d2b-4f37-93a8-1c0331a44dcc: POST /start-chat - {"method": "POST", "url": "http://192.168.0.19:5003/start-chat", "path": "/start-chat", "client_ip":
+2025-04-19 13:17:40,632 - api - INFO - RESPONSE 0db53da5-2d2b-4f37-93a8-1c0331a44dcc: 200 792ms - {"status_code": 200, "duration_ms": 791.64, "body": {"message": "Hi there! I'm Vector Assistant, you
+2025-04-19 13:17:44,968 - api - INFO - REQUEST e8b46bc6-0fe9-41b5-90a8-75f6f41eaf52: OPTIONS /chat - {"method": "OPTIONS", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168
+2025-04-19 13:17:44,969 - api - INFO - RESPONSE e8b46bc6-0fe9-41b5-90a8-75f6f41eaf52: 200 0ms - {"status_code": 200, "duration_ms": 0.36, "body": ""}
+2025-04-19 13:17:44,973 - api - INFO - REQUEST 4445a7aa-7fbe-4728-8d6e-63a1906566e5: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 13:17:47,121 - api - INFO - RESPONSE 4445a7aa-7fbe-4728-8d6e-63a1906566e5: 200 2148ms - {"status_code": 200, "duration_ms": 2147.77, "body": {"listing_count": 11, "message": "Great choice!
+2025-04-19 13:17:53,421 - api - INFO - REQUEST 27a26c06-d3d7-4ba8-8f3b-18db2b8f627f: OPTIONS /chat - {"method": "OPTIONS", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168
+2025-04-19 13:17:53,421 - api - INFO - RESPONSE 27a26c06-d3d7-4ba8-8f3b-18db2b8f627f: 200 0ms - {"status_code": 200, "duration_ms": 0.43, "body": ""}
+2025-04-19 13:17:53,426 - api - INFO - REQUEST 539b3129-878a-47d3-acc3-21b62bc2f7ce: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 13:17:56,548 - api - INFO - RESPONSE 539b3129-878a-47d3-acc3-21b62bc2f7ce: 200 3122ms - {"status_code": 200, "duration_ms": 3122.11, "body": {"listing_count": 4, "listings": [{"actual_rent
+2025-04-19 13:27:14,917 - api - INFO - REQUEST ba02a4f7-7120-46cd-8528-621d757733fb: OPTIONS /start-chat - {"method": "OPTIONS", "url": "http://192.168.0.19:5003/start-chat", "path": "/start-chat", "client_i
+2025-04-19 13:27:14,924 - api - INFO - RESPONSE ba02a4f7-7120-46cd-8528-621d757733fb: 200 9ms - {"status_code": 200, "duration_ms": 8.5, "body": ""}
+2025-04-19 13:27:14,934 - api - INFO - REQUEST ec1d641e-6cc3-4d04-91ac-64edc384ea20: POST /start-chat - {"method": "POST", "url": "http://192.168.0.19:5003/start-chat", "path": "/start-chat", "client_ip":
+2025-04-19 13:27:15,887 - api - INFO - RESPONSE ec1d641e-6cc3-4d04-91ac-64edc384ea20: 200 953ms - {"status_code": 200, "duration_ms": 953.33, "body": {"message": "Hi there! I'm Vector Assistant, you
+2025-04-19 13:27:19,369 - api - INFO - REQUEST f9af5922-6c8a-493b-94a2-4c122054ded6: OPTIONS /chat - {"method": "OPTIONS", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168
+2025-04-19 13:27:19,370 - api - INFO - RESPONSE f9af5922-6c8a-493b-94a2-4c122054ded6: 200 0ms - {"status_code": 200, "duration_ms": 0.45, "body": ""}
+2025-04-19 13:27:19,375 - api - INFO - REQUEST 7fedd784-38d7-4650-bf98-dc070ccd43c9: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 13:27:20,781 - api - INFO - RESPONSE 7fedd784-38d7-4650-bf98-dc070ccd43c9: 200 1407ms - {"status_code": 200, "duration_ms": 1406.74, "body": {"listing_count": 11, "message": "Great choice!
+2025-04-19 13:27:24,956 - api - INFO - REQUEST dbfcc518-6d03-4aca-993d-b6aa770da8d3: OPTIONS /chat - {"method": "OPTIONS", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168
+2025-04-19 13:27:24,956 - api - INFO - RESPONSE dbfcc518-6d03-4aca-993d-b6aa770da8d3: 200 1ms - {"status_code": 200, "duration_ms": 0.83, "body": ""}
+2025-04-19 13:27:24,965 - api - INFO - REQUEST 8399520b-cd78-4ce7-860b-9ab1fa3b364d: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 13:27:27,775 - api - INFO - RESPONSE 8399520b-cd78-4ce7-860b-9ab1fa3b364d: 200 2810ms - {"status_code": 200, "duration_ms": 2810.07, "body": {"listing_count": 11, "message": "It seems that
+2025-04-19 13:27:37,004 - api - INFO - REQUEST 4b697dea-d414-4550-a772-63d70263fc8d: OPTIONS /chat - {"method": "OPTIONS", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168
+2025-04-19 13:27:37,004 - api - INFO - RESPONSE 4b697dea-d414-4550-a772-63d70263fc8d: 200 0ms - {"status_code": 200, "duration_ms": 0.35, "body": ""}
+2025-04-19 13:27:37,009 - api - INFO - REQUEST 7a95b531-72de-4f2d-80b8-c3a80863b4ba: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 13:29:12,993 - api - INFO - REQUEST a265fb6a-841a-4e15-b0b5-0f44b5fa877a: OPTIONS /start-chat - {"method": "OPTIONS", "url": "http://192.168.0.19:5003/start-chat", "path": "/start-chat", "client_i
+2025-04-19 13:29:12,997 - api - INFO - RESPONSE a265fb6a-841a-4e15-b0b5-0f44b5fa877a: 200 4ms - {"status_code": 200, "duration_ms": 4.11, "body": ""}
+2025-04-19 13:29:13,004 - api - INFO - REQUEST 7e79cce6-4f1f-4381-9a9b-e3bc86e49275: POST /start-chat - {"method": "POST", "url": "http://192.168.0.19:5003/start-chat", "path": "/start-chat", "client_ip":
+2025-04-19 13:29:13,866 - api - INFO - RESPONSE 7e79cce6-4f1f-4381-9a9b-e3bc86e49275: 200 862ms - {"status_code": 200, "duration_ms": 862.13, "body": {"message": "Hi there! I'm Vector Assistant, you
+2025-04-19 13:29:17,409 - api - INFO - REQUEST 3819ef37-26ce-4a7d-aeaa-1cb0585768bc: OPTIONS /chat - {"method": "OPTIONS", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168
+2025-04-19 13:29:17,410 - api - INFO - RESPONSE 3819ef37-26ce-4a7d-aeaa-1cb0585768bc: 200 0ms - {"status_code": 200, "duration_ms": 0.5, "body": ""}
+2025-04-19 13:29:17,415 - api - INFO - REQUEST a14fa723-c936-46b4-97c4-325b79e0af7a: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 13:29:19,382 - api - INFO - RESPONSE a14fa723-c936-46b4-97c4-325b79e0af7a: 200 1967ms - {"status_code": 200, "duration_ms": 1966.84, "body": {"listing_count": 17, "message": "Great choice!
+2025-04-19 13:29:22,617 - api - INFO - REQUEST 66b78194-0a14-4370-9feb-8d3086ecd706: OPTIONS /chat - {"method": "OPTIONS", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168
+2025-04-19 13:29:22,617 - api - INFO - RESPONSE 66b78194-0a14-4370-9feb-8d3086ecd706: 200 0ms - {"status_code": 200, "duration_ms": 0.46, "body": ""}
+2025-04-19 13:29:22,622 - api - INFO - REQUEST c21b5d4b-78d1-43a7-ae23-a39d95fc2356: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 13:29:25,480 - api - INFO - RESPONSE c21b5d4b-78d1-43a7-ae23-a39d95fc2356: 200 2857ms - {"status_code": 200, "duration_ms": 2857.42, "body": {"listing_count": 9, "listings": [{"actual_rent
+2025-04-19 13:39:56,431 - api - INFO - REQUEST 70c59640-fb84-4666-996e-4bd7b2ef4d10: OPTIONS /start-chat - {"method": "OPTIONS", "url": "http://192.168.0.19:5003/start-chat", "path": "/start-chat", "client_i
+2025-04-19 13:39:56,472 - api - INFO - RESPONSE 70c59640-fb84-4666-996e-4bd7b2ef4d10: 200 41ms - {"status_code": 200, "duration_ms": 40.64, "body": ""}
+2025-04-19 13:39:56,479 - api - INFO - REQUEST 87c57552-dccd-43ea-8c0d-5cc2256f9155: POST /start-chat - {"method": "POST", "url": "http://192.168.0.19:5003/start-chat", "path": "/start-chat", "client_ip":
+2025-04-19 13:39:57,216 - api - INFO - RESPONSE 87c57552-dccd-43ea-8c0d-5cc2256f9155: 200 738ms - {"status_code": 200, "duration_ms": 737.63, "body": {"message": "Hi there! I'm Vector Assistant, you
+2025-04-19 13:40:00,226 - api - INFO - REQUEST d614e60c-2bd4-492b-bd27-8fdd82aeeaee: OPTIONS /chat - {"method": "OPTIONS", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168
+2025-04-19 13:40:00,227 - api - INFO - RESPONSE d614e60c-2bd4-492b-bd27-8fdd82aeeaee: 200 0ms - {"status_code": 200, "duration_ms": 0.41, "body": ""}
+2025-04-19 13:40:00,232 - api - INFO - REQUEST 54b51ad9-32e2-4357-8998-fb25884e6535: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 13:40:02,561 - api - INFO - RESPONSE 54b51ad9-32e2-4357-8998-fb25884e6535: 200 2329ms - {"status_code": 200, "duration_ms": 2329.05, "body": {"listing_count": 17, "message": "Great! You're
+2025-04-19 13:40:05,458 - api - INFO - REQUEST bcc53051-d981-4328-aefc-be073877dc8a: OPTIONS /chat - {"method": "OPTIONS", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168
+2025-04-19 13:40:05,459 - api - INFO - RESPONSE bcc53051-d981-4328-aefc-be073877dc8a: 200 1ms - {"status_code": 200, "duration_ms": 0.62, "body": ""}
+2025-04-19 13:40:05,465 - api - INFO - REQUEST bdd5e016-8288-4dac-8a9f-9aae08cd2dd6: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 13:41:51,712 - api - INFO - REQUEST cef04c30-20fe-4661-918e-16ff368334ad: OPTIONS /start-chat - {"method": "OPTIONS", "url": "http://192.168.0.19:5003/start-chat", "path": "/start-chat", "client_i
+2025-04-19 13:41:51,716 - api - INFO - RESPONSE cef04c30-20fe-4661-918e-16ff368334ad: 200 4ms - {"status_code": 200, "duration_ms": 4.31, "body": ""}
+2025-04-19 13:41:51,729 - api - INFO - REQUEST bfd62537-4e81-43f8-9d7b-6fa345fb4a6e: POST /start-chat - {"method": "POST", "url": "http://192.168.0.19:5003/start-chat", "path": "/start-chat", "client_ip":
+2025-04-19 13:41:52,771 - api - INFO - RESPONSE bfd62537-4e81-43f8-9d7b-6fa345fb4a6e: 200 1043ms - {"status_code": 200, "duration_ms": 1043.03, "body": {"message": "Hi there! I'm Vector Assistant, yo
+2025-04-19 13:41:55,726 - api - INFO - REQUEST 4b58b418-336b-4708-86ba-eeae17aceafc: OPTIONS /chat - {"method": "OPTIONS", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168
+2025-04-19 13:41:55,727 - api - INFO - RESPONSE 4b58b418-336b-4708-86ba-eeae17aceafc: 200 0ms - {"status_code": 200, "duration_ms": 0.43, "body": ""}
+2025-04-19 13:41:55,732 - api - INFO - REQUEST 9a615a95-41f3-4ca3-b266-c0babf80dc22: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 13:41:57,560 - api - INFO - RESPONSE 9a615a95-41f3-4ca3-b266-c0babf80dc22: 200 1827ms - {"status_code": 200, "duration_ms": 1827.35, "body": {"listing_count": 17, "message": "Great, lookin
+2025-04-19 13:42:15,744 - api - INFO - REQUEST 15ab5ae8-a6e7-41d2-b2d2-35f64cfcac0c: OPTIONS /chat - {"method": "OPTIONS", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168
+2025-04-19 13:42:15,744 - api - INFO - RESPONSE 15ab5ae8-a6e7-41d2-b2d2-35f64cfcac0c: 200 1ms - {"status_code": 200, "duration_ms": 0.5, "body": ""}
+2025-04-19 13:42:15,749 - api - INFO - REQUEST d47e73b1-20a2-4199-90cd-9e76a4527bd3: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 13:42:17,885 - api - INFO - RESPONSE d47e73b1-20a2-4199-90cd-9e76a4527bd3: 200 2136ms - {"status_code": 200, "duration_ms": 2136.28, "body": {"listing_count": 17, "message": "Got it, 2 bed
+2025-04-19 13:42:20,413 - api - INFO - REQUEST 341b6888-5f35-4117-8a1b-76ad211b88e7: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 13:42:22,339 - api - INFO - RESPONSE 341b6888-5f35-4117-8a1b-76ad211b88e7: 200 1926ms - {"status_code": 200, "duration_ms": 1925.74, "body": {"listing_count": 7, "message": "I see, you're 
+2025-04-19 13:42:35,004 - api - INFO - REQUEST 8af099c2-db08-478d-a625-0466881f145a: OPTIONS /chat - {"method": "OPTIONS", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168
+2025-04-19 13:42:35,004 - api - INFO - RESPONSE 8af099c2-db08-478d-a625-0466881f145a: 200 0ms - {"status_code": 200, "duration_ms": 0.35, "body": ""}
+2025-04-19 13:42:35,009 - api - INFO - REQUEST d2c86aa9-e7ce-465c-b96f-694109fa2ab2: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 13:42:38,933 - api - INFO - RESPONSE d2c86aa9-e7ce-465c-b96f-694109fa2ab2: 200 3923ms - {"status_code": 200, "duration_ms": 3923.26, "body": {"listing_count": 2, "listings": [{"actual_rent
+2025-04-19 13:47:06,693 - api - INFO - REQUEST 2673cb0a-4946-4954-bfab-56bbaafe9f7b: OPTIONS /start-chat - {"method": "OPTIONS", "url": "http://192.168.0.19:5003/start-chat", "path": "/start-chat", "client_i
+2025-04-19 13:47:06,701 - api - INFO - RESPONSE 2673cb0a-4946-4954-bfab-56bbaafe9f7b: 200 9ms - {"status_code": 200, "duration_ms": 8.8, "body": ""}
+2025-04-19 13:47:06,711 - api - INFO - REQUEST 41360dfa-b78d-4124-9e0c-75fbf5c33094: POST /start-chat - {"method": "POST", "url": "http://192.168.0.19:5003/start-chat", "path": "/start-chat", "client_ip":
+2025-04-19 13:47:07,578 - api - INFO - RESPONSE 41360dfa-b78d-4124-9e0c-75fbf5c33094: 200 867ms - {"status_code": 200, "duration_ms": 867.49, "body": {"message": "Hi there! I'm Vector Assistant, you
+2025-04-19 13:47:10,938 - api - INFO - REQUEST 079e439d-fb84-4692-8ff7-4150c63107ec: OPTIONS /chat - {"method": "OPTIONS", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168
+2025-04-19 13:47:10,938 - api - INFO - RESPONSE 079e439d-fb84-4692-8ff7-4150c63107ec: 200 1ms - {"status_code": 200, "duration_ms": 0.66, "body": ""}
+2025-04-19 13:47:10,944 - api - INFO - REQUEST 5af84be4-5b34-4fdb-8210-51af808a770a: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 13:50:47,311 - api - INFO - REQUEST 8effe300-658f-4466-8cf6-60d334353c12: OPTIONS /start-chat - {"method": "OPTIONS", "url": "http://192.168.0.19:5003/start-chat", "path": "/start-chat", "client_i
+2025-04-19 13:50:47,339 - api - INFO - RESPONSE 8effe300-658f-4466-8cf6-60d334353c12: 200 28ms - {"status_code": 200, "duration_ms": 28.02, "body": ""}
+2025-04-19 13:50:47,344 - api - INFO - REQUEST 4d4c49bf-8363-417e-90fb-6928f5312d94: POST /start-chat - {"method": "POST", "url": "http://192.168.0.19:5003/start-chat", "path": "/start-chat", "client_ip":
+2025-04-19 13:50:48,147 - api - INFO - RESPONSE 4d4c49bf-8363-417e-90fb-6928f5312d94: 200 803ms - {"status_code": 200, "duration_ms": 802.98, "body": {"message": "Hi there! I'm Vector Assistant, you
+2025-04-19 13:50:50,451 - api - INFO - REQUEST 27376c58-1cbe-4fed-89e7-3405b2551024: OPTIONS /chat - {"method": "OPTIONS", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168
+2025-04-19 13:50:50,452 - api - INFO - RESPONSE 27376c58-1cbe-4fed-89e7-3405b2551024: 200 1ms - {"status_code": 200, "duration_ms": 0.71, "body": ""}
+2025-04-19 13:50:50,465 - api - INFO - REQUEST f1a20095-0d52-48e7-b7d1-14a62efd83e4: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 13:50:51,975 - api - INFO - RESPONSE f1a20095-0d52-48e7-b7d1-14a62efd83e4: 200 1510ms - {"status_code": 200, "duration_ms": 1510.12, "body": {"listing_count": 17, "listings": [{"actual_ren
+2025-04-19 13:54:06,624 - api - INFO - REQUEST 1d86c113-2b8a-4745-bb98-b3d838eb4fdf: OPTIONS /start-chat - {"method": "OPTIONS", "url": "http://192.168.0.19:5003/start-chat", "path": "/start-chat", "client_i
+2025-04-19 13:54:06,630 - api - INFO - RESPONSE 1d86c113-2b8a-4745-bb98-b3d838eb4fdf: 200 7ms - {"status_code": 200, "duration_ms": 6.72, "body": ""}
+2025-04-19 13:54:06,636 - api - INFO - REQUEST c538b144-ce45-41cd-88cc-329e0efdcade: POST /start-chat - {"method": "POST", "url": "http://192.168.0.19:5003/start-chat", "path": "/start-chat", "client_ip":
+2025-04-19 13:54:07,411 - api - INFO - RESPONSE c538b144-ce45-41cd-88cc-329e0efdcade: 200 775ms - {"status_code": 200, "duration_ms": 775.01, "body": {"message": "Hi there! I'm Vector Assistant, you
+2025-04-19 13:54:09,991 - api - INFO - REQUEST 839af796-c320-42f5-8860-8e1ea53bd968: OPTIONS /chat - {"method": "OPTIONS", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168
+2025-04-19 13:54:09,992 - api - INFO - RESPONSE 839af796-c320-42f5-8860-8e1ea53bd968: 200 0ms - {"status_code": 200, "duration_ms": 0.44, "body": ""}
+2025-04-19 13:54:09,997 - api - INFO - REQUEST 10899a43-d93d-4c42-bb79-3d1f50a47634: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 13:54:11,360 - api - INFO - RESPONSE 10899a43-d93d-4c42-bb79-3d1f50a47634: 200 1363ms - {"status_code": 200, "duration_ms": 1363.42, "body": {"listing_count": 17, "message": "Great choice!
+2025-04-19 13:54:13,475 - api - INFO - REQUEST 83f0e0d8-fc1a-4174-8a2a-4614385449e5: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 13:54:15,248 - api - INFO - RESPONSE 83f0e0d8-fc1a-4174-8a2a-4614385449e5: 200 1774ms - {"status_code": 200, "duration_ms": 1773.64, "body": {"listing_count": 17, "message": "Got it! What 
+2025-04-19 13:54:17,360 - api - INFO - REQUEST c8da21bb-7af1-4ec7-8616-681b0bba366d: OPTIONS /chat - {"method": "OPTIONS", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168
+2025-04-19 13:54:17,360 - api - INFO - RESPONSE c8da21bb-7af1-4ec7-8616-681b0bba366d: 200 0ms - {"status_code": 200, "duration_ms": 0.43, "body": ""}
+2025-04-19 13:54:17,365 - api - INFO - REQUEST 02cd4934-0be7-4203-ac73-d8ab67da0c45: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 13:54:19,042 - api - INFO - RESPONSE 02cd4934-0be7-4203-ac73-d8ab67da0c45: 200 1678ms - {"status_code": 200, "duration_ms": 1677.51, "body": {"listing_count": 7, "message": "Got it! Do you
+2025-04-19 13:54:21,720 - api - INFO - REQUEST c7eb9a71-14e4-4d29-bcfb-0a3d42ec09a2: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 13:54:23,165 - api - INFO - RESPONSE c7eb9a71-14e4-4d29-bcfb-0a3d42ec09a2: 200 1445ms - {"status_code": 200, "duration_ms": 1445.31, "body": {"listing_count": 7, "message": "Understood! Le
+2025-04-19 13:54:29,381 - api - INFO - REQUEST 8b2f1027-1bca-44a5-96a3-cae3a261d70f: OPTIONS /chat - {"method": "OPTIONS", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168
+2025-04-19 13:54:29,382 - api - INFO - RESPONSE 8b2f1027-1bca-44a5-96a3-cae3a261d70f: 200 1ms - {"status_code": 200, "duration_ms": 1.08, "body": ""}
+2025-04-19 13:54:29,387 - api - INFO - REQUEST 5e49334d-ef0a-4c1c-9e25-7822a19d10f0: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 13:54:31,226 - api - INFO - RESPONSE 5e49334d-ef0a-4c1c-9e25-7822a19d10f0: 200 1839ms - {"status_code": 200, "duration_ms": 1839.47, "body": {"listing_count": 7, "message": "Great choice! 
+2025-04-19 13:54:44,930 - api - INFO - REQUEST 1cb19bed-14b0-43a1-98d4-6efc1261020b: OPTIONS /chat - {"method": "OPTIONS", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168
+2025-04-19 13:54:44,931 - api - INFO - RESPONSE 1cb19bed-14b0-43a1-98d4-6efc1261020b: 200 1ms - {"status_code": 200, "duration_ms": 0.95, "body": ""}
+2025-04-19 13:54:44,937 - api - INFO - REQUEST 091a3cf9-7e8e-423e-a6bb-af0a9cbf65c8: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-19 13:54:47,002 - api - INFO - RESPONSE 091a3cf9-7e8e-423e-a6bb-af0a9cbf65c8: 200 2065ms - {"status_code": 200, "duration_ms": 2065.29, "body": {"listing_count": 7, "listings": [{"actual_rent
