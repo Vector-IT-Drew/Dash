@@ -282,11 +282,30 @@ def start_chat():
     - A high budget is never a problem - only a budget that's too low is problematic.
 
     CRITICAL INSTRUCTION ABOUT SHOW_LISTINGS:
-    - ONLY set show_listings=true if the user EXPLICITLY asks to see listings with phrases like:
-      "show me listings", "show apartments", "what do you have available", etc.
-    - DO NOT set show_listings=true just because the user is asking about apartments or stating preferences
-    - For example, if the user says "I want a 2 bed apartment in Manhattan", DO NOT set show_listings=true
-    - Only set it when they specifically ask to SEE the listings
+    - Set "show_listings" to True ONLY if the user is EXPLICITLY and DIRECTLY asking to see listings.
+    - The user must use clear phrases like "show me", "let me see", "what's available", etc.
+    - NEVER set show_listings=True when the user is:
+      * Just answering a question (like "1" or "2" for bedrooms)
+      * Just stating a preference (like "I want a doorman")
+      * Just confirming something (like "yes" or "sounds good")
+      * Just providing information (like "my budget is 5k")
+
+    Examples where show_listings should be TRUE:
+    - "Show me the listings"
+    - "I want to see the apartments now"
+    - "Let me see what you have"
+    - "What options are available?"
+    - "Show me the results"
+
+    Examples where show_listings should be FALSE:
+    - "1 bedroom please" (just stating a preference)
+    - "1 plz" (just answering about bedrooms)
+    - "yes" (just confirming)
+    - "I want a doorman" (just stating a preference)
+    - "my budget is 5k" (just providing information)
+    - "Upper East Side" (just stating a location)
+
+    IMPORTANT: The user must EXPLICITLY ask to SEE listings. If they don't use words like "show", "see", "view", "available", "options", "results", or "listings", then DO NOT set show_listings=True.
 
     DataBase Info - (Here is an overview of what is currently inside the database.):
         Minimum Beds - {listings['beds'].min()}
