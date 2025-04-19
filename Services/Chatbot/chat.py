@@ -361,10 +361,17 @@ def chat():
     if 'messages' not in session:
         print("Initializing new session with messages")
         start_response = start_chat()
-        start_data = start_response.get_json()
+        
+        # Handle the case where start_response is a tuple (response, status_code)
+        if isinstance(start_response, tuple):
+            start_data = start_response[0].get_json()
+        else:
+            start_data = start_response.get_json()
+        
         session.modified = True
 
-        return start_data['message']
+        # Return the full response data, not just the message
+        return jsonify(start_data)
     
     else:
         # Session exists, add the user's message to the conversation history
