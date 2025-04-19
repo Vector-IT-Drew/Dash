@@ -692,4 +692,54 @@ def chat():
 
         session['preferences']['show_listings'] = False
 
+    # Add this debugging code where preferences are being extracted/updated
+
+    # Debug the show_listings preference
+    print("\n==== DEBUGGING SHOW_LISTINGS PREFERENCE ====")
+    print(f"Original preferences from request: {preferences}")
+    print(f"Current session preferences: {session.get('preferences', {})}")
+
+    # Check if show_listings is being set in the extracted preferences
+    if 'show_listings' in preferences:
+        print(f"show_listings in request preferences: {preferences['show_listings']}")
+        print(f"Request message that might have triggered this: '{message}'")
+
+    # Check if it's in the session preferences
+    if 'preferences' in session and 'show_listings' in session['preferences']:
+        print(f"show_listings in session preferences: {session['preferences']['show_listings']}")
+
+    print("==== END SHOW_LISTINGS DEBUGGING ====\n")
+
+    # Fix the logic for setting show_listings
+    # This should be where you're updating preferences based on the extracted ones
+
+    # Only set show_listings to True if the user explicitly asks to see listings
+    show_listings_phrases = [
+        "show me", "show listings", "see listings", "view listings", 
+        "show apartments", "see apartments", "view apartments",
+        "show properties", "see properties", "view properties",
+        "show me what you have", "what do you have", "what's available"
+    ]
+
+    # Check if the user explicitly asked to see listings
+    user_asked_for_listings = any(phrase in message.lower() for phrase in show_listings_phrases)
+
+    # Debug the detection
+    print(f"User message: '{message}'")
+    print(f"Detected request for listings: {user_asked_for_listings}")
+
+    # Only set show_listings if the user explicitly asked
+    if user_asked_for_listings:
+        print("User explicitly asked to see listings - setting show_listings=True")
+        if 'preferences' in session:
+            session['preferences']['show_listings'] = True
+            session.modified = True
+    elif 'preferences' in session and 'show_listings' in session['preferences']:
+        # If the user didn't ask for listings but it's set in preferences, check if we should remove it
+        # Only keep it if it was explicitly set in this request
+        if 'show_listings' not in preferences:
+            print("Removing show_listings from preferences as user didn't request it")
+            del session['preferences']['show_listings']
+            session.modified = True
+
     return jsonify(response_data)
