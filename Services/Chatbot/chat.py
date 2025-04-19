@@ -92,7 +92,7 @@ def filter_listings_by_preferences(listings_df, preferences):
         elif key == 'minimum_rent' and 'actual_rent' in temp_df.columns:
             temp_df = temp_df[temp_df['actual_rent'] >= value]
         elif key == 'beds' and 'beds' in temp_df.columns:
-            temp_df = temp_df[temp_df['beds'] >= value]
+            temp_df = temp_df[temp_df['beds'] == value]
         elif key == 'baths' and 'baths' in temp_df.columns:
             temp_df = temp_df[temp_df['baths'] >= value]
         elif key == 'borough' and 'borough' in temp_df.columns:
