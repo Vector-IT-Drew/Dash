@@ -706,3 +706,29 @@ def chat():
         session['preferences']['show_listings'] = True
 
     return jsonify(response_data)
+
+@chat_bp.route("/reset_chat", methods=["POST"])
+def reset_chat():
+    """
+    Reset the chat session and start a new conversation.
+    This endpoint clears all session data and calls start_chat to initialize a new session.
+    """
+    print("=" * 50)
+    print(f"RESET CHAT ENDPOINT ACCESSED")
+    print(f"Request method: {request.method}")
+    print(f"Request path: {request.path}")
+    print(f"Request URL: {request.url}")
+    print(f"Request headers: {dict(request.headers)}")
+    print("=" * 50)
+    
+    # Clear the entire session
+    session.clear()
+    
+    # Call start_chat to initialize a new session
+    response = start_chat()
+    
+    # Log the reset action
+    print("Chat session has been reset and reinitialized")
+    
+    # Return the same response that start_chat would return
+    return response
