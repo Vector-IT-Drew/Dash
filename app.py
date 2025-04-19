@@ -34,9 +34,9 @@ app.config["SESSION_USE_SIGNER"] = True  # Add a signature for security
 app.config["SESSION_KEY_PREFIX"] = "vector_"  # Prefix for session keys
 
 # Add this to ensure cookies are properly set
-app.config['SESSION_COOKIE_SECURE'] = False  # Set to True in production with HTTPS
+app.config['SESSION_COOKIE_SECURE'] = True  # Set to True in production with HTTPS
 app.config['SESSION_COOKIE_HTTPONLY'] = True
-app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'  # Use 'None' for cross-site requests with HTTPS
+app.config['SESSION_COOKIE_SAMESITE'] = 'None'  # Use 'None' for cross-site requests with HTTPS
 
 Session(app)
 
