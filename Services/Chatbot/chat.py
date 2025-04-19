@@ -298,8 +298,8 @@ def start_chat():
     - "Show me the results"
 
     Examples where show_listings should be FALSE:
-    - "1 bedroom please" (just stating a preference)
-    - "1 plz" (just answering about bedrooms)
+    - "1 bedroom" (just stating a preference)
+    - "I want a Gym" (just stating a preference)
     - "yes" (just confirming)
     - "I want a doorman" (just stating a preference)
     - "my budget is 5k" (just providing information)
