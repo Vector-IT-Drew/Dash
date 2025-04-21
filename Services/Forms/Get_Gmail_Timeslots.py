@@ -91,21 +91,21 @@ def get_gmail_service(email_address):
 
 
 def run(email_address):
-	
-	service = get_gmail_service(email_address)
 
-	try:
-		calendar_id = calendar_id = [item for item in service.calendarList().list().execute()['items'] if item['summary'] == 'Vector Tours'][0]['id']
-	except Exception as e:
-		print('Error: No Calendar Found!', e)
+    service = get_gmail_service(email_address)
 
-	start_date = datetime.date.today()  # Start from today
+    try:
+        calendar_id = calendar_id = [item for item in service.calendarList().list().execute()['items'] if item['summary'] == 'Vector Tours'][0]['id']
+    except Exception as e:
+        print('Error: No Calendar Found!', e)
 
-	available_slots = get_available_slots(service, calendar_id, start_date)
+    start_date = datetime.date.today()  # Start from today
 
-	availableSlots = {}
-	for date, slots in available_slots.items():
-	    availableSlots[date] = slots
-    
+    available_slots = get_available_slots(service, calendar_id, start_date)
+
+    availableSlots = {}
+    for date, slots in available_slots.items():
+        availableSlots[date] = slots
+
     return availableSlots
-		
+        
