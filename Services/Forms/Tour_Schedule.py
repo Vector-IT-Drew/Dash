@@ -162,6 +162,7 @@ def get_gmail_service(email_address):
 	
 	service_account_info = json.loads(os.environ.get('GOOGLE_CREDS', '{}'))
 	SCOPES = ["https://www.googleapis.com/auth/calendar"]
+	print('service_account_info', service_account_info)
 	
 	print('get_gmail_service',email_address)
 	
