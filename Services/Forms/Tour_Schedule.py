@@ -135,7 +135,7 @@ def submit_tour_request():
 	column_values_json = json.dumps(column_values)
 
 	# Get the first group ID directly from the board data
-	board_data = client.boards.fetch_boards_by_id(board_id=leads_board_id)
+	board_data = client.boards.fetch_boards_by_id(leads_board_id)
 	groups = board_data['data']['boards'][0]['groups']
 	group_id = groups[0]['id']  # Use the first group by default
 
