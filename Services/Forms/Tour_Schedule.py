@@ -29,7 +29,7 @@ def get_available_timeslots(date):
 	# time.sleep(1)
 	
 	# Get the email address from the request or use a default
-	email_address = request.args.get('email', 'it@vectorny.com')
+	email_address = request.args.get('email_address', 'it@vectorny.com')
 	
 	# Get all available slots from Gmail
 	all_available_slots = get_gmail_timeslots(email_address)
@@ -46,7 +46,7 @@ def get_available_timeslots(date):
 # Main endpoint to serve the tour scheduling form
 @tour_bp.route("/tour-schedule", methods=["GET"])
 def tour_schedule():
-	email_address = request.args.get('email', 'it@vectorny.com')
+	email_address = request.args.get('email_address', 'it@vectorny.com')
 	version = request.args.get('version', 'default')
 	
 	# Return the HTML immediately without fetching timeslots
@@ -62,7 +62,7 @@ def get_timeslots():
 		return jsonify({"error": "Date parameter is required"}), 400
 	
 	# Pass along the email parameter if it exists
-	email = request.args.get('email', 'info@vectorproperties.com')
+	email = request.args.get('email_address', 'info@vectorproperties.com')
 	
 	# Get timeslots for the requested date
 	timeslots = get_available_timeslots(date)
@@ -71,7 +71,7 @@ def get_timeslots():
 # AJAX endpoint to get all available timeslots
 @tour_bp.route("/get-all-timeslots", methods=["GET"])
 def get_all_timeslots():
-	email_address = request.args.get('email', 'it@vectorny.com')
+	email_address = request.args.get('email_address', 'it@vectorny.com')
 	all_available_slots = get_gmail_timeslots(email_address)
 	return jsonify(all_available_slots)
 
@@ -80,7 +80,7 @@ def get_all_timeslots():
 def submit_tour_request():
 	# Get form data
 	data = request.form.to_dict()
-	email_address = data.get('email', 'it@vectorny.com')
+	email_address = data.get('email_address', 'it@vectorny.com')
 	version = str(data.get('version', '1'))
 
 	if version == '2':
@@ -105,7 +105,7 @@ def submit_tour_request():
 		return jsonify({"error": "Time slot is required"}), 400
 
 	column_values = {
-		mapping['Email']: {'email': data['email'], 'text': data['email']},
+		mapping['Email']: {'email': data['email_address'], 'text': data['email_address']},
 		mapping['Desired Move-In']: {'date': (pd.to_datetime(data['move-in-date'])).strftime('%Y-%m-%d')},
 		mapping['Budget']: data['budget'],
 		mapping['Phone']: data['phone-number'].replace('-', '').replace('+', ''),
@@ -143,7 +143,7 @@ def submit_tour_request():
 
 	calendar_id = [item for item in service.calendarList().list().execute()['items'] if item['summary'] == 'Vector Tours'][0]['id']
 
-	resp = create_event(service, calendar_id, app_date.strftime('%m/%d/%Y %I:%M%p'), data['name'], data['email'], data['tour-type'], data)
+	resp = create_event(service, calendar_id, app_date.strftime('%m/%d/%Y %I:%M%p'), data['name'], data['email_address'], data['tour-type'], data)
 	print(resp)
 
 	return jsonify({"success": True})
