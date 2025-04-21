@@ -150,7 +150,7 @@ def submit_tour_request():
 
 def get_gmail_service(email_address):
 	# Use environment variables instead of service account file
-	service_account_info = json.loads(os.environ.get('GOOGLE_APPLICATION_CREDENTIALS_JSON', '{}'))
+	service_account_info = json.loads(os.environ.get('GOOGLE_CREDS', '{}'))
 	
 	SCOPES = ["https://www.googleapis.com/auth/calendar"]
 	
