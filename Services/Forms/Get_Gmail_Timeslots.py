@@ -78,10 +78,21 @@ def get_gmail_service(email_address):
     print('get_gmail_service', email_address)
     
     # Use environment variables instead of service account file
-    print('Preloaded:', os.environ.get('GOOGLE_CREDS', '{}'))
     service_account_info = json.loads(os.environ.get('GOOGLE_CREDS', '{}'))
-    print('service_account_info', service_account_info)
-
+    
+    # Print out each part of the credentials for debugging
+    print('Service Account Info:')
+    print('Type:', service_account_info.get('type'))
+    print('Project ID:', service_account_info.get('project_id'))
+    print('Private Key ID:', service_account_info.get('private_key_id'))
+    print('Client Email:', service_account_info.get('client_email'))
+    print('Client ID:', service_account_info.get('client_id'))
+    print('Auth URI:', service_account_info.get('auth_uri'))
+    print('Token URI:', service_account_info.get('token_uri'))
+    print('Private Key:', service_account_info.get('private_key')[:30] + '...')  # Print only the first part for security
+    print('Auth Provider Cert URL:', service_account_info.get('auth_provider_x509_cert_url'))
+    print('Client Cert URL:', service_account_info.get('client_x509_cert_url'))
+    
     SCOPES = ["https://www.googleapis.com/auth/calendar"]
     
     try:
