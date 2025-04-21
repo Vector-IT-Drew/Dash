@@ -281,9 +281,9 @@ def start_chat():
     - For example, if the maximum price in the database is $9000 and the user says "my budget is $10000", DO set maximum_rent=$10000.
     - A high budget is never a problem - only a budget that's too low is problematic.
 
-    HIGH PRIORITY- CRITICAL INSTRUCTION ABOUT SHOW_LISTINGS:
+    CRITICAL INSTRUCTION ABOUT SHOW_LISTINGS:
     - Set "show_listings" to True ONLY if the user is EXPLICITLY and DIRECTLY asking to see listings.
-    - The user must use clear phrases like "show", "see", "view", "available", "options", "results", or "listings" to trigger this.
+    - The user must use clear phrases like "show me", "let me see", "what's available", etc.
     - NEVER set show_listings=True when the user is:
       * Just answering a question (like "1" or "2" for bedrooms)
       * Just stating a preference (like "I want a doorman")
@@ -298,8 +298,8 @@ def start_chat():
     - "Show me the results"
 
     Examples where show_listings should be FALSE:
-    - "1 bedroom" (just stating a preference)
-    - "I want a Gym" (just stating a preference)
+    - "1 bedroom please" (just stating a preference)
+    - "1 plz" (just answering about bedrooms)
     - "yes" (just confirming)
     - "I want a doorman" (just stating a preference)
     - "my budget is 5k" (just providing information)
@@ -388,53 +388,343 @@ def chat():
     if 'messages' not in session:
         print("Initializing new session with messages")
         
-        try:
-            # Get listings data
-            listings_data = get_filtered_listings_data(include_all=True, direct_response=True)
-            
-            if isinstance(listings_data, dict) and 'data' in listings_data and 'count' in listings_data:
-                listings = pd.DataFrame(listings_data['data'])
-                
-                session['listings_data'] = listings_data
-                session['listings_count'] = listings_data['count']
-            else:
-                # Set empty defaults if data format is invalid
-                session['listings_data'] = {'data': [], 'count': 0}
-                session['listings_count'] = 0
-                
-            # Initialize system prompt with listings data
-            system_prompt = f"""
-            You are Vector Assistant, a helpful and friendly real estate agent chatbot for Vector Properties in NYC. 
-            Your primary goal is to help users find apartments that match their preferences, based on an internal database.
-            
-            # ... rest of your system prompt ...
-            """
-            
-            # Initialize session messages
-            session['messages'] = [
-                {"role": "system", "content": system_prompt}
-            ]
-            
-            # Initialize preferences
-            session['preferences'] = {}
-            
-            # Add welcome message
-            welcome_message = (
-                "Hi there! I'm Vector Assistant, your personal NYC apartment hunting guide. Let's start with the basics - how many bedrooms are you looking for in your new apartment?"
-            )
-            
-            session['messages'].append({"role": "assistant", "content": welcome_message})
-            session.modified = True
-            
-        except Exception as e:
-            print(f"Error initializing session: {e}")
-            return jsonify({"error": f"Having trouble starting the chat, please try again later. {e}"}), 500
+        # Configure Flask to use a more secure session cookie
+        from flask import current_app
+        current_app.config.update(
+            SESSION_COOKIE_SECURE=True,
+            SESSION_COOKIE_HTTPONLY=True,
+            SESSION_COOKIE_SAMESITE='None'
+        )
+        
+        # Call start_chat but don't return its response directly
+        # Instead, store its result and continue with this request
+        start_response = start_chat()
+        
+        # Make sure session is saved
+        session.modified = True
+        
+        # If start_chat returned an error, pass it through
+        if isinstance(start_response, tuple) and start_response[1] >= 400:
+            return start_response
     
-    # Now continue with the rest of your chat function...
-    # Add user message to history
+    # Rest of your existing code...
+    # Add the user's message to the conversation history
+    print("Adding message to existing session")
     session['messages'].append({"role": "user", "content": message})
+    session.modified = True
+
+    listings = pd.DataFrame(session['listings_data']['data'])
     
-    # Process the rest of your chat logic...
+    # Initialize preferences if not already in session
+    if 'preferences' not in session:
+        print("Initializing new preferences")
+        session['preferences'] = {}
+        session.modified = True
+
+    session['preferences']['show_listings'] = False
+    
+    
+    # # Check if the previous preferences had show_listings set to True
+    # show_listings_requested = False
+    # if 'show_listings' in preferences and preferences['show_listings'] == True:
+    #     show_listings_requested = True
+    #     # Add a special message to inform the model that listings should be shown
+    #     session['messages'].append({"role": "system", "content": "The user has requested to see listings. Respond as if you're showing them the listings."})
+    #     session.modified = True
+    
+    # # Remove the special system message if it was added previously but not needed now
+    # if not show_listings_requested:
+    #     session['messages'] = [msg for msg in session['messages'] if msg.get("content") != "The user has requested to see listings. Respond as if you're showing them the listings."]
+    #     session.modified = True
+    
+    # Convert conversation history to a string for the preferences extraction prompt
+    
+    
+    
+    # Extract preferences using your existing prompt
+    convo = '\n'.join([(f"{mes['role']}: {mes['content']}") for mes in session['messages'][1:]])
+    prompt = f"""Your goal is to take this conversation history, and extract ONLY the preferences that the user EXPLICITLY mentions in their CURRENT message.
+
+    The user may change their preferences over time, so be sure to set these values using the most up to date conversation sentences.
+    Only make assumptions for things like ("5k" should be 5000 , correct misspellings, make sure their selected amenities exist in the current options.)
+    
+    CRITICAL- ONLY extract preferences that the user has CLEARLY and EXPLICITLY mentioned. DO NOT infer or assume ANY preferences.
+    CRITICAL- If the user hasn't mentioned a specific preference, DO NOT include it in the output.
+    CRITICAL- If the user hasn't explicitly stated a value for a preference, DO NOT include it.
+    CRITICAL- NEVER add default values for preferences the user hasn't mentioned.
+    CRITICAL- NEVER assume preferences based on the AI's questions or suggestions.
+    CRITICAL- ONLY include preferences that the user has directly and unambiguously requested.
+   
+    - The AI's last question was: "{session['messages'][-1]['content'] if session['messages'][-1]['role'] == 'assistant' else 'No previous question'}"
+    - ONLY extract preferences from the user's MOST RECENT message: "{message}"
+
+    For example:
+    - If the user's current message is "I want 2 bedrooms", you should ONLY return {{\"beds\": 2}}
+    - If the user's current message is "doorman", you should ONLY return {{\"doorman\": true}}
+    - If the user's current message is "I want a doorman and elevator", you should ONLY return {{\"doorman\": true, \"elevator\": true}}
+
+    NEVER include preferences that weren't explicitly mentioned in the user's CURRENT message.
+
+    PRICE VALIDATION - THIS IS EXTREMELY IMPORTANT:
+    - If the user specifies a maximum_rent that is below the minimum available price, DO NOT set maximum_rent.
+    - If the user specifies a minimum_rent that is above the maximum available price, DO NOT set minimum_rent.
+    - For example, if the minimum price in the database is $8000 and the user says "my budget is $7500", DO NOT set maximum_rent=$7500.
+    - If the user says "my budget is $7500" but the minimum price is $8000, DO NOT set maximum_rent=$7500.
+    - ALWAYS check that the user's maximum_rent is >= the minimum available price in the database.
+    - ALWAYS check that the user's minimum_rent is <= the maximum available price in the database.
+    
+    If a preference does not fit in the criteria, NEVER return an incorrect value (i.e. if they mention a budget below the minimum actual_rent, NEVER set the actual_rent in this case, say their budget is too low, and mention the minimum)
+    NEVER assume any values based on the systems question/response, always make sure the user is the one with the final say. 
+    Make sure to only set these values as their indicated types. For example, beds must always be a number, and baths must always be a number. 
+    If the User gives something else, determine what is the correct value to use, if any.
+    
+    IMPORTANT: Set "show_listings" to True ONLY if the user is EXPLICITLY asking to see the listings or results.
+        Examples of when to set show_listings = True:
+        - "Show me the listings"
+        - "I want to see the apartments"
+        - "Show me what you found"
+        - "What options do you have?"
+        - "Let me see the results"
+        - "Show me what's available"
+
+        Do NOT set show_listings = True for messages like:
+        - "2" (just answering a question about bedrooms)
+        - "yes" (just confirming something)
+        - "doorman" (just mentioning a preference)
+
+        For example:
+        - If the user's current message is "I want 2 bedrooms", you should ONLY return {{\"beds\": 2}}
+        - If the user's current message is "doorman", you should ONLY return {{\"doorman\": true}}
+        - If the user's current message is "I want a doorman and elevator", you should ONLY return {{\"doorman\": true, \"elevator\": true}}
+        - If the user's current message is like "show me the listings", you should ONLY return {{\"show_listings\": true}}
+
+        NEVER include preferences that weren't explicitly mentioned in the user's CURRENT message.
+
+    CRITICAL: For boolean features, when a user says "I want X", or similer, set X=True. For example:
+    - If user says "I want a doorman" → set doorman=True (NOT building_amenities=["Doorman"])
+    - If user says "I need an elevator" → set elevator=True
+    - If user says "no pets" → set pet_friendly=False
+
+    The following are BOOLEAN FEATURES that should be set directly, not as amenities:
+    - doorman
+    - elevator
+    - wheelchair_access
+    - smoke_free
+    - laundry_in_building
+    - laundry_in_unit
+    - pet_friendly
+    - live_in_super
+    - concierge
+    
+    Here is a list of all the possible keys that can be used for a preferences:
+        maximum_rent - "This is the max price a person wil pay for their unit" - Number
+        minimum_rent - "This is the min price a person wil pay for their unit" - Number
+        baths - "How many bathrooms do they want" - Number
+        beds - "How many bedrooms do they want" - Number
+        borough - "What borough do they want to be in" - String
+        building_amenities - "List of all the amenities" - List of Strings (**Options are: {set(item for sublist in listings.building_amenities.apply(
+            lambda x: json.loads(x) if isinstance(x, str) else (x if isinstance(x, list) else [])
+        ) for item in sublist)})
+        countertop_type - String
+        dishwasher - Boolean
+        doorman - Boolean
+        elevator - Boolean
+        exposure - "North, South, East, West, Northeast, Southwest, etc."
+        floor_num - Number
+        floor_type - String
+        laundry_in_building - Boolean
+        laundry_in_unit - Boolean
+        neighborhood - "What neighborhood do they want to be in" - String
+        outdoor_space - Boolean
+        pet_friendly - Boolean
+        smoke_free - Boolean
+        sqft - Number
+        wheelchair_access - Boolean
+        live_in_super - Boolean
+        concierge - Boolean
+        show_listings - Boolean (set to True ONLY if user explicitly asks to see listings)
+
+    DataBase Info - (Here is an overview of what is currently inside the database.):
+        Minimum Beds - {listings['beds'].min()}
+        Maximum Beds - {listings['beds'].max()}
+        
+        Minimum Baths - {listings['baths'].min()}
+        Maximum Baths - {listings['baths'].max()}
+        
+        Minimum Price - {listings['actual_rent'].min()}
+        Maximum Price - {listings['actual_rent'].max()}
+        
+        Applicant Types - {', '.join(sorted(set([val for val in listings.applicance_type.unique() if val and len(val) > 1])))}
+        
+        Boroughs - {', '.join(sorted(set([val for val in listings.borough.unique() if val and len(val) > 1])))}
+        Neighborhoods - {', '.join(sorted(set([val for val in listings.neighborhood.unique() if val and len(val) > 1])))}
+        
+        Amenities - {', '.join(sorted(set(item for sublist in listings.building_amenities.apply(
+            lambda x: json.loads(x) if isinstance(x, str) else (x if isinstance(x, list) else [])
+        ) for item in sublist)))}
+        
+        Exposures - {', '.join(sorted(set([val for val in listings.exposure.apply(lambda x: x.strip() if isinstance(x, str) else '').unique() if val and len(val) > 1])))}
+
+    Previous Convo History:
+        {convo}
+
+    Returns:
+        Return ONLY a JSON dictionary, with key:value pairs for all the preferences extracted from the convo.
+        DO NOT include any preference that would result in zero listings based on the database information.
+        IMPORTANT: Include ALL preferences from the entire conversation, not just the most recent message.
+"""
+
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": prompt}]
+    )
+    raw_response = response.choices[0].message.content
+    print('raw_response', raw_response)
+    try:
+        # Try to parse as JSON first (handles lowercase true/false)
+        try:
+            new_preferences = json.loads(raw_response)
+        except json.JSONDecodeError:
+            # If that fails, try to extract JSON from the response
+            match = re.search(r'```(?:json)?\s*({.*?})\s*```', raw_response, re.DOTALL)
+            if match:
+                new_preferences = json.loads(match.group(1))
+            else:
+                # If still no JSON found, raise an error
+                return jsonify({"message": "Could not extract preferences from response, please try again."}), 400
+        
+        print(f"Extracted new new_preferences: {new_preferences}")
+        
+        # Get the previous preferences
+        previous_preferences = session.get('preferences', {})
+
+        # Only update preferences that are different from previous ones
+        # This helps ensure we're only adding preferences mentioned in this message
+        updated_preferences = {}
+        for key, value in new_preferences.items():
+            # Skip None values
+            if value is None:
+                continue
+            
+            # Special handling for list-type preferences like building_amenities
+            if isinstance(value, list):
+                # Only include non-empty lists
+                if value:
+                    # For building_amenities, we might want to merge with existing values
+                    if key == 'building_amenities' and key in previous_preferences and isinstance(previous_preferences[key], list):
+                        # Create a set to avoid duplicates
+                        combined_list = set(previous_preferences[key])
+                        for item in value:
+                            combined_list.add(item)
+                        updated_preferences[key] = list(combined_list)
+                    else:
+                        updated_preferences[key] = value
+            # For all other preference types
+            elif key not in previous_preferences or previous_preferences[key] != value:
+                updated_preferences[key] = value
+
+        # Update session with only the explicitly mentioned preferences
+        for key, value in updated_preferences.items():
+            session['preferences'][key] = value
+
+        print(f"Updated preferences in session: {session['preferences']}")
+        
+    except Exception as e:
+        print(f"Error parsing preferences: {e}")
+        print(f"Raw response: {raw_response}")
+        return jsonify({"message": "Could not extract preferences from response, please try again."}), 400
+   
+    # After filtering listings and removing invalid preferences
+    filtered_listings, valid_preferences = filter_listings_by_preferences(listings, session['preferences'])
+
+    # Check if any preferences were removed during filtering
+    removed_preferences = {k: session['preferences'][k] for k in session['preferences'] if k not in valid_preferences and k != 'listing_count' and k != 'show_listings'}
+
+    print('Valid Preferences', valid_preferences)
+    # If preferences were removed, add a system message to inform the model
+    if removed_preferences:
+        removed_prefs_msg = f"The user requested {', '.join([f'{k}={v}' for k, v in removed_preferences.items()])}, but these preferences resulted in zero available listings. Please inform the user that these options are not available and suggest alternatives based on the current database information."
+        session['messages'].append({"role": "system", "content": removed_prefs_msg})
+        session.modified = True
+
+    # Preserve the show_listings flag if it was set
+    if 'show_listings' in session['preferences'] and session['preferences']['show_listings'] == True:
+        valid_preferences['show_listings'] = True
+        session['messages'].append({"role": "system", "content": "The user has requested to see listings. Respond as if you're showing them the listings."})
+
+    # Update the session with valid preferences
+    session['preferences'] = valid_preferences
+    
+    # Update the prompt with filtered listings information
+    update_prompt = f"""
+        DataBase Info - (Here is an overview of what is currently inside the database.):
+            Minimum Beds - {filtered_listings['beds'].min() if not filtered_listings.empty else 'N/A'}
+            Maximum Beds - {filtered_listings['beds'].max() if not filtered_listings.empty else 'N/A'}
+
+            Minimum Baths - {filtered_listings['baths'].min() if not filtered_listings.empty else 'N/A'}
+            Maximum Baths - {filtered_listings['baths'].max() if not filtered_listings.empty else 'N/A'}
+
+            Minimum Price - {filtered_listings['actual_rent'].min() if not filtered_listings.empty else 'N/A'}
+            Maximum Price - {filtered_listings['actual_rent'].max() if not filtered_listings.empty else 'N/A'}
+
+            Applicant Types - {', '.join(sorted(set([val for val in filtered_listings.applicance_type.unique() if val and len(val) > 1]))) if not filtered_listings.empty else 'N/A'}
+
+            Boroughs - {', '.join(sorted(set([val for val in filtered_listings.borough.unique() if val and len(val) > 1]))) if not filtered_listings.empty else 'N/A'}
+            Neighborhoods - {', '.join(sorted(set([val for val in filtered_listings.neighborhood.unique() if val and len(val) > 1]))) if not filtered_listings.empty else 'N/A'}
+
+            Amenities - {', '.join(sorted(set(item for sublist in filtered_listings.building_amenities.apply(
+                lambda x: json.loads(x) if isinstance(x, str) else (x if isinstance(x, list) else [])
+            ) for item in sublist))) if not filtered_listings.empty else 'N/A'}
+
+            Exposures - {', '.join(sorted(set([val for val in filtered_listings.exposure.apply(lambda x: x.strip() if isinstance(x, str) else '').unique() if val and len(val) > 1]))) if not filtered_listings.empty else 'N/A'}
+            
+            # Boolean Features
+            Doorman - {all(filtered_listings['doorman']) if not filtered_listings.empty and 'doorman' in filtered_listings.columns else 'N/A'} (All), {any(filtered_listings['doorman']) if not filtered_listings.empty and 'doorman' in filtered_listings.columns else 'N/A'} (Some)
+            Elevator - {all(filtered_listings['elevator']) if not filtered_listings.empty and 'elevator' in filtered_listings.columns else 'N/A'} (All), {any(filtered_listings['elevator']) if not filtered_listings.empty and 'elevator' in filtered_listings.columns else 'N/A'} (Some)
+            Wheelchair Access - {all(filtered_listings['wheelchair_access']) if not filtered_listings.empty and 'wheelchair_access' in filtered_listings.columns else 'N/A'} (All), {any(filtered_listings['wheelchair_access']) if not filtered_listings.empty and 'wheelchair_access' in filtered_listings.columns else 'N/A'} (Some)
+            Smoke Free - {all(filtered_listings['smoke_free']) if not filtered_listings.empty and 'smoke_free' in filtered_listings.columns else 'N/A'} (All), {any(filtered_listings['smoke_free']) if not filtered_listings.empty and 'smoke_free' in filtered_listings.columns else 'N/A'} (Some)
+            Laundry in Building - {all(filtered_listings['laundry_in_building']) if not filtered_listings.empty and 'laundry_in_building' in filtered_listings.columns else 'N/A'} (All), {any(filtered_listings['laundry_in_building']) if not filtered_listings.empty and 'laundry_in_building' in filtered_listings.columns else 'N/A'} (Some)
+            Laundry in Unit - {all(filtered_listings['laundry_in_unit']) if not filtered_listings.empty and 'laundry_in_unit' in filtered_listings.columns else 'N/A'} (All), {any(filtered_listings['laundry_in_unit']) if not filtered_listings.empty and 'laundry_in_unit' in filtered_listings.columns else 'N/A'} (Some)
+            Pet Friendly - {all(filtered_listings['pet_friendly']) if not filtered_listings.empty and 'pet_friendly' in filtered_listings.columns else 'N/A'} (All), {any(filtered_listings['pet_friendly']) if not filtered_listings.empty and 'pet_friendly' in filtered_listings.columns else 'N/A'} (Some)
+            Live-in Super - {all(filtered_listings['live_in_super']) if not filtered_listings.empty and 'live_in_super' in filtered_listings.columns else 'N/A'} (All), {any(filtered_listings['live_in_super']) if not filtered_listings.empty and 'live_in_super' in filtered_listings.columns else 'N/A'} (Some)
+            Concierge - {all(filtered_listings['concierge']) if not filtered_listings.empty and 'concierge' in filtered_listings.columns else 'N/A'} (All), {any(filtered_listings['concierge']) if not filtered_listings.empty and 'concierge' in filtered_listings.columns else 'N/A'} (Some)
+            
+            Number of listings: {len(filtered_listings) if not filtered_listings.empty else 0}"""
+    
+    session['messages'].append({"role": "system", "content": f"Updated DataBase Info based on current preferences. {update_prompt}"})
+    
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=session['messages']
+    )
+    response_text = response.choices[0].message.content
+    print(f"🤖: {response_text}")
+    
+    session['messages'].append({"role": "assistant", "content": response_text})
+   
+    session['preferences']['listing_count'] = len(filtered_listings)
+    
+    # Prepare the response data
+    print('len(filtered_listings) before returning', len(filtered_listings))
+    response_data = {
+        "message": response_text,
+        "preferences": session['preferences'],
+        "listing_count": len(filtered_listings)
+    }
+
+    if len(filtered_listings) <= 5:
+        top_listings = filtered_listings.head(5).to_dict('records') if not filtered_listings.empty else []
+        response_data["listings"] = top_listings
+
+        session['preferences']['show_listings'] = True
+
+    if 'show_listings' in session['preferences'] and session['preferences']['show_listings'] == True:
+        top_listings = filtered_listings.head(5).to_dict('records') if not filtered_listings.empty else []
+        response_data["listings"] = top_listings
+
+        session['preferences']['show_listings'] = True
+
+    return jsonify(response_data)
 
 @chat_bp.route("/reset_chat", methods=["POST"])
 def reset_chat():

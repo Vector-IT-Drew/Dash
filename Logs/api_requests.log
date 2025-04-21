@@ -933,3 +933,11 @@
 2025-04-19 14:08:09,740 - api - INFO - RESPONSE 2d585ee8-c324-4144-8ee5-79fd80260cd2: 200 2722ms - {"status_code": 200, "duration_ms": 2721.7, "body": {"listing_count": 10, "message": "Absolutely! We
 2025-04-19 14:08:43,356 - api - INFO - REQUEST ef842d57-349e-4b85-8f65-d9379891a7c1: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
 2025-04-19 14:08:45,505 - api - INFO - RESPONSE ef842d57-349e-4b85-8f65-d9379891a7c1: 200 2150ms - {"status_code": 200, "duration_ms": 2149.76, "body": {"listing_count": 10, "message": "Got it! In ad
+2025-04-21 11:34:59,269 - api - INFO - REQUEST f105bc46-b499-4121-a144-833b2b0c28c0: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-21 11:35:02,837 - api - INFO - RESPONSE f105bc46-b499-4121-a144-833b2b0c28c0: 200 3569ms - {"status_code": 200, "duration_ms": 3569.06, "body": {"listing_count": 13, "message": "Great choice 
+2025-04-21 11:35:08,609 - api - INFO - REQUEST 82780fb7-7b11-404c-9f0b-32b1303155b3: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-21 11:35:11,118 - api - INFO - RESPONSE 82780fb7-7b11-404c-9f0b-32b1303155b3: 200 2509ms - {"status_code": 200, "duration_ms": 2508.78, "body": {"listing_count": 65, "message": "I'm sorry, bu
+2025-04-21 11:35:23,486 - api - INFO - REQUEST 87664eaf-67a6-4a18-9224-bf48e3496c4c: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-21 11:35:25,468 - api - INFO - RESPONSE 87664eaf-67a6-4a18-9224-bf48e3496c4c: 200 1981ms - {"status_code": 200, "duration_ms": 1981.43, "body": {"listing_count": 65, "message": "Great choice!
+2025-04-21 11:35:55,939 - api - INFO - REQUEST d4fb3266-acc3-4b7d-aac2-096ba84a343e: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
+2025-04-21 11:35:57,669 - api - INFO - RESPONSE d4fb3266-acc3-4b7d-aac2-096ba84a343e: 200 1729ms - {"status_code": 200, "duration_ms": 1729.4, "body": {"listing_count": 45, "message": "Got it! Your b
