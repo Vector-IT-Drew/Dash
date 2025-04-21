@@ -162,9 +162,9 @@ def get_gmail_service(email_address):
 	
 	service_account_info = json.loads(os.environ.get('GOOGLE_CREDS', '{}'))
 	SCOPES = ["https://www.googleapis.com/auth/calendar"]
-	print('service_account_info', service_account_info)
+	print('NOT HEREEREREE!!!!!', service_account_info)
 	
-	print('get_gmail_service',email_address)
+	print('NOT HEREEREREE!!!!!',email_address)
 	
 	# Create credentials from the service account info dictionary
 	creds = service_account.Credentials.from_service_account_info(

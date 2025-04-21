@@ -7,6 +7,7 @@ import time
 import numpy as np
 from googleapiclient.discovery import build
 from google.oauth2 import service_account
+from google.auth.transport.requests import Request
 import datetime
 from datetime import timedelta
 import pytz
@@ -77,21 +78,22 @@ def get_available_slots(service, calendar_id, start_date, days_ahead=60):
 def get_gmail_service(email_address):
     print('get_gmail_service', email_address)
     
-    # Use environment variables instead of service account file
-    service_account_info = json.loads(os.environ.get('GOOGLE_CREDS', '{}'))
-    
+    # Construct service account info from environment variables
+    service_account_info = {
+        "type": "service_account",
+        "project_id":  "vector-main-app",
+        "private_key_id": os.environ.get('GOOGLE_PRIVATE_KEY_ID'),
+        "private_key": os.environ.get('GOOGLE_PRIVATE_KEY').replace('\\n', '\n'),
+        "client_email": "sheets-helper@vector-main-app.iam.gserviceaccount.com",
+        "client_id": "117359487626577840585",
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+         "token_uri": "https://oauth2.googleapis.com/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/sheets-helper%40vector-main-app.iam.gserviceaccount.com"
+    }
+
     # Print out each part of the credentials for debugging
-    print('Service Account Info:')
-    print('Type:', service_account_info.get('type'))
-    print('Project ID:', service_account_info.get('project_id'))
-    print('Private Key ID:', service_account_info.get('private_key_id'))
-    print('Client Email:', service_account_info.get('client_email'))
-    print('Client ID:', service_account_info.get('client_id'))
-    print('Auth URI:', service_account_info.get('auth_uri'))
-    print('Token URI:', service_account_info.get('token_uri'))
-    print('Private Key:', service_account_info.get('private_key')[:30] + '...')  # Print only the first part for security
-    print('Auth Provider Cert URL:', service_account_info.get('auth_provider_x509_cert_url'))
-    print('Client Cert URL:', service_account_info.get('client_x509_cert_url'))
+    print('Service Account Info:', service_account_info)
     
     SCOPES = ["https://www.googleapis.com/auth/calendar"]
     
@@ -105,7 +107,7 @@ def get_gmail_service(email_address):
         print("Testing credentials...")
         if not creds.valid:
             print("Credentials are invalid. Attempting to refresh...")
-            creds.refresh(requests.Request())
+            creds.refresh(Request())
             if creds.valid:
                 print("Credentials refreshed and are now valid.")
             else:
