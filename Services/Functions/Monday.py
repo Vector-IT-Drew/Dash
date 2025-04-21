@@ -16,7 +16,6 @@ def get_monday_client():
 	
 	client = MondayClient(
 		token=token,
-		headers={'API-Version': '2023-10'}
 	)
 	return client
 
