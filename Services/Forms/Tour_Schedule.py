@@ -134,9 +134,14 @@ def submit_tour_request():
 	# Convert column_values to a properly formatted JSON string
 	column_values_json = json.dumps(column_values)
 
+	# Get the first group ID from the board
+	groups = client.boards.get_groups(board_id=leads_board_id)
+	group_id = groups['data'][0]['id']  # Use the first group by default
+
 	# Use the standard Monday.com Python API to create an item instead of GraphQL
 	response = client.items.create_item(
 		board_id=leads_board_id,
+		group_id=group_id,  # Add the required group_id parameter
 		item_name=data['name'],
 		column_values=column_values_json
 	)
