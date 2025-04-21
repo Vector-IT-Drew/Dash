@@ -78,6 +78,7 @@ def get_gmail_service(email_address):
     print('get_gmail_service', email_address)
     
     # Use environment variables instead of service account file
+    print('Preloaded:', os.environ.get('GOOGLE_CREDS', '{}'))
     service_account_info = json.loads(os.environ.get('GOOGLE_CREDS', '{}'))
     print('service_account_info', service_account_info)
 
