@@ -78,7 +78,9 @@ def get_gmail_service(email_address):
     print('get_gmail_service',email_address)
     # Use environment variables instead of service account file
     service_account_info = os.environ.get('GOOGLE_CREDS')
+   
     print('service_account_info', service_account_info)
+    print('Type: service_account_info', type(service_account_info))
 
     
     SCOPES = ["https://www.googleapis.com/auth/calendar"]
