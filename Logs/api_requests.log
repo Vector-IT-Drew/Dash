@@ -1186,3 +1186,13 @@
 2025-04-21 16:19:03,320 - api - INFO - RESPONSE 5f02f9f0-be9e-4548-bdff-0af050354575: 200 17ms - {"status_code": 200, "duration_ms": 17.13}
 2025-04-21 16:19:03,356 - api - INFO - REQUEST c49c8f50-7d19-4d86-8e4c-d583cebce6f9: GET /get-all-timeslots - {"method": "GET", "url": "http://localhost:5003/get-all-timeslots?email_address=it@vectorny.com", "p
 2025-04-21 16:19:05,140 - api - INFO - RESPONSE c49c8f50-7d19-4d86-8e4c-d583cebce6f9: 200 1784ms - {"status_code": 200, "duration_ms": 1783.86, "body": {"2025-04-21": ["11:30 AM", "12:00 PM", "12:30 
+2025-04-21 16:29:42,769 - api - INFO - REQUEST 27cb5d9a-3e97-45e9-8ebf-17fc11958e69: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule", "path": "/tour-schedule", "client_ip
+2025-04-21 16:29:42,852 - api - INFO - RESPONSE 27cb5d9a-3e97-45e9-8ebf-17fc11958e69: 200 83ms - {"status_code": 200, "duration_ms": 83.48}
+2025-04-21 16:29:42,921 - api - INFO - REQUEST 65c3447a-db79-4ee6-986d-ebc76d18ae18: GET /get-all-timeslots - {"method": "GET", "url": "http://localhost:5003/get-all-timeslots?email_address=", "path": "/get-all
+2025-04-21 16:29:43,343 - api - INFO - RESPONSE 65c3447a-db79-4ee6-986d-ebc76d18ae18: 200 422ms - {"status_code": 200, "duration_ms": 422.44, "body": {}}
+2025-04-21 16:29:48,235 - api - INFO - REQUEST f6b8dfc5-42fe-41c9-8b0a-e14509ba58b0: GET /get_filtered_listings - {"method": "GET", "url": "http://localhost:5003/get_filtered_listings", "path": "/get_filtered_listi
+2025-04-21 16:29:48,741 - api - INFO - RESPONSE f6b8dfc5-42fe-41c9-8b0a-e14509ba58b0: 200 506ms - {"status_code": 200, "duration_ms": 505.62, "body": {"count": 65, "data": [{"actual_rent": 17500.0, 
+2025-04-21 16:30:59,749 - api - INFO - REQUEST c6337a38-eba9-4626-9a9b-7d5481bb881c: GET /get_filtered_listings - {"method": "GET", "url": "http://localhost:5003/get_filtered_listings", "path": "/get_filtered_listi
+2025-04-21 16:31:00,236 - api - INFO - RESPONSE c6337a38-eba9-4626-9a9b-7d5481bb881c: 200 486ms - {"status_code": 200, "duration_ms": 485.59, "body": {"count": 65, "data": [{"actual_rent": 17500.0, 
+2025-04-21 16:32:03,417 - api - INFO - REQUEST 63da44ef-9237-4fae-bfe2-28cab34facc6: GET /get_filtered_listings - {"method": "GET", "url": "http://localhost:5003/get_filtered_listings", "path": "/get_filtered_listi
+2025-04-21 16:32:03,927 - api - INFO - RESPONSE 63da44ef-9237-4fae-bfe2-28cab34facc6: 200 510ms - {"status_code": 200, "duration_ms": 509.81, "body": {"count": 65, "data": [{"actual_rent": 17500.0, 
