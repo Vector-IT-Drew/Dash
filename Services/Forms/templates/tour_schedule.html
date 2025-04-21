@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tenant Inquiry Form</title>
+    
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f8fa;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 98vw;  /* Full width of the viewport */
+                padding: 15px;  /* Reduce padding on mobile */
+                margin: 0;      /* Remove margin to fit full screen */
+                box-sizing: border-box; /* Ensures padding and border are inside the container */
+            }
+         }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            font-size: 1rem;
+            color: #333;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea,
+        .form-group input[type="date"],
+        .form-group input[type="datetime-local"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: #f9f9f9;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .form-group input[type="date"],
+            .form-group input[type="datetime-local"],
+            .form-group input[type="text"],
+            .form-group input[type="tel"],
+            .form-group select,
+            .form-group textarea {
+                width: 100%;
+            }
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+        .form-group textarea {
+            resize: vertical;
+            height: 120px;
+        }
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .submit-btn:hover {
+            background-color: #45a049;
+        }
+        .footer {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 20px;
+        }
+        /* Time slot styling */
+        #time-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .time-slot {
+            padding: 10px;
+            background: #f0f0f0;
+            text-align: center;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s ease;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        .time-slot:hover, .time-slot.selected {
+            background: #4CAF50;
+            color: white;
+        }
+        .time-slot.unavailable {
+            background: #ddd;
+            color: #999;
+            cursor: not-allowed;
+        }
+
+        select, input[type="text"], input[type="tel"], input[type="date"], input[type="datetime-local"] {
+            color: black !important;  /* Override iOS blue color */
+        }
+
+        .form-row {
+            display: flex;
+            justify-content: space-between; /* Space between the elements */
+            gap: 20px; /* Optional gap between the form groups */
+        }
+        .form-row .form-group {
+            width: 48%; /* This will apply only to form groups inside .form-row */
+        }
+        @media (max-width: 600px) {
+            .form-row {
+                flex-direction: column;
+            }
+            .form-row .form-group {
+                width: 100%;
+            }
+        }
+        .loading-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-left: 5px;
+        }
+        .yellow-dot {
+            background-color: #FFC107;
+        }
+        .green-dot {
+            background-color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Tenant Inquiry Form</h1>
+        
+        <form id="tenant-inquiry-form">
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" required placeholder="Enter your full name">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required placeholder="Enter your email address">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="phone-number">Phone Number</label>
+                <input type="tel" id="phone-number" name="phone-number" required placeholder="Enter your phone number">
+            </div>
+
+            {% if version == '2' %}
+            <div class="form-group">
+                <label for="inquiry_address">Address Inquiring About</label>
+                <input type="text" id="inquiry_address" name="inquiry_address" required placeholder="What address you are interested in?">
+            </div>
+            {% endif %}
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="move-in-date">Desired Move-in Date</label>
+                    <input type="text" id="move-in-date" name="move-in-date" placeholder="Select a date" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="budget">Desired Budget ($)</label>
+                    <input type="number" id="budget" name="budget" required placeholder="Enter your budget">
+                </div>
+            </div>
+
+            {% if version == '2' %}
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="tenants">Number of Tenants</label>
+                    <input type="number" id="tenants" name="tenants" required placeholder="How many tenants will live in the unit?">
+                </div>
+
+                <div class="form-group">
+                    <label for="qualification_criteria">Qualification Criteria</label>
+                    <select id="qualification_criteria" name="qualification_criteria" required>
+                        <option value="">Select Your Criteria</option>
+                        <option value="Income-40x">Income is 40x the monthly rent</option>
+                        <option value="Guarantor-Income-80x">Guarantor with income 80x the rent (Personal or Third-Party Guarantors)</option>
+                        <option value="Section-8">Section 8 Voucher</option>
+                        <option value="City-FHEPS">City FHEPS Voucher</option>
+                        <option value="Other">Other Voucher/Assistance</option>
+                    </select>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="form-group">
+                <label for="apartment-size">Desired Apartment Size</label>
+                <select id="apartment-size" name="apartment-size" required>
+                    <option value="">Select Apartment Size</option>
+                    <option value="studio">Studio</option>
+                    <option value="1-bed">1 Bedroom</option>
+                    <option value="2-bed">2 Bedrooms</option>
+                    <option value="3-bed">3 Bedrooms</option>
+                    <option value="4-bed">4 Bedrooms</option>
+                    <option value="5-bed">5 Bedrooms</option>
+                    <option value="6-bed">6 Bedrooms</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="tour-type">Preferred Tour Type</label>
+                <select id="tour-type" name="tour-type" required>
+                    <option value="">Select Tour Type</option>
+                    <option value="In-Person">In-person</option>
+                    <option value="Virtual">Virtual</option>
+                </select>
+            </div>
+
+            {% if version == '2' %}
+            <div class="form-group">
+                <label for="datetime-select">Select a Tour Date & Time</label>
+                <input type="text" id="datetime-select" placeholder="Select date and time" required>
+            </div>
+            {% else %}
+            <div class="form-group">
+                <label for="date-select">
+                    Select a Tour Date
+                    <span id="loading-indicator" class="loading-dot yellow-dot"></span>
+                </label>
+                <input type="text" id="date-select" name="date-select" placeholder="Select a date" required>
+            </div>
+
+            <div id="time-slots">
+                {% for slot in timeslots %}
+                    <div class="time-slot {% if not slot.available %}unavailable{% endif %}" data-time="{{ slot.time }}">{{ slot.time }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <input type="hidden" name="email_address" value="{{ email_address }}">
+            <input type="hidden" name="version" value="{{ version }}">
+
+            {% if version == '2' %}
+            <div class="form-group">
+                <label for="comments">Comments</label>
+                <textarea id="comments" name="comments" rows="4" placeholder="Additional Qualification Information or Comments..."></textarea>
+            </div>
+            {% endif %}
+
+            <button type="submit" id="submit-btn" class="submit-btn">Submit Inquiry</button>        </form>
+        
+        <div class="footer">
+            <p>© 2023 Vector Properties. All rights reserved.</p>
+        </div>
+    </div>
+
+    <!-- Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize date picker for move-in date
+            flatpickr("#move-in-date", {
+                minDate: "today",
+                dateFormat: "Y-m-d",
+            });
+            
+            // Initialize date picker for tour date
+            const dateSelect = document.getElementById('date-select');
+            if (dateSelect) {
+                const datePicker = flatpickr("#date-select", {
+                    minDate: "today",
+                    dateFormat: "Y-m-d",
+                    onChange: function(selectedDates, dateStr) {
+                        // Fetch available time slots for the selected date
+                        fetchTimeSlots(dateStr);
+                    }
+                });
+            }
+            
+            // Initialize datetime picker for version 2
+            const datetimeSelect = document.getElementById('datetime-select');
+            if (datetimeSelect) {
+                flatpickr("#datetime-select", {
+                    minDate: "today",
+                    enableTime: true,
+                    dateFormat: "Y-m-d H:i",
+                    minTime: "09:00",
+                    maxTime: "18:00",
+                });
+            }
+            
+            // Fetch all available slots from the server in the background
+            fetch('/get-all-timeslots')
+                .then(response => response.json())
+                .then(allAvailableSlots => {
+                    // Store the slots for later use
+                    window.allAvailableSlots = allAvailableSlots;
+
+                    // Change to green dot when loaded
+                    const loadingIndicator = document.getElementById('loading-indicator');
+                    loadingIndicator.className = 'loading-dot green-dot';
+                })
+                .catch(error => {
+                    console.error('Error fetching all time slots:', error);
+                });
+            
+            // Function to fetch time slots for a selected date
+            function fetchTimeSlots(date) {
+                const timeSlotsContainer = document.getElementById('time-slots');
+                timeSlotsContainer.innerHTML = '';
+
+                if (window.allAvailableSlots && window.allAvailableSlots[date]) {
+                    window.allAvailableSlots[date].forEach(slot => {
+                        const timeSlotDiv = document.createElement('div');
+                        timeSlotDiv.className = 'time-slot';
+                        timeSlotDiv.setAttribute('data-time', slot);
+                        timeSlotDiv.textContent = slot;
+                        timeSlotsContainer.appendChild(timeSlotDiv);
+                    });
+                }
+
+                // Change to green dot when loaded
+                const loadingIndicator = document.getElementById('loading-indicator');
+                loadingIndicator.className = 'loading-dot green-dot';
+            }
+            
+            // Handle time slot selection
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('time-slot') && !e.target.classList.contains('unavailable')) {
+                    // Remove selected class from all time slots
+                    document.querySelectorAll('.time-slot').forEach(slot => {
+                        slot.classList.remove('selected');
+                    });
+                    
+                    // Add selected class to clicked time slot
+                    e.target.classList.add('selected');
+                    
+                    // You could store the selected time in a hidden input
+                    const selectedTime = e.target.getAttribute('data-time');
+                    console.log('Selected time:', selectedTime);
+                }
+            });
+            
+            // Handle form submission
+            const form = document.getElementById('tenant-inquiry-form');
+            if (form) {
+                form.addEventListener('submit', function(event) {
+                    event.preventDefault(); // Prevent default form submission
+
+                    console.log('Form submission started');
+
+                    const phoneInput = document.getElementById("phone-number");
+                    const phoneNumber = phoneInput.value.trim();
+
+                    const submitButton = document.getElementById("submit-btn"); // Make sure the button has this ID
+                    if (!submitButton) {
+                        console.error('Submit button not found');
+                        return;
+                    }
+
+                    submitButton.disabled = true; // Disable button
+                    submitButton.textContent = "Loading..."; // Change button text
+
+                    const cleanedNumber = phoneNumber.replace(/\D/g, "");
+
+                    // Ensure it's between 10 and 12 digits long
+                    if (cleanedNumber.length >= 10 && cleanedNumber.length <= 12) {
+                        console.log('Phone number is valid:', cleanedNumber);
+                    } else {
+                        alert("Please enter a valid phone number.");
+                        submitButton.disabled = false; // Re-enable button
+                        submitButton.textContent = "Submit"; // Reset button text
+                        return;
+                    }
+
+                    // Collect form data
+                    const formData = new FormData(form);
+                    console.log('Form data collected:', Array.from(formData.entries()));
+
+                    const selectedTimeSlot = document.querySelector('.time-slot.selected');
+                    if ("{{ version }}" == '2') {
+                        const selected_date_v2 = document.getElementById("datetime-select").value;
+                        const dateObj = new Date(selected_date_v2.replace(" ", "T")); // Ensure proper parsing
+                        const formattedDateTime = dateObj.toLocaleString("en-US", {
+                            year: "numeric",
+                            month: "2-digit",
+                            day: "2-digit",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true
+                        }).replace(",", "").replace(/(\d{2})\/(\d{2})\/(\d{4})/, "$3-$1-$2").replace(" ", " at ");
+
+                        formData.append("time-slot", formattedDateTime);
+                        console.log('Formatted date and time for version 2:', formattedDateTime);
+                    } else {
+                        if (!selectedTimeSlot) {
+                            alert("Please select a valid time slot");
+                            submitButton.disabled = false; // Re-enable button
+                            submitButton.textContent = "Submit"; // Reset button text
+                            return;
+                        }
+                        formData.append("time-slot", selectedTimeSlot.getAttribute('data-time')); // Add selected time slot to form data
+                        console.log('Selected time slot:', selectedTimeSlot.getAttribute('data-time'));
+                    }
+
+                    // Send the data to the server
+                    fetch('/submit-tour-request', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => {
+                        console.log('Response status:', response.status);
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Server response data:', data);
+                        alert("Your inquiry has been submitted successfully!");
+                        form.reset(); // Reset the form after submission
+                        submitButton.disabled = false; // Re-enable button
+                        submitButton.textContent = "Submit"; // Reset button text
+                    })
+                    .catch(error => {
+                        console.error('Error during form submission:', error);
+                        alert("There was an error submitting your inquiry. Please refresh and try again.");
+                        submitButton.disabled = false; // Re-enable button
+                        submitButton.textContent = "Submit"; // Reset button text
+                    });
+                });
+            } else {
+                console.error('Form not found');
+            }
+        });
+    </script>
+</body>
+</html>

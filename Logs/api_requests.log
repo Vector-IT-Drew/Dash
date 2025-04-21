@@ -941,3 +941,141 @@
 2025-04-21 11:35:25,468 - api - INFO - RESPONSE 87664eaf-67a6-4a18-9224-bf48e3496c4c: 200 1981ms - {"status_code": 200, "duration_ms": 1981.43, "body": {"listing_count": 65, "message": "Great choice!
 2025-04-21 11:35:55,939 - api - INFO - REQUEST d4fb3266-acc3-4b7d-aac2-096ba84a343e: POST /chat - {"method": "POST", "url": "http://192.168.0.19:5003/chat", "path": "/chat", "client_ip": "192.168.0.
 2025-04-21 11:35:57,669 - api - INFO - RESPONSE d4fb3266-acc3-4b7d-aac2-096ba84a343e: 200 1729ms - {"status_code": 200, "duration_ms": 1729.4, "body": {"listing_count": 45, "message": "Got it! Your b
+2025-04-21 12:21:40,203 - api - INFO - REQUEST 67552f3b-fbaf-4683-82d8-9a2a224e0c58: GET / - {"method": "GET", "url": "http://localhost:5003/", "path": "/", "client_ip": "127.0.0.1"}
+2025-04-21 12:21:40,261 - api - INFO - RESPONSE 67552f3b-fbaf-4683-82d8-9a2a224e0c58: 200 60ms - {"status_code": 200, "duration_ms": 59.65, "body": {"endpoints": {"/connect": "GET - Test database c
+2025-04-21 12:21:43,450 - api - INFO - REQUEST cf7a8e0a-51be-4a50-a287-16c96ab18385: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule", "path": "/tour-schedule", "client_ip
+2025-04-21 12:21:43,470 - api - INFO - RESPONSE cf7a8e0a-51be-4a50-a287-16c96ab18385: 200 20ms - {"status_code": 200, "duration_ms": 20.45}
+2025-04-21 12:21:47,835 - api - INFO - REQUEST ebd950bf-5314-4109-859b-b5456aba8108: GET /get-timeslots - {"method": "GET", "url": "http://localhost:5003/get-timeslots?date=2025-04-22", "path": "/get-timesl
+2025-04-21 12:21:47,836 - api - INFO - RESPONSE ebd950bf-5314-4109-859b-b5456aba8108: 200 1ms - {"status_code": 200, "duration_ms": 1.06, "body": {"timeslots": [{"available": true, "time": "9:00 A
+2025-04-21 12:21:51,502 - api - INFO - REQUEST 3626e4eb-033e-4f52-a63d-42f4cccec61b: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule", "path": "/tour-schedule", "client_ip
+2025-04-21 12:21:51,502 - api - INFO - RESPONSE 3626e4eb-033e-4f52-a63d-42f4cccec61b: 200 1ms - {"status_code": 200, "duration_ms": 0.5}
+2025-04-21 12:24:27,062 - api - INFO - REQUEST e39652a2-42a2-4c7c-a950-aaea59136f17: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule", "path": "/tour-schedule", "client_ip
+2025-04-21 12:24:27,078 - api - INFO - RESPONSE e39652a2-42a2-4c7c-a950-aaea59136f17: 200 16ms - {"status_code": 200, "duration_ms": 16.12}
+2025-04-21 12:24:33,625 - api - INFO - REQUEST 77a4c8e5-cdd3-43c2-87e5-d432b85c7b85: GET /get-timeslots - {"method": "GET", "url": "http://localhost:5003/get-timeslots?date=2025-04-22", "path": "/get-timesl
+2025-04-21 12:24:35,625 - api - INFO - RESPONSE 77a4c8e5-cdd3-43c2-87e5-d432b85c7b85: 200 2001ms - {"status_code": 200, "duration_ms": 2000.69, "body": {"timeslots": [{"available": true, "time": "9:0
+2025-04-21 12:24:36,806 - api - INFO - REQUEST 363a6a16-c939-4f45-b70d-3499e64778b3: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule", "path": "/tour-schedule", "client_ip
+2025-04-21 12:24:36,806 - api - INFO - RESPONSE 363a6a16-c939-4f45-b70d-3499e64778b3: 200 0ms - {"status_code": 200, "duration_ms": 0.39}
+2025-04-21 12:24:57,322 - api - INFO - REQUEST fd95ec24-63dd-4e23-a4ae-055dd85c1cb6: GET /get-timeslots - {"method": "GET", "url": "http://localhost:5003/get-timeslots?date=2025-04-22", "path": "/get-timesl
+2025-04-21 12:24:59,124 - api - INFO - REQUEST 0794e63a-4fa6-4ff2-b6f9-03fda877167b: GET /get-timeslots - {"method": "GET", "url": "http://localhost:5003/get-timeslots?date=2025-04-24", "path": "/get-timesl
+2025-04-21 12:24:59,326 - api - INFO - RESPONSE fd95ec24-63dd-4e23-a4ae-055dd85c1cb6: 200 2004ms - {"status_code": 200, "duration_ms": 2003.83, "body": {"timeslots": [{"available": true, "time": "9:0
+2025-04-21 12:25:01,129 - api - INFO - RESPONSE 0794e63a-4fa6-4ff2-b6f9-03fda877167b: 200 2005ms - {"status_code": 200, "duration_ms": 2004.5, "body": {"timeslots": [{"available": true, "time": "9:00
+2025-04-21 12:25:02,057 - api - INFO - REQUEST 6a91d3de-e3f8-42fe-a633-5ffdd30df3f8: GET /get-timeslots - {"method": "GET", "url": "http://localhost:5003/get-timeslots?date=2025-04-21", "path": "/get-timesl
+2025-04-21 12:25:04,041 - api - INFO - REQUEST 464ce974-d595-401d-91ae-23fb6889f513: GET /get-timeslots - {"method": "GET", "url": "http://localhost:5003/get-timeslots?date=2025-04-22", "path": "/get-timesl
+2025-04-21 12:25:04,061 - api - INFO - RESPONSE 6a91d3de-e3f8-42fe-a633-5ffdd30df3f8: 200 2004ms - {"status_code": 200, "duration_ms": 2003.81, "body": {"timeslots": [{"available": true, "time": "9:0
+2025-04-21 12:25:06,044 - api - INFO - RESPONSE 464ce974-d595-401d-91ae-23fb6889f513: 200 2003ms - {"status_code": 200, "duration_ms": 2003.39, "body": {"timeslots": [{"available": true, "time": "9:0
+2025-04-21 12:28:02,890 - api - INFO - REQUEST d137b111-e68a-42c9-8464-1c2f9110a19d: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule", "path": "/tour-schedule", "client_ip
+2025-04-21 12:28:02,906 - api - INFO - RESPONSE d137b111-e68a-42c9-8464-1c2f9110a19d: 200 16ms - {"status_code": 200, "duration_ms": 15.59}
+2025-04-21 12:28:14,666 - api - INFO - REQUEST 7c73da34-a32f-443f-9f10-8950bba86ab5: GET /get-timeslots - {"method": "GET", "url": "http://localhost:5003/get-timeslots?date=2025-04-22", "path": "/get-timesl
+2025-04-21 12:28:16,318 - api - INFO - REQUEST 56a337fa-56c8-4e93-a3c6-0aa7ed4ef13c: GET /get-timeslots - {"method": "GET", "url": "http://localhost:5003/get-timeslots?date=2025-04-23", "path": "/get-timesl
+2025-04-21 12:28:16,669 - api - INFO - RESPONSE 7c73da34-a32f-443f-9f10-8950bba86ab5: 200 2003ms - {"status_code": 200, "duration_ms": 2003.16, "body": {"timeslots": [{"available": true, "time": "9:0
+2025-04-21 12:28:18,321 - api - INFO - RESPONSE 56a337fa-56c8-4e93-a3c6-0aa7ed4ef13c: 200 2003ms - {"status_code": 200, "duration_ms": 2002.94, "body": {"timeslots": [{"available": true, "time": "9:0
+2025-04-21 12:30:42,672 - api - INFO - REQUEST 51381d3d-2067-41d2-a26c-8e28e5c02bfd: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule", "path": "/tour-schedule", "client_ip
+2025-04-21 12:30:42,688 - api - INFO - RESPONSE 51381d3d-2067-41d2-a26c-8e28e5c02bfd: 200 16ms - {"status_code": 200, "duration_ms": 15.88}
+2025-04-21 12:30:54,195 - api - INFO - REQUEST 2d275cf5-dc2a-4a67-804d-d156ec8225ec: GET /get-timeslots - {"method": "GET", "url": "http://localhost:5003/get-timeslots?date=2025-04-22", "path": "/get-timesl
+2025-04-21 12:30:55,760 - api - INFO - REQUEST ebb2403d-0b56-4d82-b8b5-65f4e514c186: GET /get-timeslots - {"method": "GET", "url": "http://localhost:5003/get-timeslots?date=2025-04-23", "path": "/get-timesl
+2025-04-21 12:30:56,196 - api - INFO - RESPONSE 2d275cf5-dc2a-4a67-804d-d156ec8225ec: 200 2001ms - {"status_code": 200, "duration_ms": 2001.19, "body": {"timeslots": [{"available": true, "time": "9:0
+2025-04-21 12:30:57,765 - api - INFO - RESPONSE ebb2403d-0b56-4d82-b8b5-65f4e514c186: 200 2004ms - {"status_code": 200, "duration_ms": 2004.26, "body": {"timeslots": [{"available": true, "time": "9:0
+2025-04-21 12:36:28,886 - api - INFO - REQUEST 59aa8ad4-922b-4cd5-8d0d-069a90a54866: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule", "path": "/tour-schedule", "client_ip
+2025-04-21 12:36:28,952 - api - INFO - RESPONSE 59aa8ad4-922b-4cd5-8d0d-069a90a54866: 200 66ms - {"status_code": 200, "duration_ms": 66.25}
+2025-04-21 12:36:43,007 - api - INFO - REQUEST f43bdf04-e0e6-4f05-9d63-328589bdc992: GET /get-timeslots - {"method": "GET", "url": "http://localhost:5003/get-timeslots?date=2025-04-21", "path": "/get-timesl
+2025-04-21 12:36:45,227 - api - INFO - REQUEST 27c97015-ad6b-420d-be5e-79ad6d066caa: GET /get-timeslots - {"method": "GET", "url": "http://localhost:5003/get-timeslots?date=2025-04-22", "path": "/get-timesl
+2025-04-21 12:39:19,532 - api - INFO - REQUEST d489b35b-2540-4fd8-b1d8-71d197a87646: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule", "path": "/tour-schedule", "client_ip
+2025-04-21 12:39:19,533 - api - INFO - RESPONSE d489b35b-2540-4fd8-b1d8-71d197a87646: 200 1ms - {"status_code": 200, "duration_ms": 0.7}
+2025-04-21 12:39:21,918 - api - INFO - REQUEST df59908c-a42a-41dd-96bd-457900061346: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule", "path": "/tour-schedule", "client_ip
+2025-04-21 12:39:21,918 - api - INFO - RESPONSE df59908c-a42a-41dd-96bd-457900061346: 200 0ms - {"status_code": 200, "duration_ms": 0.46}
+2025-04-21 12:39:26,849 - api - INFO - REQUEST 7e3990e6-3381-4544-8f0d-718b8d52b8e5: GET /get-timeslots - {"method": "GET", "url": "http://localhost:5003/get-timeslots?date=2025-04-22", "path": "/get-timesl
+2025-04-21 12:41:17,407 - api - INFO - REQUEST a73c83c2-a35d-4460-9059-635253416f92: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule", "path": "/tour-schedule", "client_ip
+2025-04-21 12:41:17,419 - api - INFO - RESPONSE a73c83c2-a35d-4460-9059-635253416f92: 200 12ms - {"status_code": 200, "duration_ms": 11.81}
+2025-04-21 12:41:19,613 - api - INFO - REQUEST d520a318-ec1c-4fcf-b76f-c11d647f5dd0: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule", "path": "/tour-schedule", "client_ip
+2025-04-21 12:41:19,613 - api - INFO - RESPONSE d520a318-ec1c-4fcf-b76f-c11d647f5dd0: 200 1ms - {"status_code": 200, "duration_ms": 0.51}
+2025-04-21 12:41:25,292 - api - INFO - REQUEST c9c2e809-fc2d-42d9-be8d-c05d00782e11: GET /get-timeslots - {"method": "GET", "url": "http://localhost:5003/get-timeslots?date=2025-04-22", "path": "/get-timesl
+2025-04-21 12:41:26,058 - api - INFO - RESPONSE c9c2e809-fc2d-42d9-be8d-c05d00782e11: 200 766ms - {"status_code": 200, "duration_ms": 765.91, "body": {"timeslots": [{"available": true, "time": "10:0
+2025-04-21 12:41:28,244 - api - INFO - REQUEST dc5ceda9-4489-4f79-9258-af0d6cdeb030: GET /get-timeslots - {"method": "GET", "url": "http://localhost:5003/get-timeslots?date=2025-04-23", "path": "/get-timesl
+2025-04-21 12:41:28,899 - api - INFO - RESPONSE dc5ceda9-4489-4f79-9258-af0d6cdeb030: 200 655ms - {"status_code": 200, "duration_ms": 654.68, "body": {"timeslots": [{"available": true, "time": "10:0
+2025-04-21 12:41:30,543 - api - INFO - REQUEST f45741b7-38b7-470e-bf17-3d92d6fdb8e1: GET /get-timeslots - {"method": "GET", "url": "http://localhost:5003/get-timeslots?date=2025-04-21", "path": "/get-timesl
+2025-04-21 12:41:31,153 - api - INFO - RESPONSE f45741b7-38b7-470e-bf17-3d92d6fdb8e1: 200 610ms - {"status_code": 200, "duration_ms": 610.35, "body": {"timeslots": [{"available": true, "time": "10:0
+2025-04-21 12:41:37,208 - api - INFO - REQUEST dc3c61af-c4fc-4883-9685-939018bffff9: GET /get-timeslots - {"method": "GET", "url": "http://localhost:5003/get-timeslots?date=2025-04-30", "path": "/get-timesl
+2025-04-21 12:41:37,836 - api - INFO - RESPONSE dc3c61af-c4fc-4883-9685-939018bffff9: 200 628ms - {"status_code": 200, "duration_ms": 627.86, "body": {"timeslots": [{"available": true, "time": "10:0
+2025-04-21 12:42:38,349 - api - INFO - REQUEST 973094a8-0348-4f17-8e8c-ae59ad5de7ab: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule", "path": "/tour-schedule", "client_ip
+2025-04-21 12:42:38,360 - api - INFO - RESPONSE 973094a8-0348-4f17-8e8c-ae59ad5de7ab: 200 12ms - {"status_code": 200, "duration_ms": 11.56}
+2025-04-21 13:14:36,751 - api - INFO - REQUEST 2ccd79c7-8ca7-4b86-bff0-ca27b7ac81cb: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule", "path": "/tour-schedule", "client_ip
+2025-04-21 13:14:37,595 - api - INFO - RESPONSE 2ccd79c7-8ca7-4b86-bff0-ca27b7ac81cb: 200 845ms - {"status_code": 200, "duration_ms": 845.35}
+2025-04-21 13:15:17,576 - api - INFO - REQUEST 326d3e62-f972-43d7-a63a-1ef3b1507152: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule", "path": "/tour-schedule", "client_ip
+2025-04-21 13:16:00,919 - api - INFO - RESPONSE 326d3e62-f972-43d7-a63a-1ef3b1507152: 200 43344ms - {"status_code": 200, "duration_ms": 43343.67}
+2025-04-21 13:16:11,757 - api - INFO - REQUEST de5b6694-188c-4244-ab46-ade985f4e621: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule", "path": "/tour-schedule", "client_ip
+2025-04-21 13:16:41,637 - api - INFO - REQUEST 2c2569b1-7a73-4fb5-a492-d73990681085: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule", "path": "/tour-schedule", "client_ip
+2025-04-21 13:16:42,331 - api - INFO - RESPONSE 2c2569b1-7a73-4fb5-a492-d73990681085: 200 694ms - {"status_code": 200, "duration_ms": 694.15}
+2025-04-21 13:17:55,135 - api - INFO - REQUEST 7d138c6f-98be-4c79-b25d-cd650efe0e41: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule", "path": "/tour-schedule", "client_ip
+2025-04-21 13:17:55,151 - api - INFO - RESPONSE 7d138c6f-98be-4c79-b25d-cd650efe0e41: 200 16ms - {"status_code": 200, "duration_ms": 16.13}
+2025-04-21 13:17:55,199 - api - INFO - REQUEST f7c5a5cc-680b-49f0-9ae2-6181b8566498: GET /get-all-timeslots - {"method": "GET", "url": "http://localhost:5003/get-all-timeslots", "path": "/get-all-timeslots", "c
+2025-04-21 13:18:34,187 - api - INFO - REQUEST feabf63c-b5c4-4e3b-952f-a75d068b3294: GET /get-all-timeslots - {"method": "GET", "url": "http://localhost:5003/get-all-timeslots", "path": "/get-all-timeslots", "c
+2025-04-21 13:18:35,109 - api - INFO - RESPONSE feabf63c-b5c4-4e3b-952f-a75d068b3294: 200 922ms - {"status_code": 200, "duration_ms": 921.84, "body": {"2025-04-21": ["10:00 AM", "10:30 AM", "11:00 A
+2025-04-21 13:18:56,085 - api - INFO - REQUEST 19be794e-1e8b-4b58-bcec-31dd72a764f0: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule", "path": "/tour-schedule", "client_ip
+2025-04-21 13:18:56,103 - api - INFO - RESPONSE 19be794e-1e8b-4b58-bcec-31dd72a764f0: 200 18ms - {"status_code": 200, "duration_ms": 17.98}
+2025-04-21 13:18:56,153 - api - INFO - REQUEST b4c3beab-4add-487a-931b-9dcdb7dd3c8b: GET /get-all-timeslots - {"method": "GET", "url": "http://localhost:5003/get-all-timeslots", "path": "/get-all-timeslots", "c
+2025-04-21 13:18:56,821 - api - INFO - RESPONSE b4c3beab-4add-487a-931b-9dcdb7dd3c8b: 200 668ms - {"status_code": 200, "duration_ms": 667.94, "body": {"2025-04-21": ["10:00 AM", "10:30 AM", "11:00 A
+2025-04-21 13:19:01,682 - api - INFO - REQUEST 3f558dae-016d-43cb-aea7-2da4539535af: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule", "path": "/tour-schedule", "client_ip
+2025-04-21 13:19:01,682 - api - INFO - RESPONSE 3f558dae-016d-43cb-aea7-2da4539535af: 200 1ms - {"status_code": 200, "duration_ms": 0.68}
+2025-04-21 13:19:01,728 - api - INFO - REQUEST 141f1370-7634-44d5-a7e5-7ff56bb3a912: GET /get-all-timeslots - {"method": "GET", "url": "http://localhost:5003/get-all-timeslots", "path": "/get-all-timeslots", "c
+2025-04-21 13:19:02,561 - api - INFO - RESPONSE 141f1370-7634-44d5-a7e5-7ff56bb3a912: 200 833ms - {"status_code": 200, "duration_ms": 832.58, "body": {"2025-04-21": ["10:00 AM", "10:30 AM", "11:00 A
+2025-04-21 13:19:22,174 - api - INFO - REQUEST daf356bb-eabf-474a-8fb4-35e3da06e2a5: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule?email=525@vectorny.com", "path": "/tou
+2025-04-21 13:19:22,174 - api - INFO - RESPONSE daf356bb-eabf-474a-8fb4-35e3da06e2a5: 200 1ms - {"status_code": 200, "duration_ms": 0.72}
+2025-04-21 13:19:22,240 - api - INFO - REQUEST aff76dc7-72de-47bf-98aa-44c37f166dde: GET /get-all-timeslots - {"method": "GET", "url": "http://localhost:5003/get-all-timeslots", "path": "/get-all-timeslots", "c
+2025-04-21 13:19:22,972 - api - INFO - RESPONSE aff76dc7-72de-47bf-98aa-44c37f166dde: 200 731ms - {"status_code": 200, "duration_ms": 731.49, "body": {"2025-04-21": ["10:00 AM", "10:30 AM", "11:00 A
+2025-04-21 13:19:29,528 - api - INFO - REQUEST 0a6372bb-ff3f-42e4-81b5-b5ea52dd187b: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule?email=it@vectorny.com", "path": "/tour
+2025-04-21 13:19:29,529 - api - INFO - RESPONSE 0a6372bb-ff3f-42e4-81b5-b5ea52dd187b: 200 1ms - {"status_code": 200, "duration_ms": 0.65}
+2025-04-21 13:19:29,669 - api - INFO - REQUEST 860140e6-b817-4743-a45b-59b991507b14: GET /get-all-timeslots - {"method": "GET", "url": "http://localhost:5003/get-all-timeslots", "path": "/get-all-timeslots", "c
+2025-04-21 13:19:30,326 - api - INFO - RESPONSE 860140e6-b817-4743-a45b-59b991507b14: 200 657ms - {"status_code": 200, "duration_ms": 656.8, "body": {"2025-04-21": ["10:00 AM", "10:30 AM", "11:00 AM
+2025-04-21 13:19:52,841 - api - INFO - REQUEST 9677c5fa-4657-40bc-bfd8-9674d324b944: POST /submit-tour-request - {"method": "POST", "url": "http://localhost:5003/submit-tour-request", "path": "/submit-tour-request
+2025-04-21 13:19:52,841 - api - INFO - RESPONSE 9677c5fa-4657-40bc-bfd8-9674d324b944: 200 1ms - {"status_code": 200, "duration_ms": 0.79, "body": {"success": true}}
+2025-04-21 13:19:56,642 - api - INFO - REQUEST 69c827ab-5bdc-4fe2-9052-589f52ee7b96: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule?email=it@vectorny.com", "path": "/tour
+2025-04-21 13:19:56,643 - api - INFO - RESPONSE 69c827ab-5bdc-4fe2-9052-589f52ee7b96: 200 0ms - {"status_code": 200, "duration_ms": 0.48}
+2025-04-21 13:19:56,688 - api - INFO - REQUEST f868c761-0769-4ba1-8202-3a1e622fdeb0: GET /get-all-timeslots - {"method": "GET", "url": "http://localhost:5003/get-all-timeslots", "path": "/get-all-timeslots", "c
+2025-04-21 13:19:57,578 - api - INFO - RESPONSE f868c761-0769-4ba1-8202-3a1e622fdeb0: 200 891ms - {"status_code": 200, "duration_ms": 890.6, "body": {"2025-04-21": ["10:00 AM", "10:30 AM", "11:00 AM
+2025-04-21 13:22:04,030 - api - INFO - REQUEST 11231b8e-7580-496e-8aab-7add88a3b549: POST /submit-tour-request - {"method": "POST", "url": "http://localhost:5003/submit-tour-request", "path": "/submit-tour-request
+2025-04-21 13:22:04,040 - api - INFO - RESPONSE 11231b8e-7580-496e-8aab-7add88a3b549: 200 12ms - {"status_code": 200, "duration_ms": 12.19, "body": {"success": true}}
+2025-04-21 13:24:35,432 - api - INFO - REQUEST 4e0edf2b-2a2c-45e6-bbf4-7e50dcd0e32f: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule?email=it@vectorny.com", "path": "/tour
+2025-04-21 13:24:35,471 - api - INFO - RESPONSE 4e0edf2b-2a2c-45e6-bbf4-7e50dcd0e32f: 200 38ms - {"status_code": 200, "duration_ms": 37.97}
+2025-04-21 13:24:35,522 - api - INFO - REQUEST d1461dcb-6abe-45f9-8c68-d3d05d98a762: GET /get-all-timeslots - {"method": "GET", "url": "http://localhost:5003/get-all-timeslots", "path": "/get-all-timeslots", "c
+2025-04-21 13:24:36,324 - api - INFO - RESPONSE d1461dcb-6abe-45f9-8c68-d3d05d98a762: 200 802ms - {"status_code": 200, "duration_ms": 801.7, "body": {"2025-04-21": ["10:00 AM", "10:30 AM", "11:00 AM
+2025-04-21 13:27:02,871 - api - INFO - REQUEST 1a7be087-614f-4628-90c6-2dd227df6bb3: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule?email=it@vectorny.com", "path": "/tour
+2025-04-21 13:27:02,884 - api - INFO - RESPONSE 1a7be087-614f-4628-90c6-2dd227df6bb3: 200 14ms - {"status_code": 200, "duration_ms": 13.68}
+2025-04-21 13:27:02,942 - api - INFO - REQUEST f53987ca-8e51-4b73-a9a6-af94ee009bcc: GET /get-all-timeslots - {"method": "GET", "url": "http://localhost:5003/get-all-timeslots", "path": "/get-all-timeslots", "c
+2025-04-21 13:27:03,637 - api - INFO - RESPONSE f53987ca-8e51-4b73-a9a6-af94ee009bcc: 200 696ms - {"status_code": 200, "duration_ms": 695.58, "body": {"2025-04-21": ["10:00 AM", "10:30 AM", "11:00 A
+2025-04-21 13:29:01,432 - api - INFO - REQUEST 795af6b4-ae1c-468a-ab1e-e9b6b92f9641: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule?email=it@vectorny.com", "path": "/tour
+2025-04-21 13:29:01,450 - api - INFO - RESPONSE 795af6b4-ae1c-468a-ab1e-e9b6b92f9641: 200 18ms - {"status_code": 200, "duration_ms": 18.19}
+2025-04-21 13:29:01,504 - api - INFO - REQUEST 5ac88cbc-ae1b-4a02-b6af-b86b7c7b7ce6: GET /get-all-timeslots - {"method": "GET", "url": "http://localhost:5003/get-all-timeslots", "path": "/get-all-timeslots", "c
+2025-04-21 13:29:02,366 - api - INFO - RESPONSE 5ac88cbc-ae1b-4a02-b6af-b86b7c7b7ce6: 200 862ms - {"status_code": 200, "duration_ms": 862.41, "body": {"2025-04-21": ["10:00 AM", "10:30 AM", "11:00 A
+2025-04-21 13:31:01,938 - api - INFO - REQUEST 80912a81-dc8b-4a1e-b104-179a5d590ba5: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule?email=it@vectorny.com", "path": "/tour
+2025-04-21 13:31:01,947 - api - INFO - RESPONSE 80912a81-dc8b-4a1e-b104-179a5d590ba5: 200 9ms - {"status_code": 200, "duration_ms": 9.04}
+2025-04-21 13:31:01,996 - api - INFO - REQUEST 2ddd5eab-9b7c-4293-a496-35dd01b19f36: GET /get-all-timeslots - {"method": "GET", "url": "http://localhost:5003/get-all-timeslots", "path": "/get-all-timeslots", "c
+2025-04-21 13:31:02,814 - api - INFO - RESPONSE 2ddd5eab-9b7c-4293-a496-35dd01b19f36: 200 818ms - {"status_code": 200, "duration_ms": 817.76, "body": {"2025-04-21": ["10:00 AM", "10:30 AM", "11:00 A
+2025-04-21 13:56:44,825 - api - INFO - REQUEST 7ad5de6c-fec6-4a8e-9cfb-ceef036a7c92: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule?email=it@vectorny.com", "path": "/tour
+2025-04-21 13:56:44,894 - api - INFO - RESPONSE 7ad5de6c-fec6-4a8e-9cfb-ceef036a7c92: 200 69ms - {"status_code": 200, "duration_ms": 69.37}
+2025-04-21 13:56:45,071 - api - INFO - REQUEST 45f19394-3a9d-40d1-8651-ac864d7d490b: GET /get-all-timeslots - {"method": "GET", "url": "http://localhost:5003/get-all-timeslots", "path": "/get-all-timeslots", "c
+2025-04-21 13:56:46,015 - api - INFO - RESPONSE 45f19394-3a9d-40d1-8651-ac864d7d490b: 200 944ms - {"status_code": 200, "duration_ms": 943.71, "body": {"2025-04-21": ["10:00 AM", "10:30 AM", "11:00 A
+2025-04-21 13:59:53,080 - api - INFO - REQUEST 825c723e-95c6-48d7-a68a-5a6cb0e9cff3: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule?email=it@vectorny.com", "path": "/tour
+2025-04-21 13:59:53,097 - api - INFO - RESPONSE 825c723e-95c6-48d7-a68a-5a6cb0e9cff3: 200 18ms - {"status_code": 200, "duration_ms": 17.98}
+2025-04-21 13:59:53,170 - api - INFO - REQUEST 1758064a-277d-4772-8159-a7fa0c7402fd: GET /get-all-timeslots - {"method": "GET", "url": "http://localhost:5003/get-all-timeslots", "path": "/get-all-timeslots", "c
+2025-04-21 13:59:53,875 - api - INFO - RESPONSE 1758064a-277d-4772-8159-a7fa0c7402fd: 200 705ms - {"status_code": 200, "duration_ms": 704.56, "body": {"2025-04-21": ["10:00 AM", "10:30 AM", "11:00 A
+2025-04-21 14:00:10,695 - api - INFO - REQUEST 9bcd1407-aa53-4a34-a152-9db45e883450: POST /submit-tour-request - {"method": "POST", "url": "http://localhost:5003/submit-tour-request", "path": "/submit-tour-request
+2025-04-21 14:03:20,140 - api - INFO - REQUEST d25542aa-f59d-47dc-bf12-87fd474aa8d2: POST /submit-tour-request - {"method": "POST", "url": "http://localhost:5003/submit-tour-request", "path": "/submit-tour-request
+2025-04-21 14:03:22,783 - api - INFO - RESPONSE d25542aa-f59d-47dc-bf12-87fd474aa8d2: 200 2643ms - {"status_code": 200, "duration_ms": 2643.39, "body": {"success": true}}
+2025-04-21 14:03:26,210 - api - INFO - REQUEST 0d4a1540-49f8-487a-8a4a-1589c7ef1c23: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule?email=it@vectorny.com", "path": "/tour
+2025-04-21 14:03:26,226 - api - INFO - RESPONSE 0d4a1540-49f8-487a-8a4a-1589c7ef1c23: 200 16ms - {"status_code": 200, "duration_ms": 15.88}
+2025-04-21 14:03:26,282 - api - INFO - REQUEST 032a3cab-6a34-432e-a97a-16c517309b1a: GET /get-all-timeslots - {"method": "GET", "url": "http://localhost:5003/get-all-timeslots", "path": "/get-all-timeslots", "c
+2025-04-21 14:03:27,936 - api - INFO - RESPONSE 032a3cab-6a34-432e-a97a-16c517309b1a: 200 1654ms - {"status_code": 200, "duration_ms": 1654.25, "body": {"2025-04-21": ["10:30 AM", "11:00 AM", "11:30 
+2025-04-21 14:03:52,175 - api - INFO - REQUEST 4d1f1436-34cd-49ba-8874-199aa2eba22f: POST /submit-tour-request - {"method": "POST", "url": "http://localhost:5003/submit-tour-request", "path": "/submit-tour-request
+2025-04-21 14:03:54,421 - api - INFO - RESPONSE 4d1f1436-34cd-49ba-8874-199aa2eba22f: 200 2246ms - {"status_code": 200, "duration_ms": 2245.82, "body": {"success": true}}
+2025-04-21 14:03:57,476 - api - INFO - REQUEST 1891547c-44d5-4dc1-ab7f-a0b3d824f26f: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule?email=it@vectorny.com", "path": "/tour
+2025-04-21 14:03:57,477 - api - INFO - RESPONSE 1891547c-44d5-4dc1-ab7f-a0b3d824f26f: 200 1ms - {"status_code": 200, "duration_ms": 1.06}
+2025-04-21 14:03:57,533 - api - INFO - REQUEST 057ac05f-6b8d-4e50-8cfb-a77c8c6c9aba: GET /get-all-timeslots - {"method": "GET", "url": "http://localhost:5003/get-all-timeslots", "path": "/get-all-timeslots", "c
+2025-04-21 14:03:59,156 - api - INFO - RESPONSE 057ac05f-6b8d-4e50-8cfb-a77c8c6c9aba: 200 1623ms - {"status_code": 200, "duration_ms": 1622.64, "body": {"2025-04-21": ["11:00 AM", "11:30 AM", "12:00 
+2025-04-21 14:05:18,877 - api - INFO - REQUEST 879bd57e-f3cc-4529-b5f3-d01a4007ffc4: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule?email=it@vectorny.com", "path": "/tour
+2025-04-21 14:05:18,893 - api - INFO - RESPONSE 879bd57e-f3cc-4529-b5f3-d01a4007ffc4: 200 17ms - {"status_code": 200, "duration_ms": 16.9}
+2025-04-21 14:05:18,923 - api - INFO - REQUEST 35c0b1d3-ab92-4832-8bea-bf6b2ad151c2: GET /get-all-timeslots - {"method": "GET", "url": "http://localhost:5003/get-all-timeslots", "path": "/get-all-timeslots", "c
+2025-04-21 14:05:21,044 - api - INFO - RESPONSE 35c0b1d3-ab92-4832-8bea-bf6b2ad151c2: 200 2122ms - {"status_code": 200, "duration_ms": 2121.56, "body": {"2025-04-21": ["11:00 AM", "11:30 AM", "12:00 
+2025-04-21 14:05:23,156 - api - INFO - REQUEST eadea74e-40df-4482-9f67-ac681aa99b42: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule?email=it@vectorny.com", "path": "/tour
+2025-04-21 14:05:23,156 - api - INFO - RESPONSE eadea74e-40df-4482-9f67-ac681aa99b42: 200 1ms - {"status_code": 200, "duration_ms": 0.72}
+2025-04-21 14:05:23,175 - api - INFO - REQUEST dc451fde-d8ae-432d-8516-737c0caacd7c: GET /get-all-timeslots - {"method": "GET", "url": "http://localhost:5003/get-all-timeslots", "path": "/get-all-timeslots", "c
+2025-04-21 14:05:24,978 - api - INFO - RESPONSE dc451fde-d8ae-432d-8516-737c0caacd7c: 200 1803ms - {"status_code": 200, "duration_ms": 1803.32, "body": {"2025-04-21": ["11:00 AM", "11:30 AM", "12:00 

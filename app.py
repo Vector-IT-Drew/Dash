@@ -9,6 +9,8 @@ from dotenv import load_dotenv
 from Services.Database import connect_bp, listings_bp
 from Services.Logging import log_viewer_bp
 from Services.Chatbot import chat_bp
+from Services.Forms.Tour_Schedule import tour_bp
+
 from flask_session import Session
 from datetime import timedelta
 from flask_cors import CORS
@@ -24,6 +26,7 @@ app.register_blueprint(connect_bp)
 app.register_blueprint(listings_bp)
 app.register_blueprint(log_viewer_bp)
 app.register_blueprint(chat_bp)
+app.register_blueprint(tour_bp)
 
 app.secret_key = os.environ.get('SECRET_KEY', 'your-secret-key-here')
 app.config['SESSION_TYPE'] = 'filesystem'
