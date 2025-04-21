@@ -157,23 +157,42 @@ def submit_tour_request():
 	return jsonify({"success": True})
 
 def get_gmail_service(email_address):
-	
-	# Use environment variables instead of service account file
-	
-	service_account_info = json.loads(os.environ.get('GOOGLE_CREDS', '{}'))
-	SCOPES = ["https://www.googleapis.com/auth/calendar"]
-	print('NOT HEREEREREE!!!!!', service_account_info)
-	
-	print('NOT HEREEREREE!!!!!',email_address)
-	
-	# Create credentials from the service account info dictionary
-	creds = service_account.Credentials.from_service_account_info(
-		service_account_info, scopes=SCOPES
-	)
-	
-	delegated_credentials = creds.with_subject(email_address)
-	service = build("calendar", "v3", credentials=delegated_credentials)
-	return service
+    print('get_gmail_service', email_address)
+    
+    # Construct service account info from environment variables
+    service_account_info = {
+        "type": "service_account",
+        "project_id":  "vector-main-app",
+        "private_key_id": os.environ.get('GOOGLE_PRIVATE_KEY_ID'),
+        "private_key": os.environ.get('GOOGLE_PRIVATE_KEY').replace('\\n', '\n'),
+        "client_email": "sheets-helper@vector-main-app.iam.gserviceaccount.com",
+        "client_id": "117359487626577840585",
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+         "token_uri": "https://oauth2.googleapis.com/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/sheets-helper%40vector-main-app.iam.gserviceaccount.com"
+    }
+
+    # Print out each part of the credentials for debugging
+    print('Service Account Info:', service_account_info)
+    
+    SCOPES = ["https://www.googleapis.com/auth/calendar"]
+    
+    try:
+        # Create credentials from the service account info dictionary
+        creds = service_account.Credentials.from_service_account_info(
+            service_account_info, scopes=SCOPES
+        )
+     
+        delegated_credentials = creds.with_subject(email_address)
+        service = build("calendar", "v3", credentials=delegated_credentials)
+      
+        return service
+    
+    except Exception as e:
+        print('Error connecting to Gmail service:', e)
+        return None
+
 
 def create_event(service, calendar_id, slot, tenant_name, tenant_email, tour_type, data):
 	"""Create an event in Google Calendar using a selected time slot."""

@@ -102,25 +102,10 @@ def get_gmail_service(email_address):
         creds = service_account.Credentials.from_service_account_info(
             service_account_info, scopes=SCOPES
         )
-        
-        # Test the credentials
-        print("Testing credentials...")
-        if not creds.valid:
-            print("Credentials are invalid. Attempting to refresh...")
-            creds.refresh(Request())
-            if creds.valid:
-                print("Credentials refreshed and are now valid.")
-            else:
-                print("Failed to refresh credentials.")
-        
+     
         delegated_credentials = creds.with_subject(email_address)
         service = build("calendar", "v3", credentials=delegated_credentials)
-        
-        # Test the service connection
-        print("Testing service connection...")
-        calendar_list = service.calendarList().list().execute()
-        print("Service connection successful. Calendar list retrieved.")
-        
+      
         return service
     
     except Exception as e:
