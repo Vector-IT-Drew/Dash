@@ -31,3 +31,4 @@ def get_board_schema(board_id, client):
 	board_data = pd.DataFrame(board['columns'])
 	
 	return board_data
+get_monday_client()
