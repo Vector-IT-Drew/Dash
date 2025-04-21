@@ -106,6 +106,6 @@ def run(email_address):
 	availableSlots = {}
 	for date, slots in available_slots.items():
 	    availableSlots[date] = slots
-
-	return availableSlots
+    
+    return availableSlots
 		
