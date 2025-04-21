@@ -29,8 +29,9 @@ def get_available_timeslots(date):
 	# time.sleep(1)
 	
 	# Get the email address from the request or use a default
-	email_address = request.args.get('email_address', 'it@vectorny.com')
+	email_address = request.args.get('email_address', '')
 	
+
 	# Get all available slots from Gmail
 	all_available_slots = get_gmail_timeslots(email_address)
 	
@@ -46,8 +47,9 @@ def get_available_timeslots(date):
 # Main endpoint to serve the tour scheduling form
 @tour_bp.route("/tour-schedule", methods=["GET"])
 def tour_schedule():
-	email_address = request.args.get('email_address', 'it@vectorny.com')
+	email_address = request.args.get('email_address', '')
 	version = request.args.get('version', 'default')
+	
 	
 	# Return the HTML immediately without fetching timeslots
 	return render_template('tour_schedule.html', 
@@ -61,8 +63,8 @@ def get_timeslots():
 	if not date:
 		return jsonify({"error": "Date parameter is required"}), 400
 	
-	# Pass along the email parameter if it exists
-	email = request.args.get('email_address', 'info@vectorproperties.com')
+	# Retrieve the portfolio email address
+	email_address = request.args.get('email_address', 'default@portfolio.com')
 	
 	# Get timeslots for the requested date
 	timeslots = get_available_timeslots(date)
@@ -71,7 +73,8 @@ def get_timeslots():
 # AJAX endpoint to get all available timeslots
 @tour_bp.route("/get-all-timeslots", methods=["GET"])
 def get_all_timeslots():
-	email_address = request.args.get('email_address', 'it@vectorny.com')
+	# Retrieve the portfolio email address
+	email_address = request.args.get('email_address', 'default@portfolio.com')
 	all_available_slots = get_gmail_timeslots(email_address)
 	return jsonify(all_available_slots)
 
@@ -80,7 +83,14 @@ def get_all_timeslots():
 def submit_tour_request():
 	# Get form data
 	data = request.form.to_dict()
-	email_address = data.get('email_address', 'it@vectorny.com')
+	# Retrieve the portfolio email address
+	email_address = data.get('email_address', 'default@portfolio.com')
+	tenant_email = data.get('tenant_email', '')
+
+	# Use email_address for calendar operations
+	service = get_gmail_service(email_address)
+
+	# Use tenant_email for tenant-specific operations
 	version = str(data.get('version', '1'))
 
 	if version == '2':
@@ -139,8 +149,6 @@ def submit_tour_request():
 
 	print('response', response)
 
-	service = get_gmail_service(email_address)
-
 	calendar_id = [item for item in service.calendarList().list().execute()['items'] if item['summary'] == 'Vector Tours'][0]['id']
 
 	resp = create_event(service, calendar_id, app_date.strftime('%m/%d/%Y %I:%M%p'), data['name'], data['email_address'], data['tour-type'], data)
@@ -149,10 +157,13 @@ def submit_tour_request():
 	return jsonify({"success": True})
 
 def get_gmail_service(email_address):
-	# Use environment variables instead of service account file
-	service_account_info = json.loads(os.environ.get('GOOGLE_CREDS', '{}'))
 	
+	# Use environment variables instead of service account file
+	
+	service_account_info = json.loads(os.environ.get('GOOGLE_CREDS', '{}'))
 	SCOPES = ["https://www.googleapis.com/auth/calendar"]
+	
+	print('get_gmail_service',email_address)
 	
 	# Create credentials from the service account info dictionary
 	creds = service_account.Credentials.from_service_account_info(

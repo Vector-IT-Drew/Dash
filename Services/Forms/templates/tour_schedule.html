@@ -330,7 +330,8 @@
             }
             
             // Fetch all available slots from the server in the background
-            fetch('/get-all-timeslots')
+            const emailAddress = document.querySelector('input[name="email_address"]').value;
+            fetch(`/get-all-timeslots?email_address=${encodeURIComponent(emailAddress)}`)
                 .then(response => response.json())
                 .then(allAvailableSlots => {
                     // Store the slots for later use
