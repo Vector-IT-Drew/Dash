@@ -114,27 +114,31 @@ def get_gmail_service(email_address):
 
 
 def run(email_address):
+    print('run', email_address)
 
-    print('run',email_address)
-
-    service = get_gmail_service(email_address)
-
-    calendar_list = service.calendarList().list().execute()
-
-    # Find the calendar with the summary 'Vector Tours'
     try:
+        service = get_gmail_service(email_address)
+        if not service:
+            print('Failed to get Gmail service')
+            return {"status": "error", "message": "Failed to connect to Gmail service"}
+
+        calendar_list = service.calendarList().list().execute()
+        print('Calendar List:', calendar_list)  # Log the calendar list
+
+        # Find the calendar with the summary 'Vector Tours'
         calendar_id = [item for item in calendar_list['items'] if item['summary'] == 'Vector Tours'][0]['id']
+        print('Found Calendar ID:', calendar_id)
+
+        start_date = datetime.date.today()  # Start from today
+        available_slots = get_available_slots(service, calendar_id, start_date)
+
+        availableSlots = {}
+        for date, slots in available_slots.items():
+            availableSlots[date] = slots
+
+        return availableSlots
+
     except Exception as e:
-        print('Error finding calendar:', e, calendar_list)
-        return {}
-
-    start_date = datetime.date.today()  # Start from today
-
-    available_slots = get_available_slots(service, calendar_id, start_date)
-
-    availableSlots = {}
-    for date, slots in available_slots.items():
-        availableSlots[date] = slots
-
-    return availableSlots
+        print('Error in run function:', e)
+        return {"status": "error", "message": str(e)}
         
