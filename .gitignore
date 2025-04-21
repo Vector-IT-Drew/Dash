@@ -27,6 +27,12 @@ var/
 *.egg
 Website/
 
+# Explicitly ignore all credential files
 vector-main-app-6861146695c6.json
-*.json.key
 *credentials*.json
+*.json.key
+# Add these additional patterns for better security
+*service-account*.json
+*key*.json
+*secret*.json
+.env*
