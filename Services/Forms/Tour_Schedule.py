@@ -12,6 +12,9 @@ import datetime
 import pytz
 import re
 from Services.Functions.Helper import format_dollar, format_phone
+import os
+from googleapiclient.discovery import build
+from google.oauth2 import service_account
 
 from Services.Functions.Monday import get_monday_client, get_board_schema
 
@@ -145,17 +148,17 @@ def submit_tour_request():
 
 	return jsonify({"success": True})
 
-
-from googleapiclient.discovery import build
-from google.oauth2 import service_account
-
-
 def get_gmail_service(email_address):
-	SERVICE_ACCOUNT_FILE = 'vector-main-app-6861146695c6.json'
+	# Use environment variables instead of service account file
+	service_account_info = json.loads(os.environ.get('GOOGLE_APPLICATION_CREDENTIALS_JSON', '{}'))
+	
 	SCOPES = ["https://www.googleapis.com/auth/calendar"]
-	creds = service_account.Credentials.from_service_account_file(
-		SERVICE_ACCOUNT_FILE, scopes=SCOPES
+	
+	# Create credentials from the service account info dictionary
+	creds = service_account.Credentials.from_service_account_info(
+		service_account_info, scopes=SCOPES
 	)
+	
 	delegated_credentials = creds.with_subject(email_address)
 	service = build("calendar", "v3", credentials=delegated_credentials)
 	return service

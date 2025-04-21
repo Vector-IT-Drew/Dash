@@ -10,6 +10,7 @@ from google.oauth2 import service_account
 import datetime
 from datetime import timedelta
 import pytz
+import os
 
 
 # Function to get busy slots
@@ -74,19 +75,19 @@ def get_available_slots(service, calendar_id, start_date, days_ahead=60):
     return available_slots
 
 def get_gmail_service(email_address):
-	
-	SERVICE_ACCOUNT_FILE = 'vector-main-app-6861146695c6.json'
-
-	SCOPES = ["https://www.googleapis.com/auth/calendar"]
-	creds = service_account.Credentials.from_service_account_file(
-	    SERVICE_ACCOUNT_FILE, scopes=SCOPES
-	)
-
-	delegated_credentials = creds.with_subject(email_address)
-
-	service = build("calendar", "v3", credentials=delegated_credentials)
-
-	return service
+    # Use environment variables instead of service account file
+    service_account_info = json.loads(os.environ.get('GOOGLE_CREDS', '{}'))
+    
+    SCOPES = ["https://www.googleapis.com/auth/calendar"]
+    
+    # Create credentials from the service account info dictionary
+    creds = service_account.Credentials.from_service_account_info(
+        service_account_info, scopes=SCOPES
+    )
+    
+    delegated_credentials = creds.with_subject(email_address)
+    service = build("calendar", "v3", credentials=delegated_credentials)
+    return service
 
 
 def run(email_address):
