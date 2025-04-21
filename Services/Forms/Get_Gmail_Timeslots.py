@@ -99,9 +99,18 @@ def run(email_address):
     service = get_gmail_service(email_address)
 
     try:
-        calendar_id = calendar_id = [item for item in service.calendarList().list().execute()['items'] if item['summary'] == 'Vector Tours'][0]['id']
+        # Fetch the list of calendars
+        calendar_list = service.calendarList().list().execute()
+        print('Calendar List:', calendar_list)  # Log the calendar list
+
+        # Find the calendar with the summary 'Vector Tours'
+        calendar_id = [item for item in calendar_list['items'] if item['summary'] == 'Vector Tours'][0]['id']
+    except IndexError:
+        print('Error: No Calendar Found with the summary "Vector Tours"')
+        return {}
     except Exception as e:
         print('Error: No Calendar Found!', e)
+        return {}
 
     start_date = datetime.date.today()  # Start from today
 

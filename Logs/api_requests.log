@@ -1170,3 +1170,11 @@
 2025-04-21 16:07:48,422 - api - INFO - RESPONSE c8d5a102-d5ad-40da-bc8e-ade9a334ac44: 200 1ms - {"status_code": 200, "duration_ms": 0.59}
 2025-04-21 16:07:48,469 - api - INFO - REQUEST bf203519-3979-4dcb-904d-ba04b9d7352d: GET /get-all-timeslots - {"method": "GET", "url": "http://localhost:5003/get-all-timeslots?email_address=it@vectorny.com", "p
 2025-04-21 16:07:50,163 - api - INFO - RESPONSE bf203519-3979-4dcb-904d-ba04b9d7352d: 200 1695ms - {"status_code": 200, "duration_ms": 1694.56, "body": {"2025-04-21": ["11:30 AM", "12:00 PM", "12:30 
+2025-04-21 16:14:37,907 - api - INFO - REQUEST fa8c6823-beb5-460a-8471-7490828eabae: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule?email_address=it@vectorny.com", "path"
+2025-04-21 16:14:37,929 - api - INFO - RESPONSE fa8c6823-beb5-460a-8471-7490828eabae: 200 24ms - {"status_code": 200, "duration_ms": 23.8}
+2025-04-21 16:14:38,032 - api - INFO - REQUEST b98d18b4-dc7a-47c6-9c29-2bce43108529: GET /get-all-timeslots - {"method": "GET", "url": "http://localhost:5003/get-all-timeslots?email_address=it@vectorny.com", "p
+2025-04-21 16:14:39,930 - api - INFO - RESPONSE b98d18b4-dc7a-47c6-9c29-2bce43108529: 200 1898ms - {"status_code": 200, "duration_ms": 1898.34, "body": {"2025-04-21": ["11:30 AM", "12:00 PM", "12:30 
+2025-04-21 16:14:44,732 - api - INFO - REQUEST df89d574-7634-4b66-9034-bfc51f655a04: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule?email_address=it@vectorny.com", "path"
+2025-04-21 16:14:44,733 - api - INFO - RESPONSE df89d574-7634-4b66-9034-bfc51f655a04: 200 1ms - {"status_code": 200, "duration_ms": 0.59}
+2025-04-21 16:14:44,773 - api - INFO - REQUEST 6cb0b85b-c3d8-44b7-98f3-d8ea77310c5d: GET /get-all-timeslots - {"method": "GET", "url": "http://localhost:5003/get-all-timeslots?email_address=it@vectorny.com", "p
+2025-04-21 16:14:46,393 - api - INFO - RESPONSE 6cb0b85b-c3d8-44b7-98f3-d8ea77310c5d: 200 1620ms - {"status_code": 200, "duration_ms": 1619.73, "body": {"2025-04-21": ["11:30 AM", "12:00 PM", "12:30 
