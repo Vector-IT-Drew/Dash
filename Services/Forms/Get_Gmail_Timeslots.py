@@ -33,7 +33,7 @@ def get_busy_slots(service, calendar_id, start_date, end_date):
 # Function to get available 30-minute slots between 9 AM and 6 PM, excluding busy slots
 def get_available_slots(service, calendar_id, start_date, days_ahead=60):
     busy_slots = get_busy_slots(service, calendar_id, start_date, start_date + datetime.timedelta(days=days_ahead))
-    
+    print('Busy Slots:', busy_slots)
     available_slots = {}
     eastern_tz = pytz.timezone("America/New_York")
 
@@ -49,6 +49,7 @@ def get_available_slots(service, calendar_id, start_date, days_ahead=60):
         end_time = pd.Timestamp(datetime.datetime.combine(current_day, datetime.time(end_hour, 0))).tz_localize(eastern_tz)
 
         while current_time <= end_time:
+            print('Current Time:', current_time)
             slot_end = current_time + pd.Timedelta(minutes=30)
 
             slot = {"start": current_time.isoformat(), "end": slot_end.isoformat()}
@@ -131,6 +132,7 @@ def run(email_address):
 
         start_date = datetime.date.today()  # Start from today
         available_slots = get_available_slots(service, calendar_id, start_date)
+        print('Available Slots:', available_slots)
 
         availableSlots = {}
         for date, slots in available_slots.items():
