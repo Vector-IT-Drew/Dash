@@ -134,18 +134,12 @@ def submit_tour_request():
 	# Convert column_values to a properly formatted JSON string
 	column_values_json = json.dumps(column_values)
 
-	# Construct and execute the query
-	response = client.custom.execute_custom_query(f'''
-	mutation {{
-	  create_item(
-		board_id: {leads_board_id}, 
-		item_name: "{data['name']}", 
-		column_values: {json.dumps(column_values_json)}
-	  ) {{
-		id
-	  }}
-	}}
-	''')
+	# Use the standard Monday.com Python API to create an item instead of GraphQL
+	response = client.items.create_item(
+		board_id=leads_board_id,
+		item_name=data['name'],
+		column_values=column_values_json
+	)
 
 	print('response', response)
 
