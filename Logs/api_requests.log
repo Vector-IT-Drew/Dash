@@ -1196,3 +1196,7 @@
 2025-04-21 16:31:00,236 - api - INFO - RESPONSE c6337a38-eba9-4626-9a9b-7d5481bb881c: 200 486ms - {"status_code": 200, "duration_ms": 485.59, "body": {"count": 65, "data": [{"actual_rent": 17500.0, 
 2025-04-21 16:32:03,417 - api - INFO - REQUEST 63da44ef-9237-4fae-bfe2-28cab34facc6: GET /get_filtered_listings - {"method": "GET", "url": "http://localhost:5003/get_filtered_listings", "path": "/get_filtered_listi
 2025-04-21 16:32:03,927 - api - INFO - RESPONSE 63da44ef-9237-4fae-bfe2-28cab34facc6: 200 510ms - {"status_code": 200, "duration_ms": 509.81, "body": {"count": 65, "data": [{"actual_rent": 17500.0, 
+2025-04-21 16:35:36,103 - api - INFO - REQUEST a3cf113b-b9d3-447d-82df-2bbfe729dffd: GET /get_filtered_listings - {"method": "GET", "url": "http://localhost:5003/get_filtered_listings", "path": "/get_filtered_listi
+2025-04-21 16:35:36,612 - api - INFO - RESPONSE a3cf113b-b9d3-447d-82df-2bbfe729dffd: 200 509ms - {"status_code": 200, "duration_ms": 508.55, "body": {"count": 65, "data": [{"actual_rent": 17500.0, 
+2025-04-21 16:52:26,800 - api - INFO - REQUEST c891a8af-043a-410c-9c06-0241a6701f04: GET /get_filtered_listings - {"method": "GET", "url": "http://localhost:5003/get_filtered_listings", "path": "/get_filtered_listi
+2025-04-21 16:52:27,316 - api - INFO - RESPONSE c891a8af-043a-410c-9c06-0241a6701f04: 200 515ms - {"status_code": 200, "duration_ms": 515.33, "body": {"count": 65, "data": [{"actual_rent": 17500.0, 

@@ -44,6 +44,7 @@ logger = logging.getLogger(__name__)
 
 @listings_bp.route('/get_filtered_listings', methods=['GET'])
 def get_filtered_listings():
+    print('Get Filtered Listings Called!\n\n', request.args)
     # Get filter parameters from query string
     address = request.args.get('address')
     unit = request.args.get('unit')
