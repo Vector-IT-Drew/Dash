@@ -577,8 +577,7 @@ def chat():
 
     Returns:
         Return ONLY a JSON dictionary, with key:value pairs for all the preferences extracted from the convo.
-        DO NOT include any preference that would result in zero listings based on the database information.
-        IMPORTANT: Include ALL preferences from the entire conversation, not just the most recent message.
+        DO NOT include any preference that do not currently exist in the data overview. 
 """
 
     response = client.chat.completions.create(
