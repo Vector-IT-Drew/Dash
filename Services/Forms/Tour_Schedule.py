@@ -124,27 +124,26 @@ def submit_tour_request():
 		mapping['Appointment Date']: {'date': app_date.strftime('%Y-%m-%d'), 'time': (app_date + datetime.timedelta(hours=4)).strftime('%H:%M:%S')},
 	}
 
-    if version == '2':
-        column_values[mapping['Address']] = data['inquiry_address']
-        column_values[mapping['# Tenants']] = data['tenants']
-        column_values[mapping['Qualification Criteria']] = {'label': data['qualification_criteria'], 'text': data['qualification_criteria']}
+	if version == '2':
+		column_values[mapping['Address']] = data['inquiry_address']
+		column_values[mapping['# Tenants']] = data['tenants']
+		column_values[mapping['Qualification Criteria']] = {'label': data['qualification_criteria'], 'text': data['qualification_criteria']}
 
-    print('column_values', column_values)
+	print('column_values', column_values)
 
-    # Convert column_values to a properly formatted JSON string
-    column_values_json = json.dumps(column_values)
+	# Convert column_values to a properly formatted JSON string
+	column_values_json = json.dumps(column_values)
 
-    # Get the first group ID directly from the board data
-    board_data = client.boards.fetch_boards_by_id(board_id=leads_board_id)
-    groups = board_data['data']['boards'][0]['groups']
-    group_id = groups[0]['id']  # Use the first group by default
+	# Get the first group ID directly from the board data
+	board_data = client.boards.fetch_boards_by_id(board_id=leads_board_id)
+	groups = board_data['data']['boards'][0]['groups']
+	group_id = groups[0]['id']  # Use the first group by default
 
-
-    # Use the standard Monday.com Python API to create an item instead of GraphQL
-    response = client.items.create_item(
-        board_id=leads_board_id,
-        group_id=group_id,  # Add the required group_id parameter
-        item_name=data['name'],
+	# Use the standard Monday.com Python API to create an item instead of GraphQL
+	response = client.items.create_item(
+		board_id=leads_board_id,
+		group_id=group_id,  # Add the required group_id parameter
+		item_name=data['name'],
 		column_values=column_values_json
 	)
 
