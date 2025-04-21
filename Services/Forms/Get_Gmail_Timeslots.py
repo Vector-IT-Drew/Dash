@@ -75,24 +75,43 @@ def get_available_slots(service, calendar_id, start_date, days_ahead=60):
     return available_slots
 
 def get_gmail_service(email_address):
-    print('get_gmail_service',email_address)
-    # Use environment variables instead of service account file
-    service_account_info = os.environ.get('GOOGLE_CREDS')
-   
-    print('service_account_info', service_account_info)
-    print('Type: service_account_info', type(service_account_info))
-
+    print('get_gmail_service', email_address)
     
+    # Use environment variables instead of service account file
+    service_account_info = json.loads(os.environ.get('GOOGLE_CREDS', '{}'))
+    print('service_account_info', service_account_info)
+
     SCOPES = ["https://www.googleapis.com/auth/calendar"]
     
-    # Create credentials from the service account info dictionary
-    creds = service_account.Credentials.from_service_account_info(
-        service_account_info, scopes=SCOPES
-    )
+    try:
+        # Create credentials from the service account info dictionary
+        creds = service_account.Credentials.from_service_account_info(
+            service_account_info, scopes=SCOPES
+        )
+        
+        # Test the credentials
+        print("Testing credentials...")
+        if not creds.valid:
+            print("Credentials are invalid. Attempting to refresh...")
+            creds.refresh(requests.Request())
+            if creds.valid:
+                print("Credentials refreshed and are now valid.")
+            else:
+                print("Failed to refresh credentials.")
+        
+        delegated_credentials = creds.with_subject(email_address)
+        service = build("calendar", "v3", credentials=delegated_credentials)
+        
+        # Test the service connection
+        print("Testing service connection...")
+        calendar_list = service.calendarList().list().execute()
+        print("Service connection successful. Calendar list retrieved.")
+        
+        return service
     
-    delegated_credentials = creds.with_subject(email_address)
-    service = build("calendar", "v3", credentials=delegated_credentials)
-    return service
+    except Exception as e:
+        print('Error connecting to Gmail service:', e)
+        return None
 
 
 def run(email_address):
