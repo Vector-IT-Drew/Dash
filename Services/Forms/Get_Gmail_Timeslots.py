@@ -77,7 +77,7 @@ def get_available_slots(service, calendar_id, start_date, days_ahead=60):
 def get_gmail_service(email_address):
     print('get_gmail_service',email_address)
     # Use environment variables instead of service account file
-    service_account_info = json.loads(os.environ.get('GOOGLE_CREDS', '{}'))
+    service_account_info = os.environ.get('GOOGLE_CREDS')
     print('service_account_info', service_account_info)
 
     
