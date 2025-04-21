@@ -566,7 +566,7 @@ def chat():
         Boroughs - {', '.join(sorted(set([val for val in listings.borough.unique() if val and len(val) > 1])))}
         Neighborhoods - {', '.join(sorted(set([val for val in listings.neighborhood.unique() if val and len(val) > 1])))}
         
-        Amenities - {', '.join(sorted(set(item for sublist in listings.building_amenities.apply(
+        Building Amenities - {', '.join(sorted(set(item for sublist in listings.building_amenities.apply(
             lambda x: json.loads(x) if isinstance(x, str) else (x if isinstance(x, list) else [])
         ) for item in sublist)))}
         
