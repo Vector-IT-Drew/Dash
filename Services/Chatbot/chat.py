@@ -500,12 +500,19 @@ def chat():
 
         NEVER include preferences that weren't explicitly mentioned in the user's CURRENT message.
 
-    CRITICAL: For boolean features, when a user says "I want X", or similer, set X=True. For example:
+    CRITICAL: For boolean features, when a user says "I want X", or similar, set X=True. For example:
     - If user says "I want a doorman" → set doorman=True (NOT building_amenities=["Doorman"])
     - If user says "I need an elevator" → set elevator=True
     - If user says "no pets" → set pet_friendly=False
 
-    The following are BOOLEAN FEATURES that should be set directly, not as amenities:
+    CRITICAL AMENITY VALIDATION:
+    - ONLY add amenities to building_amenities if they EXACTLY match one of these available amenities: {', '.join(sorted(set(item for sublist in listings.building_amenities.apply(
+        lambda x: json.loads(x) if isinstance(x, str) else (x if isinstance(x, list) else [])
+    ) for item in sublist)))}
+    - The match must be EXACT & case-insensitive, or should be a similar amenity that is in the list. (i.e. "Gym" should be added to building_amenities, even if the user says "Gym" or "Gymnasium")
+    - If a user mentions an amenity that doesn't match this list, DO NOT add it.
+
+    The following are BOOLEAN FEATURES that should be set directly, not as amenities (Never set any of these or similer as amenities):
     - doorman
     - elevator
     - wheelchair_access
@@ -628,6 +635,26 @@ def chat():
             session['preferences'][key] = value
 
         print(f"Updated preferences in session: {session['preferences']}")
+        
+        # Validate building_amenities to ensure they exactly match available amenities
+        if 'building_amenities' in new_preferences and isinstance(new_preferences['building_amenities'], list):
+            # Get the exact list of available amenities from the database
+            available_amenities = set(item for sublist in listings.building_amenities.apply(
+                lambda x: json.loads(x) if isinstance(x, str) else (x if isinstance(x, list) else [])
+            ) for item in sublist)
+            
+            # Filter to only include exact matches
+            valid_amenities = [amenity for amenity in new_preferences['building_amenities'] if amenity in available_amenities]
+            
+            # If we already have amenities in the session, merge them without duplicates
+            if 'building_amenities' in session['preferences'] and isinstance(session['preferences']['building_amenities'], list):
+                existing_amenities = set(session['preferences']['building_amenities'])
+                combined_amenities = list(existing_amenities.union(set(valid_amenities)))
+                new_preferences['building_amenities'] = combined_amenities
+            else:
+                new_preferences['building_amenities'] = valid_amenities
+            
+            print(f"Validated building_amenities: {new_preferences['building_amenities']}")
         
     except Exception as e:
         print(f"Error parsing preferences: {e}")
