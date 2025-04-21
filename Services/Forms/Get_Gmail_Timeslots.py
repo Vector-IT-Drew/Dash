@@ -36,43 +36,70 @@ def get_available_slots(service, calendar_id, start_date, days_ahead=60):
     print('Busy Slots:', busy_slots)
     available_slots = {}
     eastern_tz = pytz.timezone("America/New_York")
+    
+    # Pre-process busy slots into a more efficient format
+    busy_by_date = {}
+    for busy in busy_slots:
+        busy_start = pd.to_datetime(busy["start"]).astimezone(eastern_tz)
+        busy_end = pd.to_datetime(busy["end"]).astimezone(eastern_tz)
+        
+        # Handle busy slots that span multiple days
+        current = busy_start.replace(hour=0, minute=0, second=0, microsecond=0)
+        end_day = busy_end.replace(hour=0, minute=0, second=0, microsecond=0)
+        
+        while current <= end_day:
+            date_str = current.strftime("%Y-%m-%d")
+            if date_str not in busy_by_date:
+                busy_by_date[date_str] = []
+                
+            day_start = max(busy_start, current)
+            day_end = min(busy_end, current + pd.Timedelta(days=1) - pd.Timedelta(seconds=1))
+            
+            if day_start < day_end:  # Only add if there's actual overlap with this day
+                busy_by_date[date_str].append((day_start, day_end))
+            
+            current += pd.Timedelta(days=1)
 
     for day_offset in range(days_ahead + 1):
         current_day = start_date + datetime.timedelta(days=day_offset)
         weekday = current_day.weekday()  # Monday = 0, Sunday = 6
+        date_str = current_day.strftime("%Y-%m-%d")
         
         # Set time range based on weekday or weekend
         start_hour = 10  # 10 AM for all days
         end_hour = 18 if weekday < 5 else 17  # 6 PM for weekdays, 5 PM for weekends
 
+        # Generate all possible 30-minute slots for the day
+        day_slots = []
         current_time = pd.Timestamp(datetime.datetime.combine(current_day, datetime.time(start_hour, 0))).tz_localize(eastern_tz)
         end_time = pd.Timestamp(datetime.datetime.combine(current_day, datetime.time(end_hour, 0))).tz_localize(eastern_tz)
-
-        while current_time <= end_time:
-            print('Current Time:', current_time)
+        
+        while current_time < end_time:
             slot_end = current_time + pd.Timedelta(minutes=30)
-
-            slot = {"start": current_time.isoformat(), "end": slot_end.isoformat()}
-            overlap_found = False
-            
-            for busy in busy_slots:
-                busy_start = pd.to_datetime(busy["start"]).astimezone(eastern_tz)
-                busy_end = pd.to_datetime(busy["end"]).astimezone(eastern_tz)
-
-                if current_time < busy_end and slot_end > busy_start:
-                    overlap_found = True
-                    break
-
-            if not overlap_found:
-                date_str = current_time.strftime("%Y-%m-%d")
-                start_time_str = current_time.strftime("%I:%M %p")
-
-                if date_str not in available_slots:
-                    available_slots[date_str] = []
-                
-                available_slots[date_str].append(start_time_str)
-
+            day_slots.append((current_time, slot_end))
             current_time = slot_end
+        
+        # Remove busy slots efficiently
+        if date_str in busy_by_date:
+            busy_periods = busy_by_date[date_str]
+            available_day_slots = []
+            
+            for slot_start, slot_end in day_slots:
+                is_available = True
+                for busy_start, busy_end in busy_periods:
+                    if slot_start < busy_end and slot_end > busy_start:
+                        is_available = False
+                        break
+                
+                if is_available:
+                    available_day_slots.append(slot_start)
+        else:
+            # If no busy slots for this day, all slots are available
+            available_day_slots = [slot[0] for slot in day_slots]
+        
+        # Format and add available slots to the result
+        if available_day_slots:
+            available_slots[date_str] = [slot.strftime("%I:%M %p") for slot in available_day_slots]
     
     return available_slots
 

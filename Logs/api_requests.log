@@ -1200,3 +1200,17 @@
 2025-04-21 16:35:36,612 - api - INFO - RESPONSE a3cf113b-b9d3-447d-82df-2bbfe729dffd: 200 509ms - {"status_code": 200, "duration_ms": 508.55, "body": {"count": 65, "data": [{"actual_rent": 17500.0, 
 2025-04-21 16:52:26,800 - api - INFO - REQUEST c891a8af-043a-410c-9c06-0241a6701f04: GET /get_filtered_listings - {"method": "GET", "url": "http://localhost:5003/get_filtered_listings", "path": "/get_filtered_listi
 2025-04-21 16:52:27,316 - api - INFO - RESPONSE c891a8af-043a-410c-9c06-0241a6701f04: 200 515ms - {"status_code": 200, "duration_ms": 515.33, "body": {"count": 65, "data": [{"actual_rent": 17500.0, 
+2025-04-21 18:36:20,175 - api - INFO - REQUEST a013d965-0bc6-42c5-a217-368a8b59402a: GET / - {"method": "GET", "url": "http://192.168.86.16:5003/", "path": "/", "client_ip": "192.168.86.16"}
+2025-04-21 18:36:20,221 - api - INFO - RESPONSE a013d965-0bc6-42c5-a217-368a8b59402a: 200 46ms - {"status_code": 200, "duration_ms": 46.22, "body": {"endpoints": {"/connect": "GET - Test database c
+2025-04-21 18:36:28,965 - api - INFO - REQUEST 61efee58-34a8-40e3-8f4a-9c0732ec4007: GET /get-all-timeslots - {"method": "GET", "url": "http://192.168.86.16:5003/get-all-timeslots?email_address=525@VectorNY.com
+2025-04-21 18:36:28,965 - api - INFO - RESPONSE 61efee58-34a8-40e3-8f4a-9c0732ec4007: 200 1ms - {"status_code": 200, "duration_ms": 0.58, "body": {"message": "'NoneType' object has no attribute 'r
+2025-04-21 18:38:27,074 - api - INFO - REQUEST 663fdc8a-ec18-42af-b239-ad4bc14b3bc1: GET /get-all-timeslots - {"method": "GET", "url": "http://192.168.86.16:5003/get-all-timeslots?email_address=525@VectorNY.com
+2025-04-21 18:39:15,293 - api - INFO - RESPONSE 663fdc8a-ec18-42af-b239-ad4bc14b3bc1: 200 48219ms - {"status_code": 200, "duration_ms": 48218.54, "body": {"2025-04-21": ["10:00 AM", "10:30 AM", "11:00
+2025-04-21 18:39:49,463 - api - INFO - REQUEST c6e6df6b-3ea4-4cbf-a1a4-163f33439aa3: GET /get-all-timeslots - {"method": "GET", "url": "http://192.168.86.16:5003/get-all-timeslots?email_address=525@VectorNY.com
+2025-04-21 18:39:50,255 - api - INFO - RESPONSE c6e6df6b-3ea4-4cbf-a1a4-163f33439aa3: 200 792ms - {"status_code": 200, "duration_ms": 792.12, "body": {"2025-04-21": ["10:00 AM", "10:30 AM", "11:00 A
+2025-04-21 18:39:55,720 - api - INFO - REQUEST 876cedd9-3544-41ca-8026-5c3f72e20693: GET /get-all-timeslots - {"method": "GET", "url": "http://192.168.86.16:5003/get-all-timeslots?email_address=sutton@VectorNY.
+2025-04-21 18:39:56,429 - api - INFO - RESPONSE 876cedd9-3544-41ca-8026-5c3f72e20693: 200 709ms - {"status_code": 200, "duration_ms": 708.79, "body": {"2025-04-21": ["10:00 AM", "10:30 AM", "11:00 A
+2025-04-21 18:40:02,405 - api - INFO - REQUEST 300011b9-1fd6-4942-9eea-75ce8164fb75: GET /get-all-timeslots - {"method": "GET", "url": "http://192.168.86.16:5003/get-all-timeslots?email_address=it@VectorNY.com"
+2025-04-21 18:40:03,081 - api - INFO - RESPONSE 300011b9-1fd6-4942-9eea-75ce8164fb75: 200 676ms - {"status_code": 200, "duration_ms": 676.15, "body": {"2025-04-21": ["11:30 AM", "12:00 PM", "12:30 P
+2025-04-21 18:40:09,908 - api - INFO - REQUEST 7bc05bf0-bc95-4e5a-9184-a13afc2fc1f6: GET /get-all-timeslots - {"method": "GET", "url": "http://192.168.86.16:5003/get-all-timeslots?email_address=sutton@VectorNY.
+2025-04-21 18:40:10,677 - api - INFO - RESPONSE 7bc05bf0-bc95-4e5a-9184-a13afc2fc1f6: 200 768ms - {"status_code": 200, "duration_ms": 768.21, "body": {"2025-04-21": ["10:00 AM", "10:30 AM", "11:00 A
