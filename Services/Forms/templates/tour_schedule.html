@@ -331,6 +331,7 @@
             
             // Fetch all available slots from the server in the background
             const emailAddress = document.querySelector('input[name="email_address"]').value;
+            console.log('Using email address from template:', emailAddress);
             fetch(`/get-all-timeslots?email_address=${encodeURIComponent(emailAddress)}`)
                 .then(response => response.json())
                 .then(allAvailableSlots => {
@@ -417,6 +418,14 @@
                     // Collect form data
                     const formData = new FormData(form);
                     console.log('Form data collected:', Array.from(formData.entries()));
+
+                    // Get the email_address from the hidden input field
+                    // This value was passed to the template when rendering
+                    const emailAddress = document.querySelector('input[name="email_address"]').value;
+                    console.log('Using email address from template:', emailAddress);
+                    
+                    // Make sure it's included in the form data (in case it wasn't picked up automatically)
+                    formData.set("email_address", emailAddress);
 
                     const selectedTimeSlot = document.querySelector('.time-slot.selected');
                     if ("{{ version }}" == '2') {

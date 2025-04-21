@@ -33,7 +33,6 @@ def get_busy_slots(service, calendar_id, start_date, end_date):
 # Function to get available 30-minute slots between 9 AM and 6 PM, excluding busy slots
 def get_available_slots(service, calendar_id, start_date, days_ahead=60):
     busy_slots = get_busy_slots(service, calendar_id, start_date, start_date + datetime.timedelta(days=days_ahead))
-    print('Busy Slots:', busy_slots)
     available_slots = {}
     eastern_tz = pytz.timezone("America/New_York")
     
@@ -104,7 +103,6 @@ def get_available_slots(service, calendar_id, start_date, days_ahead=60):
     return available_slots
 
 def get_gmail_service(email_address):
-    print('get_gmail_service', email_address)
     
     # Construct service account info from environment variables
     service_account_info = {
@@ -119,9 +117,6 @@ def get_gmail_service(email_address):
         "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
         "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/sheets-helper%40vector-main-app.iam.gserviceaccount.com"
     }
-
-    # Print out each part of the credentials for debugging
-    print('Service Account Info:', service_account_info)
     
     SCOPES = ["https://www.googleapis.com/auth/calendar"]
     
@@ -142,7 +137,6 @@ def get_gmail_service(email_address):
 
 
 def run(email_address):
-    print('run', email_address)
 
     try:
         service = get_gmail_service(email_address)
@@ -151,15 +145,12 @@ def run(email_address):
             return {"status": "error", "message": "Failed to connect to Gmail service"}
 
         calendar_list = service.calendarList().list().execute()
-        print('Calendar List:', calendar_list)  # Log the calendar list
 
         # Find the calendar with the summary 'Vector Tours'
         calendar_id = [item for item in calendar_list['items'] if item['summary'] == 'Vector Tours'][0]['id']
-        print('Found Calendar ID:', calendar_id)
 
         start_date = datetime.date.today()  # Start from today
         available_slots = get_available_slots(service, calendar_id, start_date)
-        print('Available Slots:', available_slots)
 
         availableSlots = {}
         for date, slots in available_slots.items():

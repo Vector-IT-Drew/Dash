@@ -84,7 +84,7 @@ def submit_tour_request():
 	# Get form data
 	data = request.form.to_dict()
 	# Retrieve the portfolio email address
-	email_address = data.get('email_address', 'default@portfolio.com')
+	email_address = data.get('email_address', '')
 	tenant_email = data.get('tenant_email', '')
 
 	# Use email_address for calendar operations
