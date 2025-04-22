@@ -105,21 +105,37 @@ def submit_tour_request():
 	if 'time-slot' in data:
 		time_slot = data['time-slot']
 		
-		selected_date = data.get('date-select', '')  # Get the selected date from the form
-		
-		# Combine date and time in a format that pd.to_datetime can reliably parse
-		combined_datetime = f"{selected_date} {time_slot}"
-		
-		# Parse the combined datetime string
-		try:
-			app_date = pd.to_datetime(combined_datetime)
-		except:
-			# If the standard parsing fails, try with explicit format
+		# Check if we're using version 2 (combined datetime) or version 1 (separate date and time)
+		if version == '2':
+			# Version 2 already sends a formatted datetime string in time-slot
 			try:
-				app_date = pd.to_datetime(combined_datetime, format='%Y-%m-%d %I:%M %p')
-			except Exception as e:
-				print(f"Error parsing datetime: {e}")
-				return jsonify({"error": f"Invalid date/time format: {combined_datetime}"}), 400
+				# The format from JS is like "2023-05-15 at 10:00 AM"
+				app_date = pd.to_datetime(time_slot)
+			except:
+				try:
+					# Try with explicit format if automatic parsing fails
+					app_date = pd.to_datetime(time_slot, format='%Y-%m-%d at %I:%M %p')
+				except Exception as e:
+					print(f"Error parsing datetime for version 2: {e}")
+					return jsonify({"error": f"Invalid date/time format: {time_slot}"}), 400
+		else:
+			# Version 1 sends separate date and time
+			selected_date = data.get('date-select', '')
+			
+			if not selected_date:
+				return jsonify({"error": "Date selection is required"}), 400
+				
+			# Combine date and time
+			combined_datetime = f"{selected_date} {time_slot}"
+			
+			try:
+				app_date = pd.to_datetime(combined_datetime)
+			except:
+				try:
+					app_date = pd.to_datetime(combined_datetime, format='%Y-%m-%d %I:%M %p')
+				except Exception as e:
+					print(f"Error parsing datetime for version 1: {e}")
+					return jsonify({"error": f"Invalid date/time format: {combined_datetime}"}), 400
 	else:
 		# Handle the case where time-slot is missing
 		return jsonify({"error": "Time slot is required"}), 400

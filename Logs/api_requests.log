@@ -1223,3 +1223,7 @@
 2025-04-21 20:03:32,002 - api - INFO - REQUEST 0da91801-dd5c-45fe-b617-f153695dc48e: POST /submit-tour-request - {"method": "POST", "url": "http://localhost:5003/submit-tour-request", "path": "/submit-tour-request
 2025-04-21 20:04:30,875 - api - INFO - REQUEST 08dedcef-c6cc-4cfe-9dfc-8c365f57ecfa: POST /submit-tour-request - {"method": "POST", "url": "http://localhost:5003/submit-tour-request", "path": "/submit-tour-request
 2025-04-21 20:04:33,638 - api - INFO - RESPONSE 08dedcef-c6cc-4cfe-9dfc-8c365f57ecfa: 200 2763ms - {"status_code": 200, "duration_ms": 2763.16, "body": {"success": true}}
+2025-04-21 20:13:23,004 - api - INFO - REQUEST d8d98b68-ff0b-4d61-a518-3996ebb73db6: POST /submit-tour-request - {"method": "POST", "url": "http://localhost:5003/submit-tour-request", "path": "/submit-tour-request
+2025-04-21 20:13:23,664 - api - INFO - RESPONSE d8d98b68-ff0b-4d61-a518-3996ebb73db6: 400 661ms - {"status_code": 400, "duration_ms": 660.55, "body": {"error": "Invalid date/time format:  10:00 AM"}
+2025-04-21 20:15:02,692 - api - INFO - REQUEST 71e4c4c5-eff0-4ada-94f0-6ef4ed6fb520: POST /submit-tour-request - {"method": "POST", "url": "http://localhost:5003/submit-tour-request", "path": "/submit-tour-request
+2025-04-21 20:15:04,117 - api - INFO - RESPONSE 71e4c4c5-eff0-4ada-94f0-6ef4ed6fb520: 400 1425ms - {"status_code": 400, "duration_ms": 1424.99, "body": {"error": "Date selection is required"}}
