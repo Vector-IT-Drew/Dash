@@ -1227,3 +1227,18 @@
 2025-04-21 20:13:23,664 - api - INFO - RESPONSE d8d98b68-ff0b-4d61-a518-3996ebb73db6: 400 661ms - {"status_code": 400, "duration_ms": 660.55, "body": {"error": "Invalid date/time format:  10:00 AM"}
 2025-04-21 20:15:02,692 - api - INFO - REQUEST 71e4c4c5-eff0-4ada-94f0-6ef4ed6fb520: POST /submit-tour-request - {"method": "POST", "url": "http://localhost:5003/submit-tour-request", "path": "/submit-tour-request
 2025-04-21 20:15:04,117 - api - INFO - RESPONSE 71e4c4c5-eff0-4ada-94f0-6ef4ed6fb520: 400 1425ms - {"status_code": 400, "duration_ms": 1424.99, "body": {"error": "Date selection is required"}}
+2025-04-22 11:53:07,007 - api - INFO - REQUEST 48cd3f71-bb01-4a85-8d42-9310b29ec524: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule?email_address=it@vectorny.com", "path"
+2025-04-22 11:53:07,083 - api - INFO - RESPONSE 48cd3f71-bb01-4a85-8d42-9310b29ec524: 200 77ms - {"status_code": 200, "duration_ms": 76.98}
+2025-04-22 11:53:07,340 - api - INFO - REQUEST 0c708706-0e38-4432-95b9-509027c7df85: GET /get-all-timeslots - {"method": "GET", "url": "http://localhost:5003/get-all-timeslots?email_address=it@vectorny.com", "p
+2025-04-22 11:53:08,321 - api - INFO - RESPONSE 0c708706-0e38-4432-95b9-509027c7df85: 200 981ms - {"status_code": 200, "duration_ms": 980.51, "body": {"2025-04-22": ["11:30 AM", "12:00 PM", "12:30 P
+2025-04-22 11:53:15,834 - api - INFO - REQUEST a1a3c1cd-d4d9-4f4f-8006-306113cac189: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule?email_address=525@vectorny.com", "path
+2025-04-22 11:53:15,834 - api - INFO - RESPONSE a1a3c1cd-d4d9-4f4f-8006-306113cac189: 200 0ms - {"status_code": 200, "duration_ms": 0.48}
+2025-04-22 11:53:15,865 - api - INFO - REQUEST 0a19d542-9e9e-4e0a-b103-e510c585d928: GET /get-all-timeslots - {"method": "GET", "url": "http://localhost:5003/get-all-timeslots?email_address=525@vectorny.com", "
+2025-04-22 11:53:16,777 - api - INFO - RESPONSE 0a19d542-9e9e-4e0a-b103-e510c585d928: 200 912ms - {"status_code": 200, "duration_ms": 912.12, "body": {"2025-04-22": ["10:00 AM", "10:30 AM", "11:00 A
+2025-04-22 11:53:34,393 - api - INFO - REQUEST 55f4a779-bb99-4f45-a103-69ae0d34c35f: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule?email_address=it@vectorny.com", "path"
+2025-04-22 11:53:34,410 - api - INFO - RESPONSE 55f4a779-bb99-4f45-a103-69ae0d34c35f: 200 17ms - {"status_code": 200, "duration_ms": 17.23}
+2025-04-22 11:53:34,488 - api - INFO - REQUEST d8af8e26-d3d2-4e9b-adc3-0f83c5a66295: GET /get-all-timeslots - {"method": "GET", "url": "http://localhost:5003/get-all-timeslots?email_address=it@vectorny.com", "p
+2025-04-22 11:53:35,285 - api - INFO - RESPONSE d8af8e26-d3d2-4e9b-adc3-0f83c5a66295: 200 797ms - {"status_code": 200, "duration_ms": 797.01, "body": {"2025-04-22": ["11:30 AM", "12:00 PM", "12:30 P
+2025-04-22 11:53:47,543 - api - INFO - REQUEST df809255-0f54-43af-93f6-903666f4bbf5: POST /submit-tour-request - {"method": "POST", "url": "http://localhost:5003/submit-tour-request", "path": "/submit-tour-request
+2025-04-22 11:54:27,043 - api - INFO - REQUEST 6eb238ca-c166-45cf-bbbf-f8419beb3993: POST /submit-tour-request - {"method": "POST", "url": "http://localhost:5003/submit-tour-request", "path": "/submit-tour-request
+2025-04-22 11:54:29,480 - api - INFO - RESPONSE 6eb238ca-c166-45cf-bbbf-f8419beb3993: 200 2437ms - {"status_code": 200, "duration_ms": 2436.94, "body": {"success": true}}
