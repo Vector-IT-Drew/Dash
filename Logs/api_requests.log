@@ -1214,3 +1214,12 @@
 2025-04-21 18:40:03,081 - api - INFO - RESPONSE 300011b9-1fd6-4942-9eea-75ce8164fb75: 200 676ms - {"status_code": 200, "duration_ms": 676.15, "body": {"2025-04-21": ["11:30 AM", "12:00 PM", "12:30 P
 2025-04-21 18:40:09,908 - api - INFO - REQUEST 7bc05bf0-bc95-4e5a-9184-a13afc2fc1f6: GET /get-all-timeslots - {"method": "GET", "url": "http://192.168.86.16:5003/get-all-timeslots?email_address=sutton@VectorNY.
 2025-04-21 18:40:10,677 - api - INFO - RESPONSE 7bc05bf0-bc95-4e5a-9184-a13afc2fc1f6: 200 768ms - {"status_code": 200, "duration_ms": 768.21, "body": {"2025-04-21": ["10:00 AM", "10:30 AM", "11:00 A
+2025-04-21 19:57:06,544 - api - INFO - REQUEST a9066f26-2e5c-4afb-948c-71bfc1394964: POST /submit-tour-request - {"method": "POST", "url": "http://localhost:5003/submit-tour-request", "path": "/submit-tour-request
+2025-04-21 19:57:40,434 - api - INFO - REQUEST cc68c50e-cb6f-4b79-996e-9e6f5b9376d2: POST /submit-tour-request - {"method": "POST", "url": "http://localhost:5003/submit-tour-request", "path": "/submit-tour-request
+2025-04-21 19:57:59,255 - api - INFO - REQUEST 0d5efd19-2cb9-4a5e-8d07-e0c57387f504: POST /submit-tour-request - {"method": "POST", "url": "http://localhost:5003/submit-tour-request", "path": "/submit-tour-request
+2025-04-21 19:58:07,698 - api - INFO - REQUEST 6f115571-8406-4a72-8966-d867f3c7b38f: POST /submit-tour-request - {"method": "POST", "url": "http://localhost:5003/submit-tour-request", "path": "/submit-tour-request
+2025-04-21 19:58:14,658 - api - INFO - REQUEST 69641e24-a685-42bc-a93b-3fcbc97027d4: POST /submit-tour-request - {"method": "POST", "url": "http://localhost:5003/submit-tour-request", "path": "/submit-tour-request
+2025-04-21 20:01:56,449 - api - INFO - REQUEST 2c363fa6-1f8e-4fc4-85f0-eac6cd3c1f16: POST /submit-tour-request - {"method": "POST", "url": "http://localhost:5003/submit-tour-request", "path": "/submit-tour-request
+2025-04-21 20:03:32,002 - api - INFO - REQUEST 0da91801-dd5c-45fe-b617-f153695dc48e: POST /submit-tour-request - {"method": "POST", "url": "http://localhost:5003/submit-tour-request", "path": "/submit-tour-request
+2025-04-21 20:04:30,875 - api - INFO - REQUEST 08dedcef-c6cc-4cfe-9dfc-8c365f57ecfa: POST /submit-tour-request - {"method": "POST", "url": "http://localhost:5003/submit-tour-request", "path": "/submit-tour-request
+2025-04-21 20:04:33,638 - api - INFO - RESPONSE 08dedcef-c6cc-4cfe-9dfc-8c365f57ecfa: 200 2763ms - {"status_code": 200, "duration_ms": 2763.16, "body": {"success": true}}
