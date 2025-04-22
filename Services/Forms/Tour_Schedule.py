@@ -104,12 +104,22 @@ def submit_tour_request():
 	# Ensure the time-slot includes a date
 	if 'time-slot' in data:
 		time_slot = data['time-slot']
-		if len(time_slot.split()) == 2:  # If only time is provided
-			# Prepend today's date to the time
-			today_date = datetime.date.today().strftime('%Y-%m-%d')
-			time_slot = f"{today_date} at {time_slot}"
-
-		app_date = pd.to_datetime(time_slot, format='%Y-%m-%d at %I:%M %p')
+		
+		selected_date = data.get('date-select', '')  # Get the selected date from the form
+		
+		# Combine date and time in a format that pd.to_datetime can reliably parse
+		combined_datetime = f"{selected_date} {time_slot}"
+		
+		# Parse the combined datetime string
+		try:
+			app_date = pd.to_datetime(combined_datetime)
+		except:
+			# If the standard parsing fails, try with explicit format
+			try:
+				app_date = pd.to_datetime(combined_datetime, format='%Y-%m-%d %I:%M %p')
+			except Exception as e:
+				print(f"Error parsing datetime: {e}")
+				return jsonify({"error": f"Invalid date/time format: {combined_datetime}"}), 400
 	else:
 		# Handle the case where time-slot is missing
 		return jsonify({"error": "Time slot is required"}), 400
