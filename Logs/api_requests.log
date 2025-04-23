@@ -1311,3 +1311,11 @@
 2025-04-23 17:33:29,831 - api - INFO - RESPONSE 2bcddad8-f122-41d3-98d9-4c287158c6e2: 200 1ms - {"status_code": 200, "duration_ms": 1.28, "body": ""}
 2025-04-23 17:33:29,841 - api - INFO - REQUEST 6a2088ba-7ad9-4cbe-8cab-cc9b6845f218: POST /notify - {"method": "POST", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "192.1
 2025-04-23 17:33:31,405 - api - INFO - RESPONSE 6a2088ba-7ad9-4cbe-8cab-cc9b6845f218: 200 1565ms - {"status_code": 200, "duration_ms": 1565.49, "body": {"data": null, "status": "success"}}
+2025-04-23 18:54:16,408 - api - INFO - REQUEST 44c0de8e-efee-4bbf-bff6-12b74d3a114b: OPTIONS /notify - {"method": "OPTIONS", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "19
+2025-04-23 18:54:16,469 - api - INFO - RESPONSE 44c0de8e-efee-4bbf-bff6-12b74d3a114b: 200 59ms - {"status_code": 200, "duration_ms": 58.64, "body": ""}
+2025-04-23 18:54:16,491 - api - INFO - REQUEST 09a685a3-e878-47ba-8f40-43168c77b43d: POST /notify - {"method": "POST", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "192.1
+2025-04-23 18:54:18,480 - api - INFO - RESPONSE 09a685a3-e878-47ba-8f40-43168c77b43d: 200 1992ms - {"status_code": 200, "duration_ms": 1991.98, "body": {"data": null, "status": "success"}}
+2025-04-23 18:54:37,427 - api - INFO - REQUEST cfea3ff0-5b0e-43f2-8d22-22ede20e0b67: OPTIONS /notify - {"method": "OPTIONS", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "19
+2025-04-23 18:54:37,427 - api - INFO - RESPONSE cfea3ff0-5b0e-43f2-8d22-22ede20e0b67: 200 1ms - {"status_code": 200, "duration_ms": 0.53, "body": ""}
+2025-04-23 18:54:37,433 - api - INFO - REQUEST 681d56ff-7b27-4539-a155-08c2768be459: POST /notify - {"method": "POST", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "192.1
+2025-04-23 18:54:38,842 - api - INFO - RESPONSE 681d56ff-7b27-4539-a155-08c2768be459: 200 1410ms - {"status_code": 200, "duration_ms": 1409.79, "body": {"data": null, "status": "success"}}
