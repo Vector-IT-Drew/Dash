@@ -1242,3 +1242,72 @@
 2025-04-22 11:53:47,543 - api - INFO - REQUEST df809255-0f54-43af-93f6-903666f4bbf5: POST /submit-tour-request - {"method": "POST", "url": "http://localhost:5003/submit-tour-request", "path": "/submit-tour-request
 2025-04-22 11:54:27,043 - api - INFO - REQUEST 6eb238ca-c166-45cf-bbbf-f8419beb3993: POST /submit-tour-request - {"method": "POST", "url": "http://localhost:5003/submit-tour-request", "path": "/submit-tour-request
 2025-04-22 11:54:29,480 - api - INFO - RESPONSE 6eb238ca-c166-45cf-bbbf-f8419beb3993: 200 2437ms - {"status_code": 200, "duration_ms": 2436.94, "body": {"success": true}}
+2025-04-22 13:58:01,364 - api - INFO - REQUEST 0872a305-0ff7-4a64-a7a0-7989c1703be8: GET /api/logs - {"method": "GET", "url": "http://localhost:5003/api/logs", "path": "/api/logs", "client_ip": "127.0.
+2025-04-22 13:58:01,428 - api - INFO - RESPONSE 0872a305-0ff7-4a64-a7a0-7989c1703be8: 404 66ms - {"status_code": 404, "duration_ms": 66.12, "body": "<!doctype html>\n<html lang=en>\n<title>404 Not 
+2025-04-22 13:58:04,639 - api - INFO - REQUEST 207f80fe-c419-4476-a9bb-60babfbca0d3: GET /api - {"method": "GET", "url": "http://localhost:5003/api", "path": "/api", "client_ip": "127.0.0.1"}
+2025-04-22 13:58:04,639 - api - INFO - RESPONSE 207f80fe-c419-4476-a9bb-60babfbca0d3: 404 1ms - {"status_code": 404, "duration_ms": 1.15, "body": "<!doctype html>\n<html lang=en>\n<title>404 Not F
+2025-04-22 13:58:45,641 - api - WARNING - Unauthorized log access attempt from 127.0.0.1
+2025-04-22 13:59:00,015 - api - WARNING - Unauthorized log access attempt from 127.0.0.1
+2025-04-22 13:59:28,272 - api - WARNING - Unauthorized log access attempt from 127.0.0.1
+2025-04-22 13:59:38,530 - api - WARNING - Unauthorized log access attempt from 127.0.0.1
+2025-04-22 13:59:51,579 - api - WARNING - Unauthorized log access attempt from 127.0.0.1
+2025-04-22 14:00:44,330 - api - INFO - REQUEST 9ad8b155-6289-4d7d-a3ca-887e8a47609e: GET /apple-touch-icon-precomposed.png - {"method": "GET", "url": "http://localhost:5003/apple-touch-icon-precomposed.png", "path": "/apple-t
+2025-04-22 14:00:44,330 - api - INFO - REQUEST 63ac6077-7b96-42ab-be4b-0b0011b09c8d: GET /apple-touch-icon.png - {"method": "GET", "url": "http://localhost:5003/apple-touch-icon.png", "path": "/apple-touch-icon.pn
+2025-04-22 14:00:44,330 - api - INFO - RESPONSE 9ad8b155-6289-4d7d-a3ca-887e8a47609e: 404 1ms - {"status_code": 404, "duration_ms": 0.51, "body": "<!doctype html>\n<html lang=en>\n<title>404 Not F
+2025-04-22 14:00:44,330 - api - INFO - RESPONSE 63ac6077-7b96-42ab-be4b-0b0011b09c8d: 404 1ms - {"status_code": 404, "duration_ms": 0.69, "body": "<!doctype html>\n<html lang=en>\n<title>404 Not F
+2025-04-23 17:15:42,721 - api - INFO - REQUEST 9fb90c43-216d-44b5-acdf-8dad89ebad7b: OPTIONS /notify - {"method": "OPTIONS", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "19
+2025-04-23 17:15:42,790 - api - INFO - RESPONSE 9fb90c43-216d-44b5-acdf-8dad89ebad7b: 200 68ms - {"status_code": 200, "duration_ms": 68.49, "body": ""}
+2025-04-23 17:15:42,867 - api - INFO - REQUEST e4d4f927-622e-498d-ad4c-12641e6b84d0: POST /notify - {"method": "POST", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "192.1
+2025-04-23 17:15:42,871 - api - INFO - RESPONSE e4d4f927-622e-498d-ad4c-12641e6b84d0: 405 4ms - {"status_code": 405, "duration_ms": 4.15, "body": "<!doctype html>\n<html lang=en>\n<title>405 Metho
+2025-04-23 17:17:21,127 - api - INFO - REQUEST 2402211c-419d-4f49-b1c3-90dadb7781af: OPTIONS /notify - {"method": "OPTIONS", "url": "http://192.168.86.16:5003/notify?sender=Sutton@VectorNY.com&recipients
+2025-04-23 17:17:21,128 - api - INFO - RESPONSE 2402211c-419d-4f49-b1c3-90dadb7781af: 200 1ms - {"status_code": 200, "duration_ms": 0.73, "body": ""}
+2025-04-23 17:17:21,133 - api - INFO - REQUEST f1c19a00-78b9-4b61-9394-badac2da3d32: GET /notify - {"method": "GET", "url": "http://192.168.86.16:5003/notify?sender=Sutton@VectorNY.com&recipients=[\"
+2025-04-23 17:17:21,134 - api - INFO - RESPONSE f1c19a00-78b9-4b61-9394-badac2da3d32: 400 1ms - {"status_code": 400, "duration_ms": 1.4, "body": "<!doctype html>\n<html lang=en>\n<title>400 Bad Re
+2025-04-23 17:19:31,184 - api - INFO - REQUEST 381700d7-0fdd-48c6-a640-1476b2e9f11d: OPTIONS /notify - {"method": "OPTIONS", "url": "http://192.168.86.16:5003/notify?sender=Sutton@VectorNY.com&recipients
+2025-04-23 17:19:31,218 - api - INFO - RESPONSE 381700d7-0fdd-48c6-a640-1476b2e9f11d: 200 35ms - {"status_code": 200, "duration_ms": 34.99, "body": ""}
+2025-04-23 17:19:31,224 - api - INFO - REQUEST e4ead6e8-5c21-4eee-b210-ab26015987a8: GET /notify - {"method": "GET", "url": "http://192.168.86.16:5003/notify?sender=Sutton@VectorNY.com&recipients=[\"
+2025-04-23 17:20:01,682 - api - INFO - REQUEST 841b4ad8-f815-4ec0-9c37-095abb71788e: OPTIONS /notify - {"method": "OPTIONS", "url": "http://192.168.86.16:5003/notify?sender=Sutton@VectorNY.com&recipients
+2025-04-23 17:20:01,683 - api - INFO - RESPONSE 841b4ad8-f815-4ec0-9c37-095abb71788e: 200 2ms - {"status_code": 200, "duration_ms": 1.91, "body": ""}
+2025-04-23 17:20:01,691 - api - INFO - REQUEST 1d511813-ab03-4ec1-9229-8b8ce007fe57: GET /notify - {"method": "GET", "url": "http://192.168.86.16:5003/notify?sender=Sutton@VectorNY.com&recipients=[\"
+2025-04-23 17:20:58,597 - api - INFO - REQUEST e8b6e4e8-139e-4e59-89fa-89177803eff3: OPTIONS /notify - {"method": "OPTIONS", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "19
+2025-04-23 17:20:58,597 - api - INFO - RESPONSE e8b6e4e8-139e-4e59-89fa-89177803eff3: 200 1ms - {"status_code": 200, "duration_ms": 0.6, "body": ""}
+2025-04-23 17:20:58,603 - api - INFO - REQUEST 8a745c01-e45c-4fc5-9a67-3b4eb68613b5: POST /notify - {"method": "POST", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "192.1
+2025-04-23 17:21:57,284 - api - INFO - REQUEST a1e6c338-e907-49fa-a155-fc96256a6b42: OPTIONS /notify - {"method": "OPTIONS", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "19
+2025-04-23 17:21:57,290 - api - INFO - RESPONSE a1e6c338-e907-49fa-a155-fc96256a6b42: 200 7ms - {"status_code": 200, "duration_ms": 7.16, "body": ""}
+2025-04-23 17:21:57,297 - api - INFO - REQUEST b2ec9ecf-e512-4aa1-b7f1-53feb863336b: POST /notify - {"method": "POST", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "192.1
+2025-04-23 17:21:59,181 - api - INFO - RESPONSE b2ec9ecf-e512-4aa1-b7f1-53feb863336b: 200 1884ms - {"status_code": 200, "duration_ms": 1884.3, "body": {"data": null, "status": "success"}}
+2025-04-23 17:24:29,037 - api - INFO - REQUEST bf3a0cb1-5ca9-42a4-a555-df0b594bf409: OPTIONS /notify - {"method": "OPTIONS", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "19
+2025-04-23 17:24:29,088 - api - INFO - RESPONSE bf3a0cb1-5ca9-42a4-a555-df0b594bf409: 200 52ms - {"status_code": 200, "duration_ms": 51.66, "body": ""}
+2025-04-23 17:24:29,093 - api - INFO - REQUEST 3df718ac-c103-452a-9cc5-dea905a5f6f6: POST /notify - {"method": "POST", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "192.1
+2025-04-23 17:27:49,086 - api - INFO - REQUEST 61039676-e3fd-4050-b2ed-b2e22f654973: OPTIONS /notify - {"method": "OPTIONS", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "19
+2025-04-23 17:27:49,087 - api - INFO - RESPONSE 61039676-e3fd-4050-b2ed-b2e22f654973: 200 1ms - {"status_code": 200, "duration_ms": 1.06, "body": ""}
+2025-04-23 17:27:49,096 - api - INFO - REQUEST fce6310f-caab-424f-89ad-ef227f1926b6: POST /notify - {"method": "POST", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "192.1
+2025-04-23 17:27:50,725 - api - INFO - RESPONSE fce6310f-caab-424f-89ad-ef227f1926b6: 200 1629ms - {"status_code": 200, "duration_ms": 1628.84, "body": {"data": null, "status": "success"}}
+2025-04-23 17:28:12,369 - api - INFO - REQUEST d516c822-3b02-42a7-a08e-9b53f137ed89: OPTIONS /notify - {"method": "OPTIONS", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "19
+2025-04-23 17:28:12,372 - api - INFO - RESPONSE d516c822-3b02-42a7-a08e-9b53f137ed89: 200 3ms - {"status_code": 200, "duration_ms": 3.44, "body": ""}
+2025-04-23 17:28:12,382 - api - INFO - REQUEST f374a5be-6c5c-4a94-86c6-630a4f0ebb40: POST /notify - {"method": "POST", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "192.1
+2025-04-23 17:28:13,853 - api - INFO - RESPONSE f374a5be-6c5c-4a94-86c6-630a4f0ebb40: 200 1472ms - {"status_code": 200, "duration_ms": 1472.18, "body": {"data": null, "status": "success"}}
+2025-04-23 17:28:38,211 - api - INFO - REQUEST 3498a703-ff84-4c66-9fa0-46eba67024c5: OPTIONS /notify - {"method": "OPTIONS", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "19
+2025-04-23 17:28:38,212 - api - INFO - RESPONSE 3498a703-ff84-4c66-9fa0-46eba67024c5: 200 0ms - {"status_code": 200, "duration_ms": 0.38, "body": ""}
+2025-04-23 17:28:38,216 - api - INFO - REQUEST cabe0dfc-8df1-4b4f-8787-d32a4c958343: POST /notify - {"method": "POST", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "192.1
+2025-04-23 17:28:39,675 - api - INFO - RESPONSE cabe0dfc-8df1-4b4f-8787-d32a4c958343: 200 1459ms - {"status_code": 200, "duration_ms": 1458.7, "body": {"data": null, "status": "success"}}
+2025-04-23 17:29:28,250 - api - INFO - REQUEST 097570be-96c3-475f-b98c-d89cd69aae8a: OPTIONS /notify - {"method": "OPTIONS", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "19
+2025-04-23 17:29:28,254 - api - INFO - RESPONSE 097570be-96c3-475f-b98c-d89cd69aae8a: 200 6ms - {"status_code": 200, "duration_ms": 6.0, "body": ""}
+2025-04-23 17:29:28,315 - api - INFO - REQUEST 0d638932-e198-4fa7-8a2e-e1fe97ec35ca: POST /notify - {"method": "POST", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "192.1
+2025-04-23 17:29:29,897 - api - INFO - RESPONSE 0d638932-e198-4fa7-8a2e-e1fe97ec35ca: 200 1582ms - {"status_code": 200, "duration_ms": 1582.16, "body": {"data": null, "status": "success"}}
+2025-04-23 17:29:47,260 - api - INFO - REQUEST aac4b478-f3a5-4512-b90b-8f129418cd18: OPTIONS /notify - {"method": "OPTIONS", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "19
+2025-04-23 17:29:47,262 - api - INFO - RESPONSE aac4b478-f3a5-4512-b90b-8f129418cd18: 200 1ms - {"status_code": 200, "duration_ms": 1.5, "body": ""}
+2025-04-23 17:29:47,269 - api - INFO - REQUEST e355c962-f59a-4fd7-a25a-d756c6bc21d0: POST /notify - {"method": "POST", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "192.1
+2025-04-23 17:29:48,863 - api - INFO - RESPONSE e355c962-f59a-4fd7-a25a-d756c6bc21d0: 200 1594ms - {"status_code": 200, "duration_ms": 1594.45, "body": {"data": null, "status": "success"}}
+2025-04-23 17:31:00,113 - api - INFO - REQUEST cce33409-41ba-4fc2-9360-cb04c479be09: OPTIONS /notify - {"method": "OPTIONS", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "19
+2025-04-23 17:31:00,114 - api - INFO - RESPONSE cce33409-41ba-4fc2-9360-cb04c479be09: 200 1ms - {"status_code": 200, "duration_ms": 0.88, "body": ""}
+2025-04-23 17:31:00,121 - api - INFO - REQUEST 5aff4417-d10e-4348-b81e-5b33c8906593: POST /notify - {"method": "POST", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "192.1
+2025-04-23 17:31:01,540 - api - INFO - RESPONSE 5aff4417-d10e-4348-b81e-5b33c8906593: 200 1419ms - {"status_code": 200, "duration_ms": 1418.53, "body": {"data": null, "status": "success"}}
+2025-04-23 17:31:52,712 - api - INFO - REQUEST 918cfe54-58e2-4aaf-bde3-71d218cfd598: OPTIONS /notify - {"method": "OPTIONS", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "19
+2025-04-23 17:31:52,713 - api - INFO - RESPONSE 918cfe54-58e2-4aaf-bde3-71d218cfd598: 200 1ms - {"status_code": 200, "duration_ms": 1.4, "body": ""}
+2025-04-23 17:31:52,722 - api - INFO - REQUEST 18959879-b4f1-4c22-8870-b177ac0a6001: POST /notify - {"method": "POST", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "192.1
+2025-04-23 17:31:54,193 - api - INFO - RESPONSE 18959879-b4f1-4c22-8870-b177ac0a6001: 200 1472ms - {"status_code": 200, "duration_ms": 1471.68, "body": {"data": null, "status": "success"}}
+2025-04-23 17:33:29,830 - api - INFO - REQUEST 2bcddad8-f122-41d3-98d9-4c287158c6e2: OPTIONS /notify - {"method": "OPTIONS", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "19
+2025-04-23 17:33:29,831 - api - INFO - RESPONSE 2bcddad8-f122-41d3-98d9-4c287158c6e2: 200 1ms - {"status_code": 200, "duration_ms": 1.28, "body": ""}
+2025-04-23 17:33:29,841 - api - INFO - REQUEST 6a2088ba-7ad9-4cbe-8cab-cc9b6845f218: POST /notify - {"method": "POST", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "192.1
+2025-04-23 17:33:31,405 - api - INFO - RESPONSE 6a2088ba-7ad9-4cbe-8cab-cc9b6845f218: 200 1565ms - {"status_code": 200, "duration_ms": 1565.49, "body": {"data": null, "status": "success"}}

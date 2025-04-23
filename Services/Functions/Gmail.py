@@ -13,7 +13,19 @@ from datetime import timedelta
 import pytz
 import os
 from Services.Functions.Helper import format_dollar, format_phone
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.application import MIMEApplication
 
+import io
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import encoders
+import os
+import mimetypes
+from Services.Database.Connect import get_db_connection
 
 def get_gmail_service(email_address):
     print('get_gmail_service', email_address)
@@ -51,7 +63,6 @@ def get_gmail_service(email_address):
     except Exception as e:
         print('Error connecting to Gmail service:', e)
         return None
-
 
 def create_event(service, calendar_id, slot, tenant_name, tenant_email, tour_type, data):
 	"""Create an event in Google Calendar using a selected time slot."""
@@ -193,3 +204,65 @@ def get_available_slots(service, calendar_id, start_date, days_ahead=60):
             available_slots[date_str] = [slot.strftime("%I:%M %p") for slot in available_day_slots]
     
     return available_slots
+
+
+def get_google_creds(email_address):
+
+    db_result = get_db_connection()
+    if db_result["status"] != "connected":
+        return {"status": "error", "message": "Database connection failed"}
+    
+    connection = db_result["connection"]
+    cursor = connection.cursor(dictionary=True)
+    
+    # Start building the query to get vacant units and units with expiring deals
+    query = f"""
+        SELECT * from gmail_credentials where email_address = '{email_address}' 
+    """
+
+    cursor.execute(query)
+    creds = cursor.fetchone()
+
+    cursor.close()
+    connection.close()
+
+    return creds
+
+
+def generate_oauth2_string(username, access_token) -> str:
+	auth_string = 'user=' + username + '\1auth=Bearer ' + access_token + '\1\1'
+	return base64.b64encode(auth_string.encode('ascii')).decode('ascii')
+
+def get_gmail_token(client_id,client_secret, refresh_token):
+	body = {'client_id': client_id,
+		'client_secret': client_secret,
+		'refresh_token': refresh_token,
+		'grant_type': 'refresh_token'
+	}
+	r = requests.post('https://www.googleapis.com/oauth2/v4/token', data = json.dumps(body)).json()
+	print(r)
+	return r['access_token']
+
+
+def send_email(sender, recipients, cc, subject, msg, attachments=[]):
+
+    creds = get_google_creds(sender)
+    access_token = get_gmail_token(creds['client_id'], creds['secret'], creds['refresh_token'])
+    auth_string = generate_oauth2_string(sender, access_token)
+
+    # Create a multipart message
+    email_msg = MIMEMultipart()
+    email_msg['Subject'] = subject
+    email_msg['From'] = sender
+    email_msg['To'] = ', '.join(recipients)
+    email_msg['Cc'] = ', '.join(cc)
+
+    email_msg.attach(MIMEText(msg, 'html'))
+
+
+    server = smtplib.SMTP('smtp.gmail.com', '587')
+    server.starttls()
+    server.docmd('AUTH', 'XOAUTH2 ' + auth_string)
+    server.sendmail(sender, recipients + cc, email_msg.as_string())
+    server.quit()
+    print('Sent')

@@ -15,6 +15,7 @@ def view_logs():
     
     # Check against environment variable
     admin_key = os.getenv("ADMIN_API_KEY", "admin")
+    print(admin_key, api_key)
     
     if api_key != admin_key:
         logger.warning(f"Unauthorized log access attempt from {request.remote_addr}")
