@@ -1319,3 +1319,19 @@
 2025-04-23 18:54:37,427 - api - INFO - RESPONSE cfea3ff0-5b0e-43f2-8d22-22ede20e0b67: 200 1ms - {"status_code": 200, "duration_ms": 0.53, "body": ""}
 2025-04-23 18:54:37,433 - api - INFO - REQUEST 681d56ff-7b27-4539-a155-08c2768be459: POST /notify - {"method": "POST", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "192.1
 2025-04-23 18:54:38,842 - api - INFO - RESPONSE 681d56ff-7b27-4539-a155-08c2768be459: 200 1410ms - {"status_code": 200, "duration_ms": 1409.79, "body": {"data": null, "status": "success"}}
+2025-04-23 19:30:57,414 - api - INFO - REQUEST c63a221a-398c-450d-8196-9aaee5488ac6: OPTIONS /notify - {"method": "OPTIONS", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "19
+2025-04-23 19:30:57,417 - api - INFO - RESPONSE c63a221a-398c-450d-8196-9aaee5488ac6: 200 4ms - {"status_code": 200, "duration_ms": 4.15, "body": ""}
+2025-04-23 19:30:57,430 - api - INFO - REQUEST 1be1dccd-4e71-4443-9ebe-d48c053a6bd6: POST /notify - {"method": "POST", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "192.1
+2025-04-23 19:30:59,039 - api - INFO - RESPONSE 1be1dccd-4e71-4443-9ebe-d48c053a6bd6: 200 1609ms - {"status_code": 200, "duration_ms": 1609.27, "body": {"data": null, "status": "success"}}
+2025-04-23 19:32:08,496 - api - INFO - REQUEST 8fd010c7-2f6c-4a83-8c48-cfe32d166cf8: OPTIONS /notify - {"method": "OPTIONS", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "19
+2025-04-23 19:32:08,497 - api - INFO - RESPONSE 8fd010c7-2f6c-4a83-8c48-cfe32d166cf8: 200 1ms - {"status_code": 200, "duration_ms": 0.58, "body": ""}
+2025-04-23 19:32:08,501 - api - INFO - REQUEST 42fd0b46-8bb7-4ed7-92c1-fad2f877af13: POST /notify - {"method": "POST", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "192.1
+2025-04-23 19:32:10,006 - api - INFO - RESPONSE 42fd0b46-8bb7-4ed7-92c1-fad2f877af13: 200 1506ms - {"status_code": 200, "duration_ms": 1505.85, "body": {"data": null, "status": "success"}}
+2025-04-23 19:34:09,730 - api - INFO - REQUEST 18c6c73d-deb4-401d-9644-6725293a8226: OPTIONS /notify - {"method": "OPTIONS", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "19
+2025-04-23 19:34:09,733 - api - INFO - RESPONSE 18c6c73d-deb4-401d-9644-6725293a8226: 200 3ms - {"status_code": 200, "duration_ms": 3.39, "body": ""}
+2025-04-23 19:34:09,744 - api - INFO - REQUEST 1e5faae7-bacd-476b-8e6d-2113037fe934: POST /notify - {"method": "POST", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "192.1
+2025-04-23 19:34:11,242 - api - INFO - RESPONSE 1e5faae7-bacd-476b-8e6d-2113037fe934: 200 1499ms - {"status_code": 200, "duration_ms": 1499.07, "body": {"data": null, "status": "success"}}
+2025-04-23 19:34:29,949 - api - INFO - REQUEST bc725173-5ad0-4b4d-863f-2589dc5c97d1: OPTIONS /notify - {"method": "OPTIONS", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "19
+2025-04-23 19:34:29,950 - api - INFO - RESPONSE bc725173-5ad0-4b4d-863f-2589dc5c97d1: 200 0ms - {"status_code": 200, "duration_ms": 0.43, "body": ""}
+2025-04-23 19:34:29,956 - api - INFO - REQUEST c1337a3b-3162-4e52-86b9-98ff38ed3cdc: POST /notify - {"method": "POST", "url": "http://192.168.86.16:5003/notify", "path": "/notify", "client_ip": "192.1
+2025-04-23 19:34:31,414 - api - INFO - RESPONSE c1337a3b-3162-4e52-86b9-98ff38ed3cdc: 200 1458ms - {"status_code": 200, "duration_ms": 1458.0, "body": {"data": null, "status": "success"}}
