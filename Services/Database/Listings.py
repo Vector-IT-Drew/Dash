@@ -119,10 +119,10 @@ def get_filtered_listings_data(
                 d.actual_rent IS NOT NULL 
                 AND d.actual_rent != '' 
                 AND d.actual_rent != 0
+                AND u.rentable = True
                 AND (
                     (
                         d.move_out IS NOT NULL
-                        AND u.rentable = True
                         AND u.unit_status = 'Occupied' 
                         AND d.move_out <= DATE_ADD(CURDATE(), INTERVAL 3 MONTH) 
                         AND d.deal_status != 'Closed' 
@@ -130,7 +130,6 @@ def get_filtered_listings_data(
                         {f'AND d.move_out <= CURDATE()' if available else ''}
                     ) 
                     OR (
-                        u.rentable = True
                         AND u.unit_status = 'Vacant' 
                     )
                 )
