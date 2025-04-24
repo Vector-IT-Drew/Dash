@@ -130,7 +130,7 @@ def get_filtered_listings_data(
                         {f'AND d.move_out <= CURDATE()' if available else ''}
                     ) 
                     OR (
-                        AND u.unit_status = 'Vacant' 
+                        u.unit_status = 'Vacant' 
                     )
                 )
         """
