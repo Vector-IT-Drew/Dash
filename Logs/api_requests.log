@@ -1349,3 +1349,7 @@
 2025-04-24 14:28:27,871 - api - INFO - RESPONSE 6b41d251-d46b-4098-bff1-5ef6d555a7d9: 200 660ms - {"status_code": 200, "duration_ms": 660.09, "body": {"count": 256, "data": [{"actual_rent": 388.78, 
 2025-04-24 16:29:05,515 - api - INFO - REQUEST ec4fef6f-6c40-4b4f-8dc4-59782606fe2d: GET /get_filtered_listings - {"method": "GET", "url": "http://127.0.0.1:5003/get_filtered_listings?sort=price_asc&include_all=Tru
 2025-04-24 16:29:06,017 - api - INFO - RESPONSE ec4fef6f-6c40-4b4f-8dc4-59782606fe2d: 200 503ms - {"status_code": 200, "duration_ms": 502.6, "body": {"message": "1064 (42000): You have an error in y
+2025-04-24 16:29:50,208 - api - INFO - REQUEST 2ffe4e98-ef9e-4e26-8bfd-675b9a76aef9: GET /get_filtered_listings - {"method": "GET", "url": "http://127.0.0.1:5003/get_filtered_listings?sort=price_asc&include_all=Tru
+2025-04-24 16:29:50,770 - api - INFO - RESPONSE 2ffe4e98-ef9e-4e26-8bfd-675b9a76aef9: 200 562ms - {"status_code": 200, "duration_ms": 561.84, "body": {"count": 15, "data": [{"actual_rent": 4000.0, "
+2025-04-24 17:16:44,313 - api - INFO - REQUEST d25e2acd-bd11-40a8-b8dd-3132714318d6: GET /get_filtered_listings - {"method": "GET", "url": "http://127.0.0.1:5003/get_filtered_listings?sort=price_asc&include_all=Tru
+2025-04-24 17:16:44,888 - api - INFO - RESPONSE d25e2acd-bd11-40a8-b8dd-3132714318d6: 200 575ms - {"status_code": 200, "duration_ms": 574.88, "body": {"count": 14, "data": [{"actual_rent": 4000.0, "
