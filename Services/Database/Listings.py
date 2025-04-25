@@ -311,6 +311,68 @@ def get_listing():
         return jsonify({"status": "error", "message": str(e)}), 500
 
 
+def get_unique_neighborhoods_and_addresses():
+    """
+    Get unique neighborhoods and addresses where rentable is True.
+    
+    Returns:
+        dict: A dictionary containing unique neighborhoods and addresses
+    """
+    try:
+        # Get database connection
+        db_result = get_db_connection()
+        connection = db_result["connection"]
+        cursor = connection.cursor(dictionary=True)
+        
+        # Query to get unique neighborhoods and addresses where rentable is True
+        query = """
+            SELECT DISTINCT u.neighborhood, u.address
+            FROM units u
+            WHERE u.rentable = True
+        """
+        
+        # Execute the query
+        cursor.execute(query)
+        results = cursor.fetchall()
+        
+        # Process results to extract unique neighborhoods and addresses
+        unique_neighborhoods = set()
+        unique_addresses = set()
+        
+        for row in results:
+            if row['neighborhood']:
+                unique_neighborhoods.add(row['neighborhood'])
+            if row['address']:
+                unique_addresses.add(row['address'])
+        
+        # Close cursor and connection
+        cursor.close()
+        connection.close()
+        
+        # Return unique values
+        return {
+            "status": "success",
+            "unique_neighborhoods": list(unique_neighborhoods),
+            "unique_addresses": list(unique_addresses)
+        }
+    
+    except Exception as e:
+        logger.error(f"Error retrieving unique values: {str(e)}")
+        return {"status": "error", "message": str(e)}
+
+
+@listings_bp.route('/unique-values', methods=['GET'])
+def unique_values():
+    """
+    Endpoint to get unique neighborhoods and addresses where rentable is True.
+    
+    Returns:
+        JSON: A JSON response containing unique neighborhoods and addresses
+    """
+    unique_values = get_unique_neighborhoods_and_addresses()
+    return jsonify(unique_values)
+
+
 # For local testing only
 app = Flask(__name__)
 app.register_blueprint(listings_bp)

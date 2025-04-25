@@ -1353,3 +1353,7 @@
 2025-04-24 16:29:50,770 - api - INFO - RESPONSE 2ffe4e98-ef9e-4e26-8bfd-675b9a76aef9: 200 562ms - {"status_code": 200, "duration_ms": 561.84, "body": {"count": 15, "data": [{"actual_rent": 4000.0, "
 2025-04-24 17:16:44,313 - api - INFO - REQUEST d25e2acd-bd11-40a8-b8dd-3132714318d6: GET /get_filtered_listings - {"method": "GET", "url": "http://127.0.0.1:5003/get_filtered_listings?sort=price_asc&include_all=Tru
 2025-04-24 17:16:44,888 - api - INFO - RESPONSE d25e2acd-bd11-40a8-b8dd-3132714318d6: 200 575ms - {"status_code": 200, "duration_ms": 574.88, "body": {"count": 14, "data": [{"actual_rent": 4000.0, "
+2025-04-25 11:33:18,330 - api - INFO - REQUEST 0f5c08f7-bb1b-4de9-ba22-47ebae1baa1f: GET /get_filtered_listings - {"method": "GET", "url": "http://127.0.0.1:5003/get_filtered_listings?sort=price_asc&include_all=Tru
+2025-04-25 11:33:18,922 - api - INFO - RESPONSE 0f5c08f7-bb1b-4de9-ba22-47ebae1baa1f: 200 591ms - {"status_code": 200, "duration_ms": 590.88, "body": {"count": 14, "data": [{"actual_rent": 4000.0, "
+2025-04-25 11:33:21,399 - api - INFO - REQUEST c44cfe0e-83e3-4f95-a578-858996d606e6: GET /get_filtered_listings - {"method": "GET", "url": "http://127.0.0.1:5003/get_filtered_listings?sort=price_asc&include_all=Tru
+2025-04-25 11:33:21,986 - api - INFO - RESPONSE c44cfe0e-83e3-4f95-a578-858996d606e6: 200 587ms - {"status_code": 200, "duration_ms": 586.67, "body": {"count": 14, "data": [{"actual_rent": 4000.0, "
