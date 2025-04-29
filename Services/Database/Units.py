@@ -40,9 +40,7 @@ def get_unit_data():
 
         # Start building the query to get vacant units and units with expiring deals
         query = f"""
-            SELECT u.unit_id, u.address, u.unit, u.beds, u.baths, u.sqft, u.exposure,
-                u.floor_num, u.unit_status, u.unit_images, 
-                a.building_name, a.neighborhood, a.borough, a.building_amenities, p.portfolio_email, a.building_image
+            SELECT u.unit_id, u.address,  a.building_name, a.neighborhood, a.borough, u.unit, u.beds, u.baths, u.sqft, u.exposure, u.unit_status
             FROM units u
             LEFT JOIN addresses a ON u.address_id = a.address_id
             LEFT JOIN entities e ON a.entity_id = e.entity_id

@@ -13,6 +13,7 @@ connect_bp = Blueprint('Connect', __name__)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+#returns status, connection, and credentials
 def get_db_connection(session_key=None):
     try:
         connection = mysql.connector.connect(
@@ -25,11 +26,15 @@ def get_db_connection(session_key=None):
         
         if connection.is_connected():
             # Validate session key if provided
-            if session_key and not is_session_key_valid(connection, session_key):
-                connection.close()
-                return {"status": "error", "message": "Invalid session key"}
-
-            return {"status": "connected", "connection": connection}
+            if session_key:
+                validation_result = validate_session_key_and_get_credentials(connection, session_key)
+                if validation_result["status"] == "success":
+                    return {"status": "connected", "connection": connection, "credentials": validation_result["credentials"]}
+                else:
+                    connection.close()
+                    return {"status": "error", "message": "Invalid session key"}
+            else:
+                return {"status": "connected", "connection": connection, "credentials": None}
         else:
             return {"status": "error", "message": "Failed to connect to database"}
             
@@ -37,17 +42,35 @@ def get_db_connection(session_key=None):
         logger.error(f"Database connection error: {str(e)}")
         return {"status": "error", "message": str(e)}
 
-def is_session_key_valid(connection, session_key):
+def validate_session_key_and_get_credentials(connection, session_key):
     try:
         cursor = connection.cursor(dictionary=True)
-        query = "SELECT session_key FROM dashboard_credentials WHERE session_key = %s"
+        query = "SELECT session_key, credentials FROM dashboard_credentials WHERE session_key = %s"
         cursor.execute(query, (session_key,))
         result = cursor.fetchone()
         cursor.close()
-        return result is not None
+
+        if result:
+            return {"status": "success", "credentials": result["credentials"]}
+        else:
+            return {"status": "failed", "message": "Session key not found"}
     except Error as e:
         logger.error(f"Error during session key validation: {str(e)}")
-        return False
+        return {"status": "error", "message": str(e)}
+
+@connect_bp.route('/get_credentials', methods=['GET'])
+def get_credentials():
+    # Extract session key from query parameters
+    session_key = request.args.get('session_key')
+    if not session_key:
+        return jsonify({"status": "error", "message": "Session key not provided"}), 400
+
+    # Get database connection with session key validation
+    db_result = get_db_connection(session_key=session_key)
+    if db_result["status"] != "connected":
+        return jsonify({"status": "error", "message": db_result.get("message", "Invalid session key")}), 401
+
+    return jsonify({"status": "success", "credentials": db_result["credentials"]})
 
 @connect_bp.route('/connect', methods=['GET'])
 def connect():
@@ -211,5 +234,14 @@ def authenticate_user(username, password):
 #             connection.close()
 
 if __name__ == '__main__':
+
+    
     port = int(os.getenv('PORT', 5001))
     app.run(host='0.0.0.0', port=port)
+
+
+
+
+# {"dashboards": ["Units/*"], "data_filters": [('address',' 525 East 72nd Street'), ]}
+
+
