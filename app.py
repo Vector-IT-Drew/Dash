@@ -6,12 +6,11 @@ import json
 import logging
 from functools import wraps
 from dotenv import load_dotenv
-from Services.Database import connect_bp, listings_bp
+from Services.Database import connect_bp, listings_bp, units_bp
 from Services.Logging import log_viewer_bp
 from Services.Chatbot import chat_bp
 from Services.Forms.Tour_Schedule import tour_bp
 from Services.Emails.Notify import notify_bp
-from Services.Database import units_bp
 
 from flask_session import Session
 from datetime import timedelta

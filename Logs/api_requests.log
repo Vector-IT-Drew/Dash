@@ -1417,3 +1417,17 @@
 2025-04-29 15:43:23,408 - api - INFO - RESPONSE 705405f1-7b8f-4020-a167-2bc8f7777877: 200 1057ms - {"status_code": 200, "duration_ms": 1057.14, "body": {"count": 5893, "data": [{"address": "2625 4th 
 2025-04-29 15:43:48,019 - api - INFO - REQUEST 94abd3c6-4a61-4602-ac47-beef535520aa: GET /get_unit_data - {"method": "GET", "url": "http://localhost:5003/get_unit_data?session_key=session_key_51571172992694
 2025-04-29 15:43:48,828 - api - INFO - RESPONSE 94abd3c6-4a61-4602-ac47-beef535520aa: 200 803ms - {"status_code": 200, "duration_ms": 803.01, "body": {"count": 1000, "data": [{"address": "2625 4th S
+2025-04-29 16:15:13,768 - api - INFO - REQUEST 5f7fe87d-cbd1-4c5d-9936-6f760a0bed11: GET /get_unit_data - {"method": "GET", "url": "http://localhost:5003/get_unit_data?session_key=session_key_51571172992694
+2025-04-29 16:15:14,691 - api - INFO - RESPONSE 5f7fe87d-cbd1-4c5d-9936-6f760a0bed11: 200 917ms - {"status_code": 200, "duration_ms": 916.87, "body": {"count": 1000, "data": [{"address": "2625 4th S
+2025-04-29 16:15:15,122 - api - INFO - REQUEST f8928703-d9ca-4e39-abb9-fcebfd7920ab: GET /get_unit_data - {"method": "GET", "url": "http://localhost:5003/get_unit_data?session_key=session_key_51571172992694
+2025-04-29 16:15:16,316 - api - INFO - RESPONSE f8928703-d9ca-4e39-abb9-fcebfd7920ab: 200 1187ms - {"status_code": 200, "duration_ms": 1186.78, "body": {"count": 1000, "data": [{"address": "2625 4th 
+2025-04-29 16:15:33,657 - api - INFO - REQUEST ac6f6676-b789-4fed-833e-4dab8dde8dd6: GET /get_unit_data - {"method": "GET", "url": "http://localhost:5003/get_unit_data?session_key=session_key_51571172992694
+2025-04-29 16:15:34,492 - api - INFO - RESPONSE ac6f6676-b789-4fed-833e-4dab8dde8dd6: 200 829ms - {"status_code": 200, "duration_ms": 828.92, "body": {"count": 1000, "data": [{"address": "2625 4th S
+2025-04-29 16:15:42,466 - api - INFO - REQUEST 22a79513-86eb-4f01-97a8-3df81c6525f2: GET /get_unit_data - {"method": "GET", "url": "http://localhost:5003/get_unit_data?session_key=session_key_51571172992694
+2025-04-29 16:15:43,115 - api - INFO - RESPONSE 22a79513-86eb-4f01-97a8-3df81c6525f2: 200 649ms - {"status_code": 200, "duration_ms": 648.76, "body": {"count": 10, "data": [{"address": "2625 4th Str
+2025-04-29 16:15:46,219 - api - INFO - REQUEST dc4021f1-4d5c-48cc-9bc5-a2c996d85662: GET /get_unit_data - {"method": "GET", "url": "http://localhost:5003/get_unit_data?session_key=session_key_51571172992694
+2025-04-29 16:15:47,297 - api - INFO - RESPONSE dc4021f1-4d5c-48cc-9bc5-a2c996d85662: 200 1038ms - {"status_code": 200, "duration_ms": 1038.43, "body": {"count": 5893, "data": [{"address": "2625 4th 
+2025-04-29 16:25:41,713 - api - INFO - REQUEST dca6b01a-d54e-45f7-bd8d-dfefb23c499a: GET /get_unit_data - {"method": "GET", "url": "http://localhost:5003/get_unit_data?session_key=session_key_51571172992694
+2025-04-29 16:25:42,876 - api - INFO - RESPONSE dca6b01a-d54e-45f7-bd8d-dfefb23c499a: 200 1125ms - {"status_code": 200, "duration_ms": 1124.56, "body": {"count": 5893, "data": [{"address": "2625 4th 
+2025-04-29 16:25:43,959 - api - INFO - REQUEST f8ab7b71-0089-40f0-a7f2-2464121790d4: GET /get_unit_data - {"method": "GET", "url": "http://localhost:5003/get_unit_data?session_key=session_key_51571172992694
+2025-04-29 16:25:44,616 - api - INFO - RESPONSE f8ab7b71-0089-40f0-a7f2-2464121790d4: 200 657ms - {"status_code": 200, "duration_ms": 656.82, "body": {"count": 10, "data": [{"address": "2625 4th Str
