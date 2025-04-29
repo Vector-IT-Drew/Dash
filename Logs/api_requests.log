@@ -1357,3 +1357,31 @@
 2025-04-25 11:33:18,922 - api - INFO - RESPONSE 0f5c08f7-bb1b-4de9-ba22-47ebae1baa1f: 200 591ms - {"status_code": 200, "duration_ms": 590.88, "body": {"count": 14, "data": [{"actual_rent": 4000.0, "
 2025-04-25 11:33:21,399 - api - INFO - REQUEST c44cfe0e-83e3-4f95-a578-858996d606e6: GET /get_filtered_listings - {"method": "GET", "url": "http://127.0.0.1:5003/get_filtered_listings?sort=price_asc&include_all=Tru
 2025-04-25 11:33:21,986 - api - INFO - RESPONSE c44cfe0e-83e3-4f95-a578-858996d606e6: 200 587ms - {"status_code": 200, "duration_ms": 586.67, "body": {"count": 14, "data": [{"actual_rent": 4000.0, "
+2025-04-29 13:46:38,729 - api - INFO - REQUEST 828ddf87-8bba-4c7d-bcb2-45cc0e80e18d: GET /tour-schedule - {"method": "GET", "url": "http://localhost:5003/tour-schedule?email_address=it@vectorny.com", "path"
+2025-04-29 13:46:38,810 - api - INFO - RESPONSE 828ddf87-8bba-4c7d-bcb2-45cc0e80e18d: 200 82ms - {"status_code": 200, "duration_ms": 81.89}
+2025-04-29 13:46:39,026 - api - INFO - REQUEST 8d3eb060-0c56-458f-931c-82c0204d9c64: GET /get-all-timeslots - {"method": "GET", "url": "http://localhost:5003/get-all-timeslots?email_address=it@vectorny.com", "p
+2025-04-29 13:46:39,914 - api - INFO - RESPONSE 8d3eb060-0c56-458f-931c-82c0204d9c64: 200 888ms - {"status_code": 200, "duration_ms": 887.66, "body": {"2025-04-29": ["10:00 AM", "10:30 AM", "11:00 A
+2025-04-29 13:46:41,390 - api - INFO - REQUEST 332921e1-5f23-4a5a-9876-b49a7441ef6a: GET / - {"method": "GET", "url": "http://localhost:5003/", "path": "/", "client_ip": "127.0.0.1"}
+2025-04-29 13:46:41,390 - api - INFO - RESPONSE 332921e1-5f23-4a5a-9876-b49a7441ef6a: 200 0ms - {"status_code": 200, "duration_ms": 0.37, "body": {"endpoints": {"/connect": "GET - Test database co
+2025-04-29 13:46:43,951 - api - INFO - REQUEST 712dbe38-43ed-4a95-9996-d46c7ae67379: GET /login - {"method": "GET", "url": "http://localhost:5003/login", "path": "/login", "client_ip": "127.0.0.1"}
+2025-04-29 13:46:43,952 - api - INFO - RESPONSE 712dbe38-43ed-4a95-9996-d46c7ae67379: 405 1ms - {"status_code": 405, "duration_ms": 0.61, "body": "<!doctype html>\n<html lang=en>\n<title>405 Metho
+2025-04-29 13:46:59,262 - api - INFO - REQUEST 227cb752-a359-445e-aff3-09f5d973b27d: GET /login - {"method": "GET", "url": "http://localhost:5003/login?username=test&password=test", "path": "/login"
+2025-04-29 13:46:59,267 - api - INFO - RESPONSE 227cb752-a359-445e-aff3-09f5d973b27d: 405 5ms - {"status_code": 405, "duration_ms": 5.46, "body": "<!doctype html>\n<html lang=en>\n<title>405 Metho
+2025-04-29 13:47:15,757 - api - INFO - REQUEST ac3beb19-8536-43f6-954b-d11a8f49e4ec: GET /login - {"method": "GET", "url": "http://localhost:5003/login?username=test&password=test", "path": "/login"
+2025-04-29 13:47:15,761 - api - INFO - RESPONSE ac3beb19-8536-43f6-954b-d11a8f49e4ec: 500 4ms - {"status_code": 500, "duration_ms": 3.67, "body": {"message": "415 Unsupported Media Type: Did not a
+2025-04-29 13:47:47,238 - api - INFO - REQUEST d2f03ff5-582c-4c92-a890-4aeecb04f9f2: GET /login - {"method": "GET", "url": "http://localhost:5003/login?username=test&password=test", "path": "/login"
+2025-04-29 13:47:47,835 - api - INFO - RESPONSE d2f03ff5-582c-4c92-a890-4aeecb04f9f2: 200 598ms - {"status_code": 200, "duration_ms": 597.66, "body": {"session_key": "abc123sessionkey", "status": "s
+2025-04-29 13:47:52,569 - api - INFO - REQUEST 521a6613-1444-422f-9128-6eea51cb6152: GET /login - {"method": "GET", "url": "http://localhost:5003/login?username=test&password=test1", "path": "/login
+2025-04-29 13:47:53,150 - api - INFO - RESPONSE 521a6613-1444-422f-9128-6eea51cb6152: 401 582ms - {"status_code": 401, "duration_ms": 581.95, "body": {"message": "Invalid credentials", "status": "er
+2025-04-29 13:48:01,740 - api - INFO - REQUEST 7e711ba0-d57e-47cc-b30c-c52d530cd151: GET /login - {"method": "GET", "url": "http://localhost:5003/login?username=test&password=test", "path": "/login"
+2025-04-29 13:48:02,336 - api - INFO - RESPONSE 7e711ba0-d57e-47cc-b30c-c52d530cd151: 200 596ms - {"status_code": 200, "duration_ms": 596.17, "body": {"session_key": "abc123sessionkey", "status": "s
+2025-04-29 13:48:34,922 - api - INFO - REQUEST ae8c0685-1347-4c42-9b53-0e6c8b466632: GET /login - {"method": "GET", "url": "http://localhost:5003/login?username=test&password=test", "path": "/login"
+2025-04-29 13:48:35,567 - api - INFO - RESPONSE ae8c0685-1347-4c42-9b53-0e6c8b466632: 200 645ms - {"status_code": 200, "duration_ms": 645.32, "body": {"session_key": "session_key_5157117299269422", 
+2025-04-29 13:48:38,039 - api - INFO - REQUEST 0483b613-c507-4ecd-bc0a-a6b1a136f910: GET /login - {"method": "GET", "url": "http://localhost:5003/login?username=test&password=test", "path": "/login"
+2025-04-29 13:48:38,635 - api - INFO - RESPONSE 0483b613-c507-4ecd-bc0a-a6b1a136f910: 200 595ms - {"status_code": 200, "duration_ms": 595.38, "body": {"session_key": "session_key_5157117299269422", 
+2025-04-29 13:48:39,418 - api - INFO - REQUEST 1131b5b3-d5e8-4621-8204-5530dab509fe: GET /login - {"method": "GET", "url": "http://localhost:5003/login?username=test&password=test", "path": "/login"
+2025-04-29 13:48:40,005 - api - INFO - RESPONSE 1131b5b3-d5e8-4621-8204-5530dab509fe: 200 587ms - {"status_code": 200, "duration_ms": 587.22, "body": {"session_key": "session_key_5157117299269422", 
+2025-04-29 14:04:17,080 - api - INFO - REQUEST 688b4d2a-d5d3-4e40-adb0-f613f1b3fd81: GET /login - {"method": "GET", "url": "http://localhost:5003/login?username=test&password=test", "path": "/login"
+2025-04-29 14:04:17,729 - api - INFO - RESPONSE 688b4d2a-d5d3-4e40-adb0-f613f1b3fd81: 200 650ms - {"status_code": 200, "duration_ms": 649.7, "body": {"session_key": "session_key_5157117299269422", "
+2025-04-29 14:35:27,491 - api - INFO - REQUEST 16b3b6c1-088f-498b-ad5c-5a1665520829: GET /login - {"method": "GET", "url": "http://localhost:5003/login?username=test&password=test", "path": "/login"
+2025-04-29 14:35:28,238 - api - INFO - RESPONSE 16b3b6c1-088f-498b-ad5c-5a1665520829: 200 749ms - {"status_code": 200, "duration_ms": 749.03, "body": {"session_key": "session_key_5157117299269422", 

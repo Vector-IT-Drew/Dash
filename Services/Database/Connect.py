@@ -50,7 +50,6 @@ def connect():
         logger.error(f"Error in connect route: {str(e)}")
         return jsonify({"status": "error", "message": str(e)})
 
-
 @connect_bp.route('/health', methods=['GET'])
 def health_check():
     return jsonify({"status": "healthy"})
@@ -67,9 +66,33 @@ def index():
         }
     })
 
-# For local testing only
-app = Flask(__name__)
-app.register_blueprint(connect_bp)
+@connect_bp.route('/login', methods=['POST', 'GET'])
+def login():
+    try:
+        # Handle both POST and GET requests
+        if request.method == 'POST':
+            data = request.json
+            print("data POST:", data)
+            username = data.get('username')
+            password = data.get('password')
+        else:  # GET request
+            print("data Get:", request.args)
+            username = request.args.get('username')
+            password = request.args.get('password')
+
+        if not username or not password:
+            return jsonify({"status": "error", "message": "Username and password are required"}), 400
+
+        result = authenticate_user(username, password)
+
+        if result["status"] == "success":
+            return jsonify({"status": "success", "session_key": result["session_key"]})
+        else:
+            return jsonify({"status": "error", "message": result.get("message", "Invalid credentials")}), 401
+
+    except Exception as e:
+        logger.error(f"Error in login route: {str(e)}")
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 def generate_session_key():
     return 'session_key_' + ''.join(random.choices(string.digits, k=16))
