@@ -13,7 +13,7 @@ connect_bp = Blueprint('Connect', __name__)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-def get_db_connection():
+def get_db_connection(session_key=None):
     try:
         connection = mysql.connector.connect(
             host=os.getenv('DB_HOST', '35.231.226.236'),
@@ -24,6 +24,11 @@ def get_db_connection():
         )
         
         if connection.is_connected():
+            # Validate session key if provided
+            if session_key and not is_session_key_valid(connection, session_key):
+                connection.close()
+                return {"status": "error", "message": "Invalid session key"}
+
             return {"status": "connected", "connection": connection}
         else:
             return {"status": "error", "message": "Failed to connect to database"}
@@ -31,6 +36,18 @@ def get_db_connection():
     except Error as e:
         logger.error(f"Database connection error: {str(e)}")
         return {"status": "error", "message": str(e)}
+
+def is_session_key_valid(connection, session_key):
+    try:
+        cursor = connection.cursor(dictionary=True)
+        query = "SELECT session_key FROM dashboard_credentials WHERE session_key = %s"
+        cursor.execute(query, (session_key,))
+        result = cursor.fetchone()
+        cursor.close()
+        return result is not None
+    except Error as e:
+        logger.error(f"Error during session key validation: {str(e)}")
+        return False
 
 @connect_bp.route('/connect', methods=['GET'])
 def connect():
@@ -127,6 +144,71 @@ def authenticate_user(username, password):
         if connection.is_connected():
             cursor.close()
             connection.close()
+
+# # @connect_bp.route('/check-session', methods=['GET'])
+# # def check_session():
+# #     session_key = request.cookies.get('session_key')
+
+# #     # Handle both POST and GET requests
+# #     if request.method == 'POST':
+# #         data = request.json
+# #         print("data POST:", data)
+# #         session_key = data.get('session_key')
+# #     else:  # GET request
+# #         print("data Get:", request.args)
+# #         session_key = request.args.get('session_key')
+        
+# #     if not session_key:
+# #         return jsonify({"status": "failed", "message": "Session key not provided"}), 400
+
+# #     db_result = get_db_connection()
+# #     if db_result["status"] != "connected":
+# #         return jsonify({"status": "error", "message": "Failed to connect to database"}), 500
+
+# #     connection = db_result["connection"]
+# #     try:
+# #         cursor = connection.cursor(dictionary=True)
+# #         query = "SELECT session_key FROM dashboard_credentials WHERE session_key = %s"
+# #         cursor.execute(query, (session_key,))
+# #         result = cursor.fetchone()
+
+# #         if result:
+# #             return jsonify({"status": "success", "message": "Session key is valid"})
+# #         else:
+# #             return jsonify({"status": "failed", "message": "Session key not found"}), 401
+
+# #     except Error as e:
+# #         logger.error(f"Error during session check: {str(e)}")
+# #         return jsonify({"status": "error", "message": str(e)}), 500
+# #     finally:
+# #         if connection.is_connected():
+# #             cursor.close()
+# #             connection.close()
+
+# # Ensure check_session is a utility function that can be called directly
+# def check_session(session_key):
+#     db_result = get_db_connection()
+#     if db_result["status"] != "connected":
+#         return {"status": "error", "message": "Failed to connect to database"}
+
+#     connection = db_result["connection"]
+#     try:
+#         cursor = connection.cursor(dictionary=True)
+#         query = "SELECT session_key FROM dashboard_credentials WHERE session_key = %s"
+#         cursor.execute(query, (session_key,))
+#         result = cursor.fetchone()
+
+#         if result:
+#             return {"status": "success", "message": "Session key is valid"}
+#         else:
+#             return {"status": "failed", "message": "Session key not found"}
+#     except Error as e:
+#         logger.error(f"Error during session check: {str(e)}")
+#         return {"status": "error", "message": str(e)}
+#     finally:
+#         if connection.is_connected():
+#             cursor.close()
+#             connection.close()
 
 if __name__ == '__main__':
     port = int(os.getenv('PORT', 5001))
