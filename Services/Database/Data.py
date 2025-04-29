@@ -82,3 +82,21 @@ def get_landlord_data(connection, credentials):
     finally:
         if connection.is_connected():
             connection.close()
+
+
+@data_bp.route('/get_deal_data', methods=['GET'])
+@with_db_connection
+def get_deal_data(connection, credentials):
+    try:
+        columns = ["a.address", "u.unit", "d.tenant_ids", "d.guarantor_ids", "d.deal_status", "u.unit_status",
+        "d.start_date", "d.term", "d.expiry","d.move_out", "d.concession", "d.gross", "d.actual_rent",
+         "d.agent_id", "d.manager_id", "d.created_at"
+    ]
+        response = run_data_query(connection, credentials, columns)
+        return response
+    except Exception as e:
+        logger.error(f"Error retrieving filtered units: {str(e)}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+    finally:
+        if connection.is_connected():
+            connection.close()
