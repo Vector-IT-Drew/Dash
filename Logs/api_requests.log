@@ -223,3 +223,5 @@
 2025-04-29 18:02:30,871 - api - INFO - RESPONSE 0f4d313b-1b00-4d73-8945-faa44aca7e05: 200 690ms - {"status_code": 200, "duration_ms": 690.11, "body": {"count": 0, "data": [], "status": "success"}}
 2025-04-29 18:03:08,182 - api - INFO - REQUEST c05b17c7-00ec-4e46-9655-8014a3ae2160: GET /get_unit_data - {"method": "GET", "url": "http://localhost:5003/get_unit_data?session_key=admin_session_671269125302
 2025-04-29 18:03:08,927 - api - INFO - RESPONSE c05b17c7-00ec-4e46-9655-8014a3ae2160: 200 743ms - {"status_code": 200, "duration_ms": 742.58, "body": {"count": 404, "data": [{"address": "525 East 72
+2025-04-29 18:20:03,542 - api - INFO - REQUEST 8e29572c-a9e6-4564-b24a-499b922c7d13: GET /get_unit_data - {"method": "GET", "url": "http://localhost:5003/get_unit_data?session_key=admin_session_671269125302
+2025-04-29 18:20:04,303 - api - INFO - RESPONSE 8e29572c-a9e6-4564-b24a-499b922c7d13: 200 759ms - {"status_code": 200, "duration_ms": 758.84, "body": {"count": 404, "data": [{"address": "525 East 72

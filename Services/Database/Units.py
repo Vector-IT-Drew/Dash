@@ -4,39 +4,38 @@ import logging
 from .Connect import get_db_connection
 import decimal
 import json
+from functools import wraps
+
 
 # Create a Blueprint
 units_bp = Blueprint('Units', __name__)
 logger = logging.getLogger(__name__)
 
+def with_db_connection(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        session_key = request.args.get('session_key')
+        if not session_key:
+            return jsonify({"status": "failed", "message": "Session key not provided"}), 400
+
+        db_result = get_db_connection(session_key=session_key)
+        if db_result["status"] != "connected":
+            return jsonify({"status": "failed", "message": db_result.get("message", "Invalid session key")}), 401
+
+        # Pass the connection and credentials to the endpoint function
+        return f(db_result["connection"], db_result["credentials"], *args, **kwargs)
+    return decorated_function
+
 
 @units_bp.route('/get_unit_data', methods=['GET'])
-def get_unit_data():
-    # Retrieve session key from query parameters
-    session_key = request.args.get('session_key')
-    if not session_key:
-        return jsonify({"status": "failed", "message": "Session key not provided"}), 400
-
-    # Get database connection with session key validation
-    db_result = get_db_connection(session_key=session_key)
-    if db_result["status"] != "connected":
-        return jsonify({"status": "failed", "message": db_result.get("message", "Invalid session key")}), 401
-
-    connection = db_result["connection"]
-    credentials = db_result["credentials"]
-
+@with_db_connection
+def get_unit_data(connection, credentials):
     try:
         cursor = connection.cursor(dictionary=True)
-        
-        print('Get Filtered Listings Called!\n\n', request.args)
-        # Get filter parameters from query string
-        unit = request.args.get('unit')
-    
-        limit = request.args.get('limit', 1000)
-      
-        # Start building the query to get vacant units and units with expiring deals
+        data_filters = credentials.get("data_filters", [])
+
         query = f"""
-            SELECT u.unit_id, u.address,  a.building_name, a.neighborhood, a.borough, u.unit, u.beds, u.baths, u.sqft, u.exposure, u.unit_status
+            SELECT u.unit_id, u.address, u.unit, u.beds, u.baths, u.sqft, u.exposure, u.unit_status
             FROM units u
             LEFT JOIN addresses a ON u.address_id = a.address_id
             LEFT JOIN entities e ON a.entity_id = e.entity_id
@@ -44,75 +43,21 @@ def get_unit_data():
             WHERE 1=1
             
         """
-        # Add filter conditions
         params = []
-            
-        
-        
+
         # Apply data filters from credentials
         data_filters = credentials.get("data_filters", [])
-        print(data_filters)
-        for filter in data_filters:
-            column, value = filter
+        for column, value in data_filters:
             query += f" AND {column} = %s"
             params.append(value)
 
-        if limit:
-            query += " LIMIT %s"
-            params.append(int(limit))
-        
         # Execute the query
         cursor.execute(query, params)
         units = cursor.fetchall()
-        
-        # Process each unit to convert Decimal values to float and set past expiry to blank
-        processed_units = []
-        from datetime import datetime
-        today = datetime.now().date()
-        
-        for unit in units:
-            processed_unit = {}
-            for key, value in unit.items():
-                if key == 'move_out' and value is not None:
-                    try:
-                        if value > today:
-                            processed_unit[key] = value.strftime('%m/%d/%Y')
-                        else:
-                            processed_unit[key] = ""
 
-                    except Exception as e : 
-                        pass
-                        # Handle date objects directly
-                # elif key == 'unit_images' and value is not None:
-                #     pass
-                    # try:
-                    #     # Parse the JSON string to get the list of URLs
-                    #     image_urls = json.loads(value)
-                    #     # Get the first URL if available, otherwise empty string
-                    #     processed_unit[key] = image_urls[0] if image_urls and len(image_urls) > 0 else ""
-                    # except Exception as e:
-                    #     logger.error(f"Error processing unit_images: {str(e)}")
-                    #     processed_unit[key] = ""
-                else:
-                    if isinstance(value, decimal.Decimal):
-                        processed_unit[key] = float(value)
-                    else:
-                        processed_unit[key] = value
-            processed_units.append(processed_unit)
-        
-        # Close cursor and connection
-        cursor.close()
-        connection.close()
-        
-        logger.info(f"Retrieved {len(units)} filtered units from database")
-        result = {
-            "status": "success", 
-            "count": len(processed_units),
-            "data": processed_units
-        }
+        # Directly return the fetched units
+        return jsonify({"status": "success", "data": units})
 
-        return result  # This will be jsonified by the route handler
-    
     except Exception as e:
         logger.error(f"Error retrieving filtered units: {str(e)}")
         return jsonify({"status": "error", "message": str(e)}), 500
@@ -122,6 +67,42 @@ def get_unit_data():
             connection.close()
 
 
-if __name__ == '__main__':
-    port = int(os.getenv('PORT', 5000))
-    app.run(host='0.0.0.0', port=port) 
+@units_bp.route('/get_landlord_data', methods=['GET'])
+@with_db_connection
+def get_landlord_data(connection, credentials):
+    try:
+        cursor = connection.cursor(dictionary=True)
+        data_filters = credentials.get("data_filters", [])
+
+        query = f"""
+            SELECT p.portfolio, u.address, u.unit, d.deal_status
+            FROM units u
+            LEFT JOIN deals d ON u.unit_id = d.unit_id
+            LEFT JOIN addresses a ON u.address_id = a.address_id
+            LEFT JOIN entities e ON a.entity_id = e.entity_id
+            LEFT JOIN portfolios p ON e.portfolio_id = p.portfolio_id
+            WHERE 1=1
+            
+        """
+        params = []
+
+        # Apply data filters from credentials
+        data_filters = credentials.get("data_filters", [])
+        for column, value in data_filters:
+            query += f" AND {column} = %s"
+            params.append(value)
+
+        # Execute the query
+        cursor.execute(query, params)
+        units = cursor.fetchall()
+
+        # Directly return the fetched units
+        return jsonify({"status": "success", "data": units})
+
+    except Exception as e:
+        logger.error(f"Error retrieving filtered units: {str(e)}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+    finally:
+        if connection.is_connected():
+            cursor.close()
+            connection.close()
