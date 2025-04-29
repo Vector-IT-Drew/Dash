@@ -326,13 +326,13 @@ def get_unique_neighborhoods_and_addresses():
         
         # Adjust the query to ensure correct table and column references
         query = """
-            SELECT DISTINCT u.neighborhood, u.address
+            SELECT DISTINCT a.neighborhood, u.address
             FROM units u
             LEFT JOIN deals d ON u.unit_id = d.unit_id
             LEFT JOIN addresses a ON u.address_id = a.address_id
             LEFT JOIN entities e ON a.entity_id = e.entity_id
             LEFT JOIN portfolios p ON e.portfolio_id = p.portfolio_id
-            
+
             WHERE u.rentable = True
         """
         
