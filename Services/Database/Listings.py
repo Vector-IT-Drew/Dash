@@ -346,9 +346,9 @@ def get_unique_neighborhoods_and_addresses():
         
         for row in results:
 
-            if row['neighborhood'] and len(row['neighborhood']) > 1:
+            if row['neighborhood'] and len(row['neighborhood'].strip()) > 1:
                 unique_neighborhoods.add(row['neighborhood'])
-            if row['address'] and len(row['address']) > 1:
+            if row['address'] and len(row['address'].strip()) > 1:
                 unique_addresses.add(row['address'])
         
         # Close cursor and connection
