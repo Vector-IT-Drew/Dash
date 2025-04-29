@@ -33,11 +33,10 @@ def get_unit_data():
         beds = request.args.get('beds')
         baths = request.args.get('baths')
         neighborhood = request.args.get('neighborhood')
-        min_price = request.args.get('min_price')
-        max_price = request.args.get('max_price')
+        landlord = request.args.get('landlord')
+
         limit = request.args.get('limit', 1000)
-        available = request.args.get('available', False)
-        sort = request.args.get('sort', 'ORDER BY d.actual_rent DESC')
+      
 
         # Start building the query to get vacant units and units with expiring deals
         query = f"""
