@@ -103,7 +103,10 @@ def index():
             "/health": "GET - Health check endpoint",
             "/connect": "GET - Test database connection",
             "/listings": "GET - Listings from database",
-            "/get_filtered_listings": "GET - Filtered listings with parameters"
+            "/get_filtered_listings": "GET - Filtered listings with parameters",
+            "/get_landlord_data": "GET - Landlord data with parameters",
+            "/get_unit_data": "GET - Unit data with parameters"
+            
         }
     })
 

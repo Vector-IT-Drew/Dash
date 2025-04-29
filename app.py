@@ -29,10 +29,9 @@ app.register_blueprint(log_viewer_bp)
 app.register_blueprint(chat_bp)
 app.register_blueprint(tour_bp)
 app.register_blueprint(notify_bp)
-app.register_blueprint(units_bp)
+app.register_blueprint(data_bp)
 
 app.config['DASH_SERVICES_ENDPOINT'] = 'https://dash-production-b25c.up.railway.app'
-
 
 app.secret_key = os.environ.get('SECRET_KEY', 'your-secret-key-here')
 app.config['SESSION_TYPE'] = 'filesystem'
