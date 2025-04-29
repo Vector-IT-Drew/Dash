@@ -29,11 +29,12 @@ def with_db_connection(f):
 def run_data_query(connection, credentials, columns):
     cursor = connection.cursor(dictionary=True)
     query = f"""
-        SELECT {columns}
+        SELECT {', '.join(columns)}
         FROM units u
         LEFT JOIN addresses a ON u.address_id = a.address_id
         LEFT JOIN entities e ON a.entity_id = e.entity_id
         LEFT JOIN portfolios p ON e.portfolio_id = p.portfolio_id
+        LEFT JOIN deals d ON u.unit_id = d.unit_id
         WHERE 1=1
         
     """
@@ -51,8 +52,7 @@ def run_data_query(connection, credentials, columns):
     cursor.close()
     connection.close()
 
-    return jsonify({"status": "success", "data": data})
-
+    return jsonify({"status": "success", "count": len(data), "data": data})
 
 @data_bp.route('/get_unit_data', methods=['GET'])
 @with_db_connection

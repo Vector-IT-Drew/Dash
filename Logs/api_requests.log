@@ -225,3 +225,15 @@
 2025-04-29 18:03:08,927 - api - INFO - RESPONSE c05b17c7-00ec-4e46-9655-8014a3ae2160: 200 743ms - {"status_code": 200, "duration_ms": 742.58, "body": {"count": 404, "data": [{"address": "525 East 72
 2025-04-29 18:20:03,542 - api - INFO - REQUEST 8e29572c-a9e6-4564-b24a-499b922c7d13: GET /get_unit_data - {"method": "GET", "url": "http://localhost:5003/get_unit_data?session_key=admin_session_671269125302
 2025-04-29 18:20:04,303 - api - INFO - RESPONSE 8e29572c-a9e6-4564-b24a-499b922c7d13: 200 759ms - {"status_code": 200, "duration_ms": 758.84, "body": {"count": 404, "data": [{"address": "525 East 72
+2025-04-29 19:11:21,545 - api - INFO - REQUEST a4aa93be-bc67-4a8f-911e-c1be001a1f04: GET /get_unit_data - {"method": "GET", "url": "http://localhost:5003/get_unit_data?session_key=admin_session_671269125302
+2025-04-29 19:11:22,239 - api - INFO - RESPONSE a4aa93be-bc67-4a8f-911e-c1be001a1f04: 500 694ms - {"status_code": 500, "duration_ms": 693.78, "body": {"message": "1064 (42000): You have an error in 
+2025-04-29 19:11:54,423 - api - INFO - REQUEST 1b37ed0f-46f4-464c-882d-c0307021f7f7: GET /get_unit_data - {"method": "GET", "url": "http://localhost:5003/get_unit_data?session_key=admin_session_671269125302
+2025-04-29 19:11:55,147 - api - INFO - RESPONSE 1b37ed0f-46f4-464c-882d-c0307021f7f7: 200 722ms - {"status_code": 200, "duration_ms": 722.33, "body": {"count": 404, "data": [{"address": "525 East 72
+2025-04-29 19:11:57,736 - api - INFO - REQUEST c5d7b9ba-5930-4ce5-acff-b8c1116a8197: GET /get_unit_data - {"method": "GET", "url": "http://localhost:5003/get_unit_data?session_key=admin_session_671269125302
+2025-04-29 19:11:58,457 - api - INFO - RESPONSE c5d7b9ba-5930-4ce5-acff-b8c1116a8197: 200 719ms - {"status_code": 200, "duration_ms": 718.67, "body": {"count": 404, "data": [{"address": "525 East 72
+2025-04-29 19:12:03,086 - api - INFO - REQUEST 9b9b309f-0172-48e2-870e-7fdc3720e86a: GET /get_building_data - {"method": "GET", "url": "http://localhost:5003/get_building_data?session_key=admin_session_67126912
+2025-04-29 19:12:03,087 - api - INFO - RESPONSE 9b9b309f-0172-48e2-870e-7fdc3720e86a: 404 1ms - {"status_code": 404, "duration_ms": 0.71, "body": "<!doctype html>\n<html lang=en>\n<title>404 Not F
+2025-04-29 19:12:12,149 - api - INFO - REQUEST 73a1fa71-600e-477e-a9af-585a26c4e577: GET /get_landlord_data - {"method": "GET", "url": "http://localhost:5003/get_landlord_data?session_key=admin_session_67126912
+2025-04-29 19:12:12,856 - api - INFO - RESPONSE 73a1fa71-600e-477e-a9af-585a26c4e577: 500 707ms - {"status_code": 500, "duration_ms": 706.62, "body": {"message": "1054 (42S22): Unknown column 'd.dea
+2025-04-29 19:12:59,030 - api - INFO - REQUEST 9d8fa104-a5c7-4003-8a5a-55bc2a277443: GET /get_landlord_data - {"method": "GET", "url": "http://localhost:5003/get_landlord_data?session_key=admin_session_67126912
+2025-04-29 19:12:59,742 - api - INFO - RESPONSE 9d8fa104-a5c7-4003-8a5a-55bc2a277443: 200 711ms - {"status_code": 200, "duration_ms": 710.81, "body": {"count": 404, "data": [{"address": "525 East 72
