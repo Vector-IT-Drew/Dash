@@ -203,3 +203,23 @@
 2025-04-29 17:29:29,695 - api - INFO - RESPONSE 16d4907a-f7dd-4a86-b2e3-1ab1d7ada3bb: 200 567ms - {"status_code": 200, "duration_ms": 567.28, "body": {"credentials": "{\"dashboards\": [\"Listings/*\
 2025-04-29 17:42:45,366 - api - INFO - REQUEST 9b4db023-adb3-4246-8d30-35a23a27a5e6: GET /get_credentials - {"method": "GET", "url": "http://localhost:5003/get_credentials?session_key=session_key_515711729926
 2025-04-29 17:42:45,928 - api - INFO - RESPONSE 9b4db023-adb3-4246-8d30-35a23a27a5e6: 200 564ms - {"status_code": 200, "duration_ms": 564.19, "body": {"credentials": "{\"dashboards\": [\"Listings/*\
+2025-04-29 17:58:57,529 - api - INFO - REQUEST 8ca4258a-019a-4348-aad0-451bbcb873e2: GET /get_unit_data - {"method": "GET", "url": "http://localhost:5003/get_unit_data?session_key=session_key_51571172992694
+2025-04-29 17:58:58,196 - api - INFO - RESPONSE 8ca4258a-019a-4348-aad0-451bbcb873e2: 500 668ms - {"status_code": 500, "duration_ms": 668.12, "body": {"message": "'str' object has no attribute 'get'
+2025-04-29 17:59:34,626 - api - INFO - REQUEST 002478b2-851a-4972-9d65-d6d09ff0db1c: GET /get_unit_data - {"method": "GET", "url": "http://localhost:5003/get_unit_data?session_key=session_key_51571172992694
+2025-04-29 17:59:35,399 - api - INFO - RESPONSE 002478b2-851a-4972-9d65-d6d09ff0db1c: 200 769ms - {"status_code": 200, "duration_ms": 768.89, "body": {"count": 1000, "data": [{"address": "2625 4th S
+2025-04-29 17:59:49,710 - api - INFO - REQUEST 3e7b4249-49d8-4a80-af11-c46d70694601: GET /get_unit_data - {"method": "GET", "url": "http://localhost:5003/get_unit_data?session_key=admin_session_671269125302
+2025-04-29 17:59:50,395 - api - INFO - RESPONSE 3e7b4249-49d8-4a80-af11-c46d70694601: 200 685ms - {"status_code": 200, "duration_ms": 685.31, "body": {"count": 0, "data": [], "status": "success"}}
+2025-04-29 18:00:18,362 - api - INFO - REQUEST 696191fe-aa1e-4ec7-b153-54af57c5a258: GET /get_unit_data - {"method": "GET", "url": "http://localhost:5003/get_unit_data?session_key=admin_session_671269125302
+2025-04-29 18:00:19,046 - api - INFO - RESPONSE 696191fe-aa1e-4ec7-b153-54af57c5a258: 200 684ms - {"status_code": 200, "duration_ms": 684.5, "body": {"count": 0, "data": [], "status": "success"}}
+2025-04-29 18:01:39,814 - api - INFO - REQUEST b52b59c4-5380-4d06-b47e-d321ef634308: GET /get_unit_data - {"method": "GET", "url": "http://localhost:5003/get_unit_data?session_key=admin_session_671269125302
+2025-04-29 18:01:40,514 - api - INFO - RESPONSE b52b59c4-5380-4d06-b47e-d321ef634308: 200 700ms - {"status_code": 200, "duration_ms": 699.73, "body": {"count": 0, "data": [], "status": "success"}}
+2025-04-29 18:01:49,913 - api - INFO - REQUEST a8a2a062-3b2d-4ff5-9355-126a1b52ce32: GET /get_unit_data - {"method": "GET", "url": "http://localhost:5003/get_unit_data?session_key=admin_session_671269125302
+2025-04-29 18:01:50,599 - api - INFO - RESPONSE a8a2a062-3b2d-4ff5-9355-126a1b52ce32: 200 687ms - {"status_code": 200, "duration_ms": 686.77, "body": {"count": 0, "data": [], "status": "success"}}
+2025-04-29 18:01:57,034 - api - INFO - REQUEST 8080fd16-3728-4ba7-b533-f7eaa164e51e: GET /get_unit_data - {"method": "GET", "url": "http://localhost:5003/get_unit_data?session_key=admin_session_671269125302
+2025-04-29 18:01:57,696 - api - INFO - RESPONSE 8080fd16-3728-4ba7-b533-f7eaa164e51e: 200 662ms - {"status_code": 200, "duration_ms": 661.56, "body": {"count": 0, "data": [], "status": "success"}}
+2025-04-29 18:02:03,634 - api - INFO - REQUEST 4e9869ae-d0aa-4f18-9e9f-24f39e9e10a2: GET /get_unit_data - {"method": "GET", "url": "http://localhost:5003/get_unit_data?session_key=admin_session_671269125302
+2025-04-29 18:02:04,333 - api - INFO - RESPONSE 4e9869ae-d0aa-4f18-9e9f-24f39e9e10a2: 200 699ms - {"status_code": 200, "duration_ms": 699.15, "body": {"count": 0, "data": [], "status": "success"}}
+2025-04-29 18:02:30,181 - api - INFO - REQUEST 0f4d313b-1b00-4d73-8945-faa44aca7e05: GET /get_unit_data - {"method": "GET", "url": "http://localhost:5003/get_unit_data?session_key=admin_session_671269125302
+2025-04-29 18:02:30,871 - api - INFO - RESPONSE 0f4d313b-1b00-4d73-8945-faa44aca7e05: 200 690ms - {"status_code": 200, "duration_ms": 690.11, "body": {"count": 0, "data": [], "status": "success"}}
+2025-04-29 18:03:08,182 - api - INFO - REQUEST c05b17c7-00ec-4e46-9655-8014a3ae2160: GET /get_unit_data - {"method": "GET", "url": "http://localhost:5003/get_unit_data?session_key=admin_session_671269125302
+2025-04-29 18:03:08,927 - api - INFO - RESPONSE c05b17c7-00ec-4e46-9655-8014a3ae2160: 200 743ms - {"status_code": 200, "duration_ms": 742.58, "body": {"count": 404, "data": [{"address": "525 East 72

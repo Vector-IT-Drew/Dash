@@ -20,24 +20,20 @@ def get_unit_data():
     # Get database connection with session key validation
     db_result = get_db_connection(session_key=session_key)
     if db_result["status"] != "connected":
-        return jsonify({"status": "failed", "message": db_result.get("message", "Database connection failed")}), 401
+        return jsonify({"status": "failed", "message": db_result.get("message", "Invalid session key")}), 401
 
     connection = db_result["connection"]
+    credentials = db_result["credentials"]
+
     try:
         cursor = connection.cursor(dictionary=True)
         
         print('Get Filtered Listings Called!\n\n', request.args)
         # Get filter parameters from query string
-        address = request.args.get('address')
         unit = request.args.get('unit')
-        beds = request.args.get('beds')
-        baths = request.args.get('baths')
-        neighborhood = request.args.get('neighborhood')
-        landlord = request.args.get('landlord')
-
+    
         limit = request.args.get('limit', 1000)
       
-
         # Start building the query to get vacant units and units with expiring deals
         query = f"""
             SELECT u.unit_id, u.address,  a.building_name, a.neighborhood, a.borough, u.unit, u.beds, u.baths, u.sqft, u.exposure, u.unit_status
@@ -51,32 +47,20 @@ def get_unit_data():
         # Add filter conditions
         params = []
             
-        if address:
-            query += " AND u.address LIKE %s"
-            params.append(f"%{address}%")
-            
-        if unit:
-            query += " AND u.unit = %s"
-            params.append(unit)
-        if beds == '0':
-            query += " AND u.beds = 0"
-        elif beds:
-            query += " AND u.beds >= %s"
-            params.append(float(beds))
-            
-        if baths:
-            query += " AND u.baths >= %s"
-            params.append(float(baths))
-            
-        if neighborhood:
-            query += " AND a.neighborhood LIKE %s"
-            params.append(f"%{neighborhood}%")
         
+        
+        # Apply data filters from credentials
+        data_filters = credentials.get("data_filters", [])
+        print(data_filters)
+        for filter in data_filters:
+            column, value = filter
+            query += f" AND {column} = %s"
+            params.append(value)
+
         if limit:
             query += " LIMIT %s"
             params.append(int(limit))
         
-      
         # Execute the query
         cursor.execute(query, params)
         units = cursor.fetchall()

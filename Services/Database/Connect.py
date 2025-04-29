@@ -7,6 +7,7 @@ import decimal
 from datetime import datetime
 import random
 import string
+import json
 
 # Create a Blueprint instead of a Flask app
 connect_bp = Blueprint('Connect', __name__)
@@ -29,7 +30,7 @@ def get_db_connection(session_key=None):
             if session_key:
                 validation_result = validate_session_key_and_get_credentials(connection, session_key)
                 if validation_result["status"] == "success":
-                    return {"status": "connected", "connection": connection, "credentials": validation_result["credentials"]}
+                    return {"status": "connected", "connection": connection, "credentials": json.loads(validation_result["credentials"])}
                 else:
                     connection.close()
                     return {"status": "error", "message": "Invalid session key"}
@@ -242,6 +243,6 @@ if __name__ == '__main__':
 
 
 
-# {"dashboards": ["Units/*"], "data_filters": [('address',' 525 East 72nd Street'), ]}
+
 
 
