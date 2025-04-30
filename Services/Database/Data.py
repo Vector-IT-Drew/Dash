@@ -181,6 +181,7 @@ def get_unique_values(connection, credentials):
 @data_bp.route('/get_leads', methods=['GET'])
 @with_db_connection
 def get_leads(connection, credentials):
+
     try:
         cursor = connection.cursor(dictionary=True)
         
@@ -216,3 +217,56 @@ def get_leads(connection, credentials):
     finally:
         if connection.is_connected():
             connection.close()
+
+
+
+@data_bp.route('/get_emails', methods=['GET'])
+@with_db_connection
+def get_emails(connection, credentials):
+
+    try:
+        cursor = connection.cursor(dictionary=True)
+        person_id = request.args.get('person_id', 0)
+        email_type = request.args.get('email_type', ' ')
+        
+        # Define the query
+        query = f"""
+            SELECT 
+            *,
+            'recipient' AS role
+            FROM emails e
+            WHERE JSON_CONTAINS(e.recipient_ids, JSON_ARRAY({person_id})) -- replace 2 with your person_id
+            AND e.email_type = '{email_type}'
+
+            UNION ALL
+
+            SELECT 
+            *,
+            'cc' AS role
+            FROM emails e
+            WHERE JSON_CONTAINS(e.cc_ids, JSON_ARRAY({person_id}))
+            AND e.email_type = '{email_type}'
+        """
+        
+        # Execute the query
+        cursor.execute(query)
+        data = cursor.fetchall()
+        
+        # Close the cursor and connection
+        cursor.close()
+        connection.close()
+        
+        # Return the results as JSON
+        return jsonify({"status": "success", "data": data})
+    
+    except Exception as e:
+        logger.error(f"Error executing query: {str(e)}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+    finally:
+        if connection.is_connected():
+            connection.close()
+
+
+
+
+            
