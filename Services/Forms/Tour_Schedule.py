@@ -125,7 +125,7 @@ def submit_tour_request():
 		return jsonify({"error": "Time slot is required"}), 400
 
 	column_values = {
-		mapping['Email']: {'email': data['email_address'], 'text': data['email_address']},
+		mapping['Email']: {'email': data['tenant_email'], 'text': data['tenant_email']},
 		mapping['Desired Move-In']: {'date': (pd.to_datetime(data['move-in-date'])).strftime('%Y-%m-%d')},
 		mapping['Budget']: data['budget'],
 		mapping['Phone']: data['phone-number'].replace('-', '').replace('+', ''),
