@@ -68,7 +68,7 @@ def run_data_query(connection, credentials, columns, additional_filters=None):
     # Apply data filters from credentials
     data_filters = credentials.get("data_filters", [])
     for column, value in data_filters:
-        if column and column not in ["Any", "", "undefined", "-", "0"] and column is not None:
+        if column and column not in ["Any", "", "undefined", "-", "0"] and column is not None and 'Any' not in value:
             query += f" AND {column} = %s"
             params.append(value)
 
