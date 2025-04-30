@@ -192,6 +192,10 @@ def get_leads(connection, credentials):
             LEFT JOIN preferences pref ON pref.person_id = p.person_id
             WHERE r.role_id = 200
         """
+
+        first_name = request.args.get('first_name')
+        if first_name:
+            query.append(f" AND p.first_name = {first_name}")
         
         # Execute the query
         cursor.execute(query)
