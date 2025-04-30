@@ -26,7 +26,7 @@ def with_db_connection(f):
         return f(db_result["connection"], db_result["credentials"], *args, **kwargs)
     return decorated_function
 
-def run_data_query(connection, credentials, columns):
+def run_data_query(connection, credentials, columns, additional_filters=None):
     cursor = connection.cursor(dictionary=True)
     query = f"""
         SELECT {', '.join(columns)}
@@ -36,15 +36,25 @@ def run_data_query(connection, credentials, columns):
         LEFT JOIN portfolios p ON e.portfolio_id = p.portfolio_id
         LEFT JOIN deals d ON u.unit_id = d.unit_id
         WHERE 1=1
-        
     """
     params = []
+
+    # Create a mapping of columns to their table aliases
+    column_to_table = {col.split('.')[1]: col.split('.')[0] for col in columns}
 
     # Apply data filters from credentials
     data_filters = credentials.get("data_filters", [])
     for column, value in data_filters:
+        table_alias = column_to_table.get(column, '')
         query += f" AND {column} = %s"
         params.append(value)
+
+    # Apply additional filters from request
+    if additional_filters:
+        for column, value in additional_filters.items():
+            table_alias = column_to_table.get(column, '')
+            query += f" AND {table_alias}.{column} = %s"
+            params.append(value)
 
     cursor.execute(query, params)
     data = cursor.fetchall()
@@ -59,7 +69,11 @@ def run_data_query(connection, credentials, columns):
 def get_unit_data(connection, credentials):
     try:
         columns = ["u.unit_id", "u.address", "u.unit", "u.beds", "u.baths", "u.sqft", "u.exposure", "u.unit_status"]
-        response = run_data_query(connection, credentials, columns)
+
+        # Extract additional filters from query parameters
+        additional_filters = {key: value for key, value in request.args.items() if key not in ['session_key']}
+
+        response = run_data_query(connection, credentials, columns, additional_filters)
         return response
     except Exception as e:
         logger.error(f"Error retrieving filtered units: {str(e)}")
