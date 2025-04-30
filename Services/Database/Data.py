@@ -196,11 +196,11 @@ def get_leads(connection, credentials):
         first_name = request.args.get('first_name')
         if first_name:
             # Use LOWER() to make the comparison case-insensitive
-            query += " AND LOWER(p.first_name) = %s"
-            first_name = first_name.lower()
+            query += f" AND LOWER(p.first_name) = '{first_name.lower()}'"
+
         
         # Execute the query
-        cursor.execute(query, (first_name,))
+        cursor.execute(query)
         data = cursor.fetchall()
         
         # Close the cursor and connection
