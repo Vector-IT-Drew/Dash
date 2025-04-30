@@ -195,10 +195,12 @@ def get_leads(connection, credentials):
 
         first_name = request.args.get('first_name')
         if first_name:
-            query.append(f" AND p.first_name = {first_name}")
+            # Use LOWER() to make the comparison case-insensitive
+            query += " AND LOWER(p.first_name) = %s"
+            first_name = first_name.lower()
         
         # Execute the query
-        cursor.execute(query)
+        cursor.execute(query, (first_name,))
         data = cursor.fetchall()
         
         # Close the cursor and connection
