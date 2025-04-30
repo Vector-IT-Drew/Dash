@@ -176,3 +176,37 @@ def get_unique_values(connection, credentials):
     vals = [d[column] for d in data]
 
     return jsonify({"status": "success", "data": vals})
+
+
+@data_bp.route('/get_leads', methods=['GET'])
+@with_db_connection
+def get_leads(connection, credentials):
+    try:
+        cursor = connection.cursor(dictionary=True)
+        
+        # Define the query
+        query = """
+            SELECT *
+            FROM persons p
+            LEFT JOIN person_roles r ON p.person_id = r.person_id
+            LEFT JOIN preferences pref ON pref.person_id = p.person_id
+            WHERE r.role_id = 200
+        """
+        
+        # Execute the query
+        cursor.execute(query)
+        data = cursor.fetchall()
+        
+        # Close the cursor and connection
+        cursor.close()
+        connection.close()
+        
+        # Return the results as JSON
+        return jsonify({"status": "success", "data": data})
+    
+    except Exception as e:
+        logger.error(f"Error executing query: {str(e)}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+    finally:
+        if connection.is_connected():
+            connection.close()
