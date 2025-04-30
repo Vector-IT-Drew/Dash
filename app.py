@@ -101,7 +101,7 @@ def before_request():
     
     # Convert to JSON string and log it
     request_json = json.dumps(request_data)
-    api_logger.info(f"REQUEST {request_id}: {request.method} {request.path} - {str(request_json)[:100]}")
+    api_logger.info(f"REQUEST {request_id}: {request.method} {request.path} - {str(request_json)}")
 
 @app.after_request
 def after_request(response):
@@ -130,7 +130,7 @@ def after_request(response):
     
     # Convert to JSON string and log it
     response_json = json.dumps(response_data)
-    api_logger.info(f"RESPONSE {request_id}: {response.status_code} {round(duration * 1000)}ms - {str(response_json)[:100]}")
+    api_logger.info(f"RESPONSE {request_id}: {response.status_code} {round(duration * 1000)}ms - {str(response_json)[:300]}")
     
     return response
 
