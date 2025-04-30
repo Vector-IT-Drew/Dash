@@ -69,7 +69,7 @@ def submit_tour_request():
 	data = request.form.to_dict()
 	# Retrieve the portfolio email address
 	email_address = data.get('email_address', '')
-	tenant_email = data.get('tenant_email', '')
+	tenant_email = data.get('email', '')
 
 	# Use email_address for calendar operations
 	service = get_gmail_service(email_address)
@@ -125,7 +125,7 @@ def submit_tour_request():
 		return jsonify({"error": "Time slot is required"}), 400
 
 	column_values = {
-		mapping['Email']: {'email': data['tenant_email'], 'text': data['tenant_email']},
+		mapping['Email']: {'email': tenant_email, 'text': tenant_email},
 		mapping['Desired Move-In']: {'date': (pd.to_datetime(data['move-in-date'])).strftime('%Y-%m-%d')},
 		mapping['Budget']: data['budget'],
 		mapping['Phone']: data['phone-number'].replace('-', '').replace('+', ''),
