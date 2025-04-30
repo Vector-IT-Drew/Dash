@@ -26,6 +26,29 @@ def with_db_connection(f):
         return f(db_result["connection"], db_result["credentials"], *args, **kwargs)
     return decorated_function
 
+@with_db_connection
+def build_column_to_table_mapping(connection, credentials):
+    try:
+        cursor = connection.cursor()
+        query = """
+            SELECT TABLE_NAME, COLUMN_NAME
+            FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_SCHEMA = %s
+            AND TABLE_NAME IN ('units', 'addresses', 'entities', 'portfolios', 'deals');
+        """
+        cursor.execute(query, (os.getenv('DB_NAME', 'dash-database'),))
+        results = cursor.fetchall()
+
+        # Build the column-to-table mapping
+        column_to_table = {column: table for table, column in results}
+
+        cursor.close()
+        return column_to_table
+
+    except Exception as e:
+        logging.error(f"Error building column-to-table mapping: {str(e)}")
+        return {}
+
 def run_data_query(connection, credentials, columns, additional_filters=None):
     cursor = connection.cursor(dictionary=True)
     query = f"""
@@ -40,21 +63,22 @@ def run_data_query(connection, credentials, columns, additional_filters=None):
     params = []
 
     # Create a mapping of columns to their table aliases
-    column_to_table = {col.split('.')[1]: col.split('.')[0] for col in columns}
+    column_to_table = {col.split('.')[1]: col.split('.')[0] for col in columns if col}
 
     # Apply data filters from credentials
     data_filters = credentials.get("data_filters", [])
     for column, value in data_filters:
-        table_alias = column_to_table.get(column, '')
-        query += f" AND {column} = %s"
-        params.append(value)
+        if column and column != "Any":
+            query += f" AND {column} = %s"
+            params.append(value)
 
     # Apply additional filters from request
     if additional_filters:
         for column, value in additional_filters.items():
-            table_alias = column_to_table.get(column, '')
-            query += f" AND {table_alias}.{column} = %s"
-            params.append(value)
+            if column and column != "Any" and column in column_to_table:
+                table_alias = column_to_table[column]
+                query += f" AND {table_alias}.{column} = %s"
+                params.append(value)
 
     cursor.execute(query, params)
     data = cursor.fetchall()
@@ -114,3 +138,41 @@ def get_deal_data(connection, credentials):
     finally:
         if connection.is_connected():
             connection.close()
+
+# Build the column-to-table mapping once
+
+
+@data_bp.route('/get_unique_values', methods=['GET'])
+@with_db_connection
+def get_unique_values(connection, credentials):
+
+    cursor = connection.cursor(dictionary=True)
+
+    column = request.args.get('column')
+    if not column:
+        return jsonify({"status": "error", "message": "Column name not provided"}), 400
+
+    column_to_table = build_column_to_table_mapping()
+    table_name = column_to_table.get(column)
+    if not table_name:
+        return jsonify({"status": "error", "message": "Invalid column name"}), 400
+
+    # Construct the query to get unique values
+    query = f"SELECT DISTINCT {column} FROM {table_name}"
+
+    data_filters = credentials.get("data_filters", [])
+    params = []
+    for col, value in data_filters:
+        if col and col != "Any" and col in column_to_table:
+            query += f" AND {col.split(".")[1]} = %s"
+            params.append(value)
+
+    cursor.execute(query, params)
+    data = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
+
+    vals = [d[column] for d in data]
+
+    return jsonify({"status": "success", "data": vals})
