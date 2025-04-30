@@ -164,7 +164,7 @@ def submit_tour_request():
 
 	calendar_id = [item for item in service.calendarList().list().execute()['items'] if item['summary'] == 'Vector Tours'][0]['id']
 
-	resp = create_event(service, calendar_id, app_date.strftime('%m/%d/%Y %I:%M%p'), data['name'], data['email_address'], data['tour-type'], data)
+	resp = create_event(service, calendar_id, app_date.strftime('%m/%d/%Y %I:%M%p'), data['name'], tenant_email, data['tour-type'], data)
 	print(resp)
 
 	return jsonify({"success": True})
