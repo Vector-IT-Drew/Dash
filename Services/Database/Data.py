@@ -196,7 +196,7 @@ def get_leads(connection, credentials):
         first_name = request.args.get('first_name')
         if first_name:
             # Use LOWER() to make the comparison case-insensitive
-            query += f" AND LOWER(p.first_name) = '{first_name.lower()}'"
+            query += f" AND LOWER(p.first_name) LIKE '%{first_name.lower()}%'"
 
         
         # Execute the query
