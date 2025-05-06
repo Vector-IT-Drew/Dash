@@ -278,13 +278,16 @@ queries = {
 
 @data_bp.route('/run_query', methods=['GET'])
 @with_db_connection
-def run_query(connection, credentials, query_id):
+def run_query(connection, credentials):
     cursor = connection.cursor(dictionary=True)
+
+    query_id = request.args.get('query_id')
 
     query = queries[query_id]
    
-    params = []
+    filters = request.args.get('filters')
 
+    params = []
     # Apply data filters from credentials
     data_filters = credentials.get("data_filters", [])
     for column, value in data_filters:
