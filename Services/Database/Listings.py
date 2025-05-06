@@ -151,7 +151,7 @@ def get_filtered_listings_data(
                     d.actual_rent IS NOT NULL 
                     AND d.actual_rent != '' 
                     AND d.actual_rent != 0
-                    AND u.rentable = {str(rentable)}
+                    {f"AND u.rentable = {rentable}" if rentable else ""}
                     AND (
                         (
                             d.move_out IS NOT NULL
