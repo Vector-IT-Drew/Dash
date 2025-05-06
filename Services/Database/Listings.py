@@ -37,7 +37,7 @@ def get_filtered_listings():
     available = request.args.get('available', False)
     move_out = request.args.get('move_out', None)
    
-    sort = request.args.get('sort', 'ORDER BY d.actual_rent DESC')
+    sort = request.args.get('sort', None)
     include_all = request.args.get('include_all', False)
     proximity = request.args.get('proximity', False)
     
@@ -73,7 +73,7 @@ def get_filtered_listings():
 def get_filtered_listings_data(
     address=None, unit=None, beds=None, baths=None, 
     neighborhood=None, min_price=None, max_price=None, proximity=False, 
-    limit=10000, available=False, sort='ORDER BY d.actual_rent DESC', include_all=False, 
+    limit=10000, available=False, sort=None, include_all=False, 
     direct_response=False, proximity_distance=1, move_out=None, rentable=True):
     
     try:
@@ -208,13 +208,13 @@ def get_filtered_listings_data(
 
         # Add order by and limit
         if sort == 'price_asc':
-            query += f' ORDER BY d.actual_rent ASC '
+            query += ' ORDER BY d.actual_rent ASC '
         elif sort == 'price_desc':
-            query += f' ORDER BY d.actual_rent DESC '
+            query += ' ORDER BY d.actual_rent DESC '
         elif sort == 'size_desc':
-            query += f' ORDER BY u.sqft DESC'
+            query += ' ORDER BY u.sqft DESC '
         else:
-            query += sort
+            query += ' ORDER BY d.actual_rent DESC '  # Default sort
         
         # Execute the query
         cursor.execute(query, params)
