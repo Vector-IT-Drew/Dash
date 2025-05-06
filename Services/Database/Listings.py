@@ -167,7 +167,7 @@ def get_filtered_listings_data(
         # Add filter conditions
         params = []
 
-        if rentable:
+        if rentable == True:
             query += " AND u.rentable = %s"
             params.append(True)
             
