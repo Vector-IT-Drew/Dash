@@ -285,7 +285,7 @@ def run_query(connection, credentials):
 
     query = queries[query_id]
    
-    filters = request.args.get('filters')
+    filters = json.loads(request.args.get('filters'))
 
 
     params = []
