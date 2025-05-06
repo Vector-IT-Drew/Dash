@@ -35,22 +35,36 @@ def get_filtered_listings():
     max_price = request.args.get('max_price')
     limit = request.args.get('limit', 1000)
     available = request.args.get('available', False)
+    move_out = request.args.get('move_out', None)
+   
     sort = request.args.get('sort', 'ORDER BY d.actual_rent DESC')
     include_all = request.args.get('include_all', False)
     proximity = request.args.get('proximity', False)
     
     # Convert proximity_distance to float, default to 1 if not provided
     try:
-        proximity_distance = float(request.args.get('proximity_distance', 1))
+        proximity_distance = float(request.args.get('proximity_distance', 1000))
     except ValueError:
-        proximity_distance = 10  # Fallback to default if conversion fails
+        proximity_distance = 1000  # Fallback to default if conversion fails
     
     print(f"Proximity distance after conversion: {proximity_distance}")
     
     # Call the reusable function with parameters from request
     result = get_filtered_listings_data(
-        address, unit, beds, baths, neighborhood, 
-        min_price, max_price, proximity,proximity_distance, limit, available, sort, include_all
+        address=address,
+        unit=unit,
+        beds=beds,
+        baths=baths,
+        neighborhood=neighborhood,
+        min_price=min_price,
+        max_price=max_price,
+        proximity=proximity,
+        proximity_distance=proximity_distance,
+        limit=limit,
+        available=available,
+        sort=sort,
+        include_all=include_all,
+        move_out=move_out
     )
     
     # Return JSON response for the API endpoint
@@ -59,31 +73,10 @@ def get_filtered_listings():
 
 def get_filtered_listings_data(
     address=None, unit=None, beds=None, baths=None, 
-    neighborhood=None, min_price=None, max_price=None, proximity=False, proximity_distance=1,
+    neighborhood=None, min_price=None, max_price=None, proximity=False, 
     limit=10000, available=False, sort='ORDER BY d.actual_rent DESC', include_all=False, 
-    direct_response=False
-):
-    """
-    Get filtered listings data that can be called from other Python files.
+    direct_response=False, proximity_distance=1, move_out=None):
     
-    Args:
-        address (str, optional): Filter by address
-        unit (str, optional): Filter by unit number
-        beds (float, optional): Minimum number of bedrooms
-        baths (float, optional): Minimum number of bathrooms
-        neighborhood (str, optional): Filter by neighborhood
-        min_price (float, optional): Minimum price
-        max_price (float, optional): Maximum price
-        limit (int, optional): Maximum number of results to return
-        available (bool, optional): Only show currently available units
-        sort (str, optional): Sort order for results
-        include_all (bool, optional): Include all fields in the response
-        direct_response (bool, optional): Return data directly instead of jsonify
-        proximity_distance (float, optional): Distance in miles for proximity filter
-        
-    Returns:
-        dict: Dictionary with status, count, and data keys
-    """
     try:
         # Get database connection
         db_result = get_db_connection()
@@ -93,17 +86,11 @@ def get_filtered_listings_data(
         
         connection = db_result["connection"]
         cursor = connection.cursor(dictionary=True)
-        # Debugging: Check the value of proximity
-        print(f"Proximity parameter before stripping: {proximity}")
         
         # Strip extra quotes if present
         if proximity and (proximity.startswith('"') and proximity.endswith('"')):
             proximity = proximity[1:-1]
         
-        print(f"Proximity parameter after stripping: {proximity}")
-        print(f"Proximity distance: {proximity_distance}")
-        
-        # Ensure proximity is not None or empty
         if proximity:
             print("\nSELECT latitude, longitude FROM addresses WHERE address = %s", (proximity,))
             cursor.execute("SELECT latitude, longitude FROM addresses WHERE address = %s", (proximity,))
@@ -111,55 +98,64 @@ def get_filtered_listings_data(
             print('\nlocation', location)
             if location:
                 lat, lon = location['latitude'], location['longitude']
-                # Add proximity filter to the query
-                proximity_filter = f"""
-                    AND (
-                        3956 * 2 * ASIN(SQRT(
-                            POWER(SIN((a.latitude - {lat}) * pi()/180 / 2), 2) +
-                            COS(a.latitude * pi()/180) * COS({lat} * pi()/180) *
-                            POWER(SIN((a.longitude - {lon}) * pi()/180 / 2), 2)
-                        ))
-                    ) <= {proximity_distance}
+                # Calculate distance for each unit
+                distance_calculation = f"""
+                    3956 * 2 * ASIN(SQRT(
+                        POWER(SIN((a.latitude - {lat}) * pi()/180 / 2), 2) +
+                        COS(a.latitude * pi()/180) * COS({lat} * pi()/180) *
+                        POWER(SIN((a.longitude - {lon}) * pi()/180 / 2), 2)
+                    ))
                 """
+                # Add proximity filter to the query
+                proximity_filter = f"AND {distance_calculation} <= {proximity_distance}"
             else:
                 print("No location found for the given address.")
                 proximity_filter = ""
+                distance_calculation = "NULL"
         else:
             print("Proximity parameter is not provided or is invalid.")
             proximity_filter = ""
-        print('\nproximity_filter', proximity_filter)
-        # Start building the query to get vacant units and units with expiring deals
-        query = f"""
-            SELECT u.unit_id, u.address, u.unit, u.beds, u.baths, u.sqft, u.exposure,
-                u.floor_num, u.unit_status, d.expiry, d.actual_rent, u.unit_images, 
-                a.building_name, a.neighborhood, a.borough, d.deal_status, d.move_out, 
-                u.rentable, a.building_amenities, p.portfolio_email, a.building_image
-                {f', u.*, d.*, a.*' if include_all else ''}  
-            FROM units u
-            LEFT JOIN deals d ON u.unit_id = d.unit_id
-            LEFT JOIN addresses a ON u.address_id = a.address_id
-            LEFT JOIN entities e ON a.entity_id = e.entity_id
-            LEFT JOIN portfolios p ON e.portfolio_id = p.portfolio_id
-            WHERE 
-                d.actual_rent IS NOT NULL 
-                AND d.actual_rent != '' 
-                AND d.actual_rent != 0
-                AND u.rentable = True
-                AND (
-                    (
-                        d.move_out IS NOT NULL
-                        AND u.unit_status = 'Occupied' 
-                        AND d.move_out <= DATE_ADD(CURDATE(), INTERVAL 3 MONTH) 
-                        AND d.deal_status != 'Closed' 
-                        AND d.deal_status != 'Renewal Check'
-                        {f'AND d.move_out <= CURDATE()' if available else ''}
-                    ) 
-                    OR (
-                        u.unit_status = 'Vacant' 
+            distance_calculation = "NULL"
+        
+        try:
+            query = f"""
+                SELECT u.unit_id, u.address, u.unit, u.beds, u.baths, u.sqft, u.exposure,
+                    u.floor_num, u.unit_status, d.expiry, d.actual_rent, u.unit_images, 
+                    a.building_name, a.neighborhood, a.borough, d.deal_status, d.move_out, 
+                    u.rentable, a.building_amenities, p.portfolio_email, a.building_image,
+                    {distance_calculation} AS distance
+                    {', u.*, d.*, a.*' if include_all else ''}
+                FROM units u
+                LEFT JOIN deals d ON u.unit_id = d.unit_id
+                LEFT JOIN addresses a ON u.address_id = a.address_id
+                LEFT JOIN entities e ON a.entity_id = e.entity_id
+                LEFT JOIN portfolios p ON e.portfolio_id = p.portfolio_id
+                WHERE 
+                    d.actual_rent IS NOT NULL 
+                    AND d.actual_rent != '' 
+                    AND d.actual_rent != 0
+                    AND u.rentable = True
+                    AND (
+                        (
+                            d.move_out IS NOT NULL
+                            AND u.unit_status = 'Occupied' 
+                            AND d.move_out <= DATE_ADD(CURDATE(), INTERVAL 3 MONTH) 
+                            AND d.deal_status != 'Closed' 
+                            AND d.deal_status != 'Renewal Check'
+                            {("AND d.move_out <= CURDATE()" if available else "")}
+                        ) 
+                        OR (
+                            u.unit_status = 'Vacant' 
+                        )
                     )
-                )
-                {proximity_filter}
-        """
+                    {proximity_filter}
+            """
+            print("DEBUG: Final query string:")
+            print(query)
+        except Exception as e:
+            print("DEBUG: Error while constructing query string:", e)
+            raise
+
         # Add filter conditions
         params = []
             
@@ -192,6 +188,11 @@ def get_filtered_listings_data(
             query += " AND d.actual_rent <= %s"
             params.append(float(max_price))
         
+        print(f"Move out: {move_out}")
+        if move_out:
+            query += " AND (d.move_out <= %s OR d.move_out IS NULL)"
+            params.append(move_out)
+
         # Add order by and limit
         if sort == 'price_asc':
             query += f' ORDER BY d.actual_rent ASC  '
