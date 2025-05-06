@@ -269,4 +269,24 @@ def get_emails(connection, credentials):
 
 
 
-            
+
+@data_bp.route('/run_query', methods=['GET'])
+def run_query(connection, credentials, query):
+    cursor = connection.cursor(dictionary=True)
+   
+    params = []
+
+    # Apply data filters from credentials
+    data_filters = credentials.get("data_filters", [])
+    for column, value in data_filters:
+        if column and column not in ["Any", "", "undefined", "-", "0"] and column is not None and 'Any' not in value:
+            query += f" AND {column} = %s"
+            params.append(value)
+
+    cursor.execute(query, params)
+    data = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
+
+    return jsonify({"status": "success", "count": len(data), "data": data})          
