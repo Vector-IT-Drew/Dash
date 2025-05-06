@@ -266,11 +266,22 @@ def get_emails(connection, credentials):
             connection.close()
 
 
+queries = {
+    'all_leads': """
+        SELECT *
+            FROM persons p
+            LEFT JOIN person_roles r ON p.person_id = r.person_id
+            LEFT JOIN preferences pref ON pref.person_id = p.person_id
+            WHERE r.role_id = 200
+    """
+}
 
 @data_bp.route('/run_query', methods=['GET'])
 @with_db_connection
-def run_query(connection, credentials, query):
+def run_query(connection, credentials, query_name):
     cursor = connection.cursor(dictionary=True)
+
+    query = queries[query_name]
    
     params = []
 
