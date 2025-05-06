@@ -169,8 +169,7 @@ def get_filtered_listings_data(
 
         # Only add rentable filter if rentable is exactly True
         if rentable is True:
-            query += " AND u.rentable = %s"
-            params.append(True)
+            query += " AND u.rentable = True"
             
         if address:
             query += " AND u.address LIKE %s"
