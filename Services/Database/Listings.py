@@ -47,7 +47,6 @@ def get_filtered_listings():
     except ValueError:
         proximity_distance = 1000  # Fallback to default if conversion fails
     
-    print(f"Proximity distance after conversion: {proximity_distance}")
     
     # Call the reusable function with parameters from request
     result = get_filtered_listings_data(
@@ -92,10 +91,8 @@ def get_filtered_listings_data(
             proximity = proximity[1:-1]
         
         if proximity:
-            print("\nSELECT latitude, longitude, borough FROM addresses WHERE address = %s", (proximity,))
             cursor.execute("SELECT latitude, longitude, borough FROM addresses WHERE address = %s", (proximity,))
             location = cursor.fetchone()
-            print('\nlocation', location)
             lat, lon = None, None
             if location:
                 lat = location.get('latitude')
@@ -126,11 +123,9 @@ def get_filtered_listings_data(
                 # Add proximity filter to the query
                 proximity_filter = f"AND {distance_calculation} <= {proximity_distance}"
             else:
-                print("No location or borough found for the given address.")
                 proximity_filter = ""
                 distance_calculation = "NULL"
         else:
-            print("Proximity parameter is not provided or is invalid.")
             proximity_filter = ""
             distance_calculation = "NULL"
         
@@ -151,7 +146,6 @@ def get_filtered_listings_data(
                     d.actual_rent IS NOT NULL 
                     AND d.actual_rent != '' 
                     AND d.actual_rent != 0
-                    {f"AND u.rentable = {rentable}" if rentable else ""}
                     AND (
                         (
                             d.move_out IS NOT NULL
@@ -167,14 +161,15 @@ def get_filtered_listings_data(
                     )
                     {proximity_filter}
             """
-            print("DEBUG: Final query string:")
-            print(query)
         except Exception as e:
-            print("DEBUG: Error while constructing query string:", e)
             raise
 
         # Add filter conditions
         params = []
+
+        if rentable:
+            query += " AND u.rentable = %s"
+            params.append(True)
             
         if address:
             query += " AND u.address LIKE %s"
@@ -183,6 +178,7 @@ def get_filtered_listings_data(
         if unit:
             query += " AND u.unit = %s"
             params.append(unit)
+
         if beds == '0':
             query += " AND u.beds = 0"
         elif beds:
@@ -205,7 +201,6 @@ def get_filtered_listings_data(
             query += " AND d.actual_rent <= %s"
             params.append(float(max_price))
         
-        print(f"Move out: {move_out}")
         if move_out:
             query += " AND (d.move_out <= %s OR d.move_out IS NULL)"
             params.append(move_out)
