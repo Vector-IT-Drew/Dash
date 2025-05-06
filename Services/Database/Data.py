@@ -300,8 +300,8 @@ def run_query(connection, credentials):
     if filters:
         for column, value in filters.items():
             if column and column not in ["Any", "", "undefined", "-", "0"] and column is not None and 'Any' not in value:
-                query += f" AND {column} = %s"
-                params.append(value)
+                query += f" AND LOWER({column}) LIKE LOWER(%s)"
+                params.append(f"%{value}%")
 
 
     cursor.execute(query, params)
