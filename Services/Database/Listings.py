@@ -169,11 +169,11 @@ def get_filtered_listings_data(
         if beds == '0':
             query += " AND u.beds = 0"
         elif beds:
-            query += " AND u.beds >= %s"
+            query += " AND u.beds = %s"
             params.append(float(beds))
             
         if baths:
-            query += " AND u.baths >= %s"
+            query += " AND u.baths = %s"
             params.append(float(baths))
             
         if neighborhood:
