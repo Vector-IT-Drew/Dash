@@ -287,6 +287,7 @@ def run_query(connection, credentials):
    
     filters = request.args.get('filters')
 
+
     params = []
     # Apply data filters from credentials
     data_filters = credentials.get("data_filters", [])
@@ -294,6 +295,14 @@ def run_query(connection, credentials):
         if column and column not in ["Any", "", "undefined", "-", "0"] and column is not None and 'Any' not in value:
             query += f" AND {column} = %s"
             params.append(value)
+
+    # Apply additional filters from request
+    if filters:
+        for column, value in filters.items():
+            if column and column not in ["Any", "", "undefined", "-", "0"] and column is not None and 'Any' not in value:
+                query += f" AND {column} = %s"
+                params.append(value)
+
 
     cursor.execute(query, params)
     data = cursor.fetchall()
