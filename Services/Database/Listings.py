@@ -36,6 +36,7 @@ def get_filtered_listings():
     limit = request.args.get('limit', 1000)
     available = request.args.get('available', False)
     move_out = request.args.get('move_out', None)
+    rentable = request.args.get('rentable', True)
    
     sort = request.args.get('sort', None)
     include_all = request.args.get('include_all', False)
@@ -63,7 +64,8 @@ def get_filtered_listings():
         available=available,
         sort=sort,
         include_all=include_all,
-        move_out=move_out
+        move_out=move_out,
+        rentable=rentable
     )
     
     # Return JSON response for the API endpoint
@@ -214,6 +216,10 @@ def get_filtered_listings_data(
             query += ' ORDER BY u.sqft DESC '
         else:
             query += ' ORDER BY d.actual_rent DESC '  # Default sort
+
+
+        print('query', query )
+        print('params', params)
         
         # Execute the query
         cursor.execute(query, params)
