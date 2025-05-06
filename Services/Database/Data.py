@@ -278,10 +278,10 @@ queries = {
 
 @data_bp.route('/run_query', methods=['GET'])
 @with_db_connection
-def run_query(connection, credentials, query_name):
+def run_query(connection, credentials, query_id):
     cursor = connection.cursor(dictionary=True)
 
-    query = queries[query_name]
+    query = queries[query_id]
    
     params = []
 
