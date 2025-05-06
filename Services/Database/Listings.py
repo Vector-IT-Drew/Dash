@@ -92,12 +92,29 @@ def get_filtered_listings_data(
             proximity = proximity[1:-1]
         
         if proximity:
-            print("\nSELECT latitude, longitude FROM addresses WHERE address = %s", (proximity,))
-            cursor.execute("SELECT latitude, longitude FROM addresses WHERE address = %s", (proximity,))
+            print("\nSELECT latitude, longitude, borough FROM addresses WHERE address = %s", (proximity,))
+            cursor.execute("SELECT latitude, longitude, borough FROM addresses WHERE address = %s", (proximity,))
             location = cursor.fetchone()
             print('\nlocation', location)
+            lat, lon = None, None
             if location:
-                lat, lon = location['latitude'], location['longitude']
+                lat = location.get('latitude')
+                lon = location.get('longitude')
+                borough = location.get('borough')
+                # If lat/lon are missing, use borough defaults
+                if (lat is None or lon is None) and borough:
+                    nyc_boroughs = {
+                        "Manhattan": {"latitude": 40.7831, "longitude": -73.9712},
+                        "Brooklyn": {"latitude": 40.6782, "longitude": -73.9442},
+                        "Queens": {"latitude": 40.7282, "longitude": -73.7949},
+                        "Bronx": {"latitude": 40.8448, "longitude": -73.8648},
+                        "Staten Island": {"latitude": 40.5795, "longitude": -74.1502}
+                    }
+                    borough_defaults = nyc_boroughs.get(borough)
+                    if borough_defaults:
+                        lat = borough_defaults["latitude"]
+                        lon = borough_defaults["longitude"]
+            if lat is not None and lon is not None:
                 # Calculate distance for each unit
                 distance_calculation = f"""
                     3956 * 2 * ASIN(SQRT(
@@ -109,7 +126,7 @@ def get_filtered_listings_data(
                 # Add proximity filter to the query
                 proximity_filter = f"AND {distance_calculation} <= {proximity_distance}"
             else:
-                print("No location found for the given address.")
+                print("No location or borough found for the given address.")
                 proximity_filter = ""
                 distance_calculation = "NULL"
         else:
@@ -195,9 +212,9 @@ def get_filtered_listings_data(
 
         # Add order by and limit
         if sort == 'price_asc':
-            query += f' ORDER BY d.actual_rent ASC  '
+            query += f' ORDER BY d.actual_rent ASC '
         elif sort == 'price_desc':
-            query += f' ORDER BY d.actual_rent DESC'
+            query += f' ORDER BY d.actual_rent DESC '
         elif sort == 'size_desc':
             query += f' ORDER BY u.sqft DESC'
         else:
