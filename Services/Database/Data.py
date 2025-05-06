@@ -139,9 +139,6 @@ def get_deal_data(connection, credentials):
         if connection.is_connected():
             connection.close()
 
-# Build the column-to-table mapping once
-
-
 @data_bp.route('/get_unique_values', methods=['GET'])
 @with_db_connection
 def get_unique_values(connection, credentials):
@@ -176,47 +173,6 @@ def get_unique_values(connection, credentials):
     vals = [d[column] for d in data]
 
     return jsonify({"status": "success", "data": vals})
-
-
-@data_bp.route('/get_leads', methods=['GET'])
-@with_db_connection
-def get_leads(connection, credentials):
-
-    try:
-        cursor = connection.cursor(dictionary=True)
-        
-        # Define the query
-        query = """
-            SELECT *
-            FROM persons p
-            LEFT JOIN person_roles r ON p.person_id = r.person_id
-            LEFT JOIN preferences pref ON pref.person_id = p.person_id
-            WHERE r.role_id = 200
-        """
-
-        first_name = request.args.get('first_name')
-        if first_name:
-            # Use LOWER() to make the comparison case-insensitive
-            query += f" AND LOWER(p.first_name) LIKE '%{first_name.lower()}%'"
-
-        
-        # Execute the query
-        cursor.execute(query)
-        data = cursor.fetchall()
-        
-        # Close the cursor and connection
-        cursor.close()
-        connection.close()
-        
-        # Return the results as JSON
-        return jsonify({"status": "success", "data": data})
-    
-    except Exception as e:
-        logger.error(f"Error executing query: {str(e)}")
-        return jsonify({"status": "error", "message": str(e)}), 500
-    finally:
-        if connection.is_connected():
-            connection.close()
 
 
 @data_bp.route('/get_emails', methods=['GET'])
@@ -273,6 +229,10 @@ queries = {
             LEFT JOIN person_roles r ON p.person_id = r.person_id
             LEFT JOIN preferences pref ON pref.person_id = p.person_id
             WHERE r.role_id = 200
+    """,
+    'get_locations': """
+        SELECT a.latitude, a.longitude
+        FROM addresses a           
     """
 }
 

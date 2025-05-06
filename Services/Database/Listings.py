@@ -4,10 +4,23 @@ import logging
 from .Connect import get_db_connection
 import decimal
 import json
+import math
 
 # Create a Blueprint
 listings_bp = Blueprint('Listings', __name__)
 logger = logging.getLogger(__name__)
+
+def haversine(lat1, lon1, lat2, lon2):
+    # Convert decimal degrees to radians
+    lat1, lon1, lat2, lon2 = map(math.radians, [lat1, lon1, lat2, lon2])
+    # Haversine formula
+    dlat = lat2 - lat1
+    dlon = lon2 - lon1
+    a = math.sin(dlat/2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon/2)**2
+    c = 2 * math.asin(math.sqrt(a))
+    # Radius of earth in miles is 3956
+    miles = 3956 * c
+    return miles
 
 @listings_bp.route('/get_filtered_listings', methods=['GET'])
 def get_filtered_listings():
@@ -24,11 +37,20 @@ def get_filtered_listings():
     available = request.args.get('available', False)
     sort = request.args.get('sort', 'ORDER BY d.actual_rent DESC')
     include_all = request.args.get('include_all', False)
+    proximity = request.args.get('proximity', False)
+    
+    # Convert proximity_distance to float, default to 1 if not provided
+    try:
+        proximity_distance = float(request.args.get('proximity_distance', 1))
+    except ValueError:
+        proximity_distance = 10  # Fallback to default if conversion fails
+    
+    print(f"Proximity distance after conversion: {proximity_distance}")
     
     # Call the reusable function with parameters from request
     result = get_filtered_listings_data(
         address, unit, beds, baths, neighborhood, 
-        min_price, max_price, limit, available, sort, include_all
+        min_price, max_price, proximity,proximity_distance, limit, available, sort, include_all
     )
     
     # Return JSON response for the API endpoint
@@ -37,8 +59,9 @@ def get_filtered_listings():
 
 def get_filtered_listings_data(
     address=None, unit=None, beds=None, baths=None, 
-    neighborhood=None, min_price=None, max_price=None, 
-    limit=10000, available=False, sort='ORDER BY d.actual_rent DESC', include_all=False, direct_response=False
+    neighborhood=None, min_price=None, max_price=None, proximity=False, proximity_distance=1,
+    limit=10000, available=False, sort='ORDER BY d.actual_rent DESC', include_all=False, 
+    direct_response=False
 ):
     """
     Get filtered listings data that can be called from other Python files.
@@ -56,6 +79,7 @@ def get_filtered_listings_data(
         sort (str, optional): Sort order for results
         include_all (bool, optional): Include all fields in the response
         direct_response (bool, optional): Return data directly instead of jsonify
+        proximity_distance (float, optional): Distance in miles for proximity filter
         
     Returns:
         dict: Dictionary with status, count, and data keys
@@ -69,7 +93,41 @@ def get_filtered_listings_data(
         
         connection = db_result["connection"]
         cursor = connection.cursor(dictionary=True)
+        # Debugging: Check the value of proximity
+        print(f"Proximity parameter before stripping: {proximity}")
         
+        # Strip extra quotes if present
+        if proximity and (proximity.startswith('"') and proximity.endswith('"')):
+            proximity = proximity[1:-1]
+        
+        print(f"Proximity parameter after stripping: {proximity}")
+        print(f"Proximity distance: {proximity_distance}")
+        
+        # Ensure proximity is not None or empty
+        if proximity:
+            print("\nSELECT latitude, longitude FROM addresses WHERE address = %s", (proximity,))
+            cursor.execute("SELECT latitude, longitude FROM addresses WHERE address = %s", (proximity,))
+            location = cursor.fetchone()
+            print('\nlocation', location)
+            if location:
+                lat, lon = location['latitude'], location['longitude']
+                # Add proximity filter to the query
+                proximity_filter = f"""
+                    AND (
+                        3956 * 2 * ASIN(SQRT(
+                            POWER(SIN((a.latitude - {lat}) * pi()/180 / 2), 2) +
+                            COS(a.latitude * pi()/180) * COS({lat} * pi()/180) *
+                            POWER(SIN((a.longitude - {lon}) * pi()/180 / 2), 2)
+                        ))
+                    ) <= {proximity_distance}
+                """
+            else:
+                print("No location found for the given address.")
+                proximity_filter = ""
+        else:
+            print("Proximity parameter is not provided or is invalid.")
+            proximity_filter = ""
+        print('\nproximity_filter', proximity_filter)
         # Start building the query to get vacant units and units with expiring deals
         query = f"""
             SELECT u.unit_id, u.address, u.unit, u.beds, u.baths, u.sqft, u.exposure,
@@ -100,6 +158,7 @@ def get_filtered_listings_data(
                         u.unit_status = 'Vacant' 
                     )
                 )
+                {proximity_filter}
         """
         # Add filter conditions
         params = []
