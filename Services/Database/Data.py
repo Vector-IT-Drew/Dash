@@ -219,7 +219,6 @@ def get_leads(connection, credentials):
             connection.close()
 
 
-
 @data_bp.route('/get_emails', methods=['GET'])
 @with_db_connection
 def get_emails(connection, credentials):
@@ -268,9 +267,8 @@ def get_emails(connection, credentials):
 
 
 
-
-
 @data_bp.route('/run_query', methods=['GET'])
+@with_db_connection
 def run_query(connection, credentials, query):
     cursor = connection.cursor(dictionary=True)
    
