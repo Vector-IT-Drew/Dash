@@ -75,7 +75,7 @@ def get_filtered_listings_data(
     address=None, unit=None, beds=None, baths=None, 
     neighborhood=None, min_price=None, max_price=None, proximity=False, 
     limit=10000, available=False, sort='ORDER BY d.actual_rent DESC', include_all=False, 
-    direct_response=False, proximity_distance=1, move_out=None):
+    direct_response=False, proximity_distance=1, move_out=None, rentable=True):
     
     try:
         # Get database connection
@@ -151,7 +151,7 @@ def get_filtered_listings_data(
                     d.actual_rent IS NOT NULL 
                     AND d.actual_rent != '' 
                     AND d.actual_rent != 0
-                    AND u.rentable = True
+                    AND u.rentable = {str(rentable)}
                     AND (
                         (
                             d.move_out IS NOT NULL
