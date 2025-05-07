@@ -246,6 +246,7 @@ def get_gmail_token(client_id,client_secret, refresh_token):
 
 def send_email(sender, recipients, cc, subject, msg, attachments=[]):
 
+
     creds = get_google_creds(sender)
     access_token = get_gmail_token(creds['client_id'], creds['secret'], creds['refresh_token'])
     auth_string = generate_oauth2_string(sender, access_token)
@@ -266,3 +267,7 @@ def send_email(sender, recipients, cc, subject, msg, attachments=[]):
     server.sendmail(sender, recipients + cc, email_msg.as_string())
     server.quit()
     print('Sent')
+
+
+
+

@@ -11,6 +11,7 @@ from Services.Logging import log_viewer_bp
 from Services.Chatbot import chat_bp
 from Services.Forms.Tour_Schedule import tour_bp
 from Services.Emails.Notify import notify_bp
+from Services.Emails.EmailWatcher import emailwatcher_bp
 
 from flask_session import Session
 from datetime import timedelta
@@ -30,6 +31,7 @@ app.register_blueprint(chat_bp)
 app.register_blueprint(tour_bp)
 app.register_blueprint(notify_bp)
 app.register_blueprint(data_bp)
+app.register_blueprint(emailwatcher_bp)   
 
 app.config['DASH_SERVICES_ENDPOINT'] = 'https://dash-production-b25c.up.railway.app'
 
@@ -135,7 +137,7 @@ def after_request(response):
     return response
 
 if __name__ == '__main__':
-    port = 5003
+    port = 5004
     app.run(host='0.0.0.0', port=port, debug=True)
 
 
