@@ -232,7 +232,8 @@ queries = {
     """,
     'get_locations': """
         SELECT a.latitude, a.longitude
-        FROM addresses a           
+        FROM addresses a    
+        WHERE 1=1       
     """,
     'get_client_data': """
         SELECT a.address, u.unit, d.lease_type, u.beds, u.baths, u.sqft, d.deal_status 
@@ -240,6 +241,7 @@ queries = {
         FROM units u
         LEFT JOIN addresses a ON a.address_id = u.address_id
         LEFT JOIN deals d ON u.unit_id = d.unit_id
+        WHERE 1=1
     """
 }
 
