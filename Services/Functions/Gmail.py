@@ -27,7 +27,7 @@ import os
 import mimetypes
 from Services.Database.Connect import get_db_connection
 
-def get_gmail_service(email_address):
+def get_gmail_service(email_address, api_name="calendar", api_version="v3", scopes=None):
     print('get_gmail_service', email_address)
     
     # Construct service account info from environment variables
@@ -47,17 +47,21 @@ def get_gmail_service(email_address):
     # Print out each part of the credentials for debugging
     print('Service Account Info:', service_account_info)
     
-    SCOPES = ["https://www.googleapis.com/auth/calendar"]
+    if scopes is None:
+        if api_name == "gmail":
+            scopes = ["https://www.googleapis.com/auth/gmail.readonly"]
+        elif api_name == "calendar":
+            scopes = ["https://www.googleapis.com/auth/calendar"]
+        else:
+            raise ValueError("You must provide scopes for this API.")
+
     
     try:
-        # Create credentials from the service account info dictionary
         creds = service_account.Credentials.from_service_account_info(
-            service_account_info, scopes=SCOPES
+            service_account_info, scopes=scopes
         )
-     
         delegated_credentials = creds.with_subject(email_address)
-        service = build("calendar", "v3", credentials=delegated_credentials)
-      
+        service = build(api_name, api_version, credentials=delegated_credentials)
         return service
     
     except Exception as e:

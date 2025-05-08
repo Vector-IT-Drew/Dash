@@ -233,8 +233,24 @@ queries = {
     'get_locations': """
         SELECT a.latitude, a.longitude
         FROM addresses a           
+    """,
+    'get_client_data': """
+        SELECT a.address, u.unit, d.lease_type, u.beds, u.baths, u.sqft, d.deal_status 
+               
+        FROM addresses a
+        LEFT JOIN units u ON a.address_id = u.address_id
+        LEFT JOIN deals d ON u.unit_id = d.unit_id
     """
 }
+
+#  d.prev_gross, d.prev_payable, d.price_suggestion, d.gross, d.actual_rent, 
+#                 d.actual_rent_type, d.conc, d.term, d.move_out, d.lease_start, d.move_in, 
+#                 d.expiry, d.item_id, d.vny_notes, d.landlord_notes
+
+# Address	Unit	Lease Type	Bed	Bath	sqft	Status	
+# Prev Gross	Prev Payable	Price Suggestion	Gross	Actual Rent	Actual Rent Type	
+# Conc	Term	Move Out	Lease Start	Move-In	
+# Expiry	Item ID	VNY Notes	Landlord Notes
 
 @data_bp.route('/run_query', methods=['GET'])
 @with_db_connection
