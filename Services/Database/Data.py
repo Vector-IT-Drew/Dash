@@ -237,8 +237,8 @@ queries = {
     'get_client_data': """
         SELECT a.address, u.unit, d.lease_type, u.beds, u.baths, u.sqft, d.deal_status 
                
-        FROM addresses a
-        LEFT JOIN units u ON a.address_id = u.address_id
+        FROM units u
+        LEFT JOIN addresses a ON a.address_id = u.address_id
         LEFT JOIN deals d ON u.unit_id = d.unit_id
     """
 }
