@@ -295,9 +295,11 @@ queries = {
         WHERE 1=1
     """,
     'get_notes': """
-        SELECT * FROM notes
-        WHERE target_type = %s AND target_id = %s
-        ORDER BY created_at DESC
+        SELECT * FROM notes n
+        LEFT JOIN units u ON n.target_id = u.unit_id
+        LEFT JOIN addresses a ON u.address_id = a.address_id
+        WHERE n.target_type = %s AND n.target_id = %s
+        ORDER BY n.created_at DESC
     """
 }
 #   d.prev_gross,
@@ -352,3 +354,44 @@ def run_query(connection, credentials):
     print(query,    params)
 
     return jsonify({"status": "success", "count": len(data), "data": data})          
+
+@data_bp.route('/create_note', methods=['POST'])
+def create_note():
+    try:
+        data = request.get_json()
+        target_type = data.get('target_type')
+        target_id = data.get('target_id')
+        note = data.get('note')
+        creator_id = data.get('creator_id')
+        tag_ids = data.get('tag_ids')  # Should be a list or None
+
+        if not target_type or not target_id or not note or not creator_id:
+            return jsonify({"status": "error", "message": "target_type, target_id, note, and creator_id are required"}), 400
+
+        db_result = get_db_connection()
+        if db_result["status"] != "connected":
+            return jsonify({"status": "error", "message": db_result.get("message", "Database connection failed")}), 500
+        connection = db_result["connection"]
+        cursor = connection.cursor()
+
+        if tag_ids is not None:
+            tag_ids_json = json.dumps(tag_ids)
+        else:
+            tag_ids_json = None
+
+        query = """
+            INSERT INTO notes (target_type, target_id, note, creator_id, tag_ids)
+            VALUES (%s, %s, %s, %s, %s)
+        """
+        cursor.execute(query, (target_type, target_id, note, creator_id, tag_ids_json))
+        connection.commit()
+        note_id = cursor.lastrowid
+        cursor.close()
+        connection.close()
+        return jsonify({"status": "success", "note_id": note_id})
+    except Exception as e:
+        if 'cursor' in locals():
+            cursor.close()
+        if 'connection' in locals() and connection.is_connected():
+            connection.close()
+        return jsonify({"status": "error", "message": str(e)}), 500          
