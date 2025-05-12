@@ -236,18 +236,55 @@ queries = {
         WHERE 1=1       
     """,
     'get_client_data': """
-        SELECT a.address, u.unit, d.lease_type, u.beds, u.baths, u.sqft, d.deal_status 
-               
+        SELECT
+            a.address,
+            u.unit,
+            d1.lease_type,
+            u.beds,
+            u.baths,
+            u.sqft,
+            u.unit_status,
+            d1.deal_status,
+            d1.gross,
+            d2.gross AS previous_gross,
+            d1.actual_rent,
+            d2.actual_rent AS previous_actual_rent,
+            d2.deal_status AS previous_deal_status,
+            d1.concession,
+            d1.term,
+            d1.move_in,
+            d1.start_date,
+            d1.move_out,
+            d1.expiry
         FROM units u
-        LEFT JOIN addresses a ON a.address_id = u.address_id
-        LEFT JOIN deals d ON u.unit_id = d.unit_id
+        LEFT JOIN addresses a ON u.address_id = a.address_id
+        LEFT JOIN (
+            SELECT *
+            FROM (
+                SELECT
+                    d.*,
+                    ROW_NUMBER() OVER (PARTITION BY d.unit_id ORDER BY d.created_at DESC) as rn
+                FROM deals d
+            ) ranked
+            WHERE ranked.rn = 1
+        ) d1 ON u.unit_id = d1.unit_id
+        LEFT JOIN (
+            SELECT *
+            FROM (
+                SELECT
+                    d.*,
+                    ROW_NUMBER() OVER (PARTITION BY d.unit_id ORDER BY d.created_at DESC) as rn
+                FROM deals d
+            ) ranked
+            WHERE ranked.rn = 2
+        ) d2 ON u.unit_id = d2.unit_id
         WHERE 1=1
     """
 }
+#   d.prev_gross,
+            # d.prev_payable,
+            # d.price_suggestion,
 
-#  d.prev_gross, d.prev_payable, d.price_suggestion, d.gross, d.actual_rent, 
-#                 d.actual_rent_type, d.conc, d.term, d.move_out, d.lease_start, d.move_in, 
-#                 d.expiry, d.item_id, d.vny_notes, d.landlord_notes
 
 # Address	Unit	Lease Type	Bed	Bath	sqft	Status	
 # Prev Gross	Prev Payable	Price Suggestion	Gross	Actual Rent	Actual Rent Type	
