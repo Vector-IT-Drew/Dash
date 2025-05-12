@@ -299,7 +299,6 @@ queries = {
         LEFT JOIN units u ON n.target_id = u.unit_id
         LEFT JOIN addresses a ON u.address_id = a.address_id
         WHERE n.target_type = %s AND n.target_id = %s
-        ORDER BY n.created_at DESC
     """
 }
 #   d.prev_gross,
