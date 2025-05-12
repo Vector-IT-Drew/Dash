@@ -255,7 +255,10 @@ queries = {
             d1.move_in,
             d1.start_date,
             d1.move_out,
-            d1.expiry
+            d1.expiry,
+            note.note AS most_recent_note,
+            note.created_at AS note_created_at,
+            note.creator_id AS note_creator_id
         FROM units u
         LEFT JOIN addresses a ON u.address_id = a.address_id
         LEFT JOIN (
@@ -278,7 +281,23 @@ queries = {
             ) ranked
             WHERE ranked.rn = 2
         ) d2 ON u.unit_id = d2.unit_id
+        LEFT JOIN (
+            SELECT n1.*
+            FROM notes n1
+            INNER JOIN (
+                SELECT target_id, MAX(created_at) AS max_created
+                FROM notes
+                WHERE target_type = 'unit'
+                GROUP BY target_id
+            ) n2 ON n1.target_id = n2.target_id AND n1.created_at = n2.max_created
+            WHERE n1.target_type = 'unit'
+        ) note ON note.target_id = u.unit_id
         WHERE 1=1
+    """,
+    'get_notes': """
+        SELECT * FROM notes
+        WHERE target_type = %s AND target_id = %s
+        ORDER BY created_at DESC
     """
 }
 #   d.prev_gross,
@@ -297,13 +316,18 @@ def run_query(connection, credentials):
     cursor = connection.cursor(dictionary=True)
 
     query_id = request.args.get('query_id')
+    target_type = request.args.get('target_type', '')
+    target_id = request.args.get('target_id', '')
+
+    if target_type:
+        params = [target_type, target_id]
+    else:
+        params = []
 
     query = queries[query_id]
-   
     filters = json.loads(request.args.get('filters', '{}'))
     print('filters', filters)
 
-    params = []
     # Apply data filters from credentials
     data_filters = credentials.get("data_filters", [])
     for column, value in data_filters:
