@@ -239,6 +239,7 @@ queries = {
         SELECT
             a.address,
             u.unit,
+            u.unit_id,
             d1.lease_type,
             u.beds,
             u.baths,
