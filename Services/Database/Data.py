@@ -296,10 +296,12 @@ queries = {
         WHERE 1=1
     """,
     'get_notes': """
-        SELECT n.* FROM notes n
-        LEFT JOIN units u ON n.target_id = u.unit_id
+        SELECT n.*, a.address
+        FROM notes n
+        LEFT JOIN units u ON n.target_type = 'unit' AND n.target_id = u.unit_id
         LEFT JOIN addresses a ON u.address_id = a.address_id
         WHERE n.target_type = %s AND n.target_id = %s
+        ORDER BY n.created_at DESC
     """
 }
 #   d.prev_gross,
@@ -358,12 +360,13 @@ def run_query(connection, credentials):
 @data_bp.route('/create_note', methods=['POST'])
 def create_note():
     try:
-        data = request.get_json()
-        target_type = data.get('target_type')
-        target_id = data.get('target_id')
-        note = data.get('note')
-        creator_id = data.get('creator_id')
-        tag_ids = data.get('tag_ids')  # Should be a list or None
+        data = request.get_json(silent=True) or {}
+        # Fallback to query params if not in JSON
+        target_type = data.get('target_type') or request.args.get('target_type')
+        target_id = data.get('target_id') or request.args.get('target_id')
+        note = data.get('note') or request.args.get('note')
+        creator_id = data.get('creator_id') or request.args.get('creator_id')
+        tag_ids = data.get('tag_ids') or request.args.get('tag_ids')
 
         if not target_type or not target_id or not note or not creator_id:
             return jsonify({"status": "error", "message": "target_type, target_id, note, and creator_id are required"}), 400
@@ -383,6 +386,8 @@ def create_note():
             INSERT INTO notes (target_type, target_id, note, creator_id, tag_ids)
             VALUES (%s, %s, %s, %s, %s)
         """
+
+        print(query, (target_type, target_id, note, creator_id, tag_ids_json))
         cursor.execute(query, (target_type, target_id, note, creator_id, tag_ids_json))
         connection.commit()
         note_id = cursor.lastrowid
