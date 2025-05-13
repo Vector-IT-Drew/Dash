@@ -127,50 +127,52 @@ def login():
         if not username or not password:
             return jsonify({"status": "error", "message": "Username and password are required"}), 400
 
-        result = authenticate_user(username, password)
+        db_result = get_db_connection()
+        if db_result["status"] != "connected":
+            return jsonify({"status": "error", "message": "Failed to connect to database"})
 
-        if result["status"] == "success":
-            return jsonify({"status": "success", "session_key": result["session_key"]})
-        else:
-            return jsonify({"status": "error", "message": result.get("message", "Invalid credentials")}), 401
+        connection = db_result["connection"]
+        try:
+            cursor = connection.cursor(dictionary=True)
+            # Join dashboard_credentials with persons to get first_name and last_name
+            query = """
+                SELECT dc.*, p.first_name, p.last_name, p.person_id
+                FROM dashboard_credentials dc
+                LEFT JOIN persons p ON dc.person_id = p.person_id
+                WHERE dc.username = %s AND dc.password = %s
+            """
+            cursor.execute(query, (username, password))
+            user = cursor.fetchone()
 
+            if user:
+                if user['session_key']:
+                    session_key = user['session_key']
+                else:
+                    session_key = generate_session_key()
+                    update_query = "UPDATE dashboard_credentials SET session_key = %s WHERE person_id = %s"
+                    cursor.execute(update_query, (session_key, user['person_id']))
+                    connection.commit()
+                return jsonify({
+                    "status": "success",
+                    "session_key": session_key,
+                    "first_name": user.get('first_name', ''),
+                    "last_name": user.get('last_name', '')
+                })
+            else:
+                return jsonify({"status": "error", "message": "Invalid credentials"}), 401
+        except Error as e:
+            logger.error(f"Error during authentication: {str(e)}")
+            return jsonify({"status": "error", "message": str(e)})
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
     except Exception as e:
         logger.error(f"Error in login route: {str(e)}")
         return jsonify({"status": "error", "message": str(e)}), 500
 
 def generate_session_key():
     return 'session_key_' + ''.join(random.choices(string.digits, k=16))
-
-def authenticate_user(username, password):
-    db_result = get_db_connection()
-    if db_result["status"] != "connected":
-        return {"status": "error", "message": "Failed to connect to database"}
-
-    connection = db_result["connection"]
-    try:
-        cursor = connection.cursor(dictionary=True)
-        query = "SELECT * FROM dashboard_credentials WHERE username = %s AND password = %s"
-        cursor.execute(query, (username, password))
-        user = cursor.fetchone()
-
-        if user:
-            if user['session_key']:
-                return {"status": "success", "session_key": user['session_key']}
-            else:
-                session_key = generate_session_key()
-                update_query = "UPDATE dashboard_credentials SET session_key = %s WHERE person_id = %s"
-                cursor.execute(update_query, (session_key, user['person_id']))
-                connection.commit()
-                return {"status": "success", "session_key": session_key}
-        else:
-            return {"status": "error", "message": "Invalid credentials"}
-    except Error as e:
-        logger.error(f"Error during authentication: {str(e)}")
-        return {"status": "error", "message": str(e)}
-    finally:
-        if connection.is_connected():
-            cursor.close()
-            connection.close()
 
 # # @connect_bp.route('/check-session', methods=['GET'])
 # # def check_session():
