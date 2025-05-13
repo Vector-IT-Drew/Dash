@@ -296,7 +296,7 @@ queries = {
         WHERE 1=1
     """,
     'get_notes': """
-        SELECT * FROM notes n
+        SELECT n.* FROM notes n
         LEFT JOIN units u ON n.target_id = u.unit_id
         LEFT JOIN addresses a ON u.address_id = a.address_id
         WHERE n.target_type = %s AND n.target_id = %s
