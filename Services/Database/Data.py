@@ -288,17 +288,17 @@ queries = {
             INNER JOIN (
                 SELECT target_id, MAX(created_at) AS max_created
                 FROM notes
-                WHERE target_type = 'unit'
+                WHERE target_type = 'units'
                 GROUP BY target_id
             ) n2 ON n1.target_id = n2.target_id AND n1.created_at = n2.max_created
-            WHERE n1.target_type = 'unit'
+            WHERE n1.target_type = 'units'
         ) note ON note.target_id = u.unit_id
         WHERE 1=1
     """,
     'get_notes': """
         SELECT n.*, a.address
         FROM notes n
-        LEFT JOIN units u ON n.target_type = 'unit' AND n.target_id = u.unit_id
+        LEFT JOIN units u ON n.target_type = 'units' AND n.target_id = u.unit_id
         LEFT JOIN addresses a ON u.address_id = a.address_id
         WHERE n.target_type = %s AND n.target_id = %s
     """
