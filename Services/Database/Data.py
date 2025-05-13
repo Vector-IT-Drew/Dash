@@ -302,7 +302,6 @@ queries = {
         LEFT JOIN addresses a ON u.address_id = a.address_id
         LEFT JOIN persons p ON n.creator_id = p.person_id
         WHERE n.target_type = %s AND n.target_id = %s
-        ORDER BY n.created_at DESC
     """
 }
 #   d.prev_gross,
