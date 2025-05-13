@@ -362,13 +362,32 @@ def create_note():
     try:
         data = request.get_json(silent=True) or {}
         # Fallback to query params if not in JSON
-        target_type = data.get('target_type') or request.args.get('target_type')
-        target_id = data.get('target_id') or request.args.get('target_id')
-        note = data.get('note') or request.args.get('note')
-        creator_id = data.get('creator_id') or request.args.get('creator_id')
-        tag_ids = data.get('tag_ids') or request.args.get('tag_ids')
+        target_type = data.get('target_type')
+        if target_type is None:
+            target_type = request.args.get('target_type')
 
-        if not target_type or not target_id or not note or not creator_id:
+        target_id = data.get('target_id')
+        if target_id is None:
+            target_id = request.args.get('target_id')
+
+        note = data.get('note')
+        if note is None:
+            note = request.args.get('note')
+
+        creator_id = data.get('creator_id')
+        if creator_id is None:
+            creator_id = request.args.get('creator_id')
+
+        tag_ids = data.get('tag_ids')
+        if tag_ids is None:
+            tag_ids = request.args.get('tag_ids')
+
+        # Add this debug print here:
+        print("DEBUG types:", type(target_type), type(target_id), type(note), type(creator_id))
+        print("DEBUG values:", target_type, target_id, note, creator_id)
+
+        if target_type in [None, ""] or target_id in [None, ""] or note in [None, ""] or creator_id in [None, ""]:
+            print("FAILED CHECK", target_type, target_id, note, creator_id)
             return jsonify({"status": "error", "message": "target_type, target_id, note, and creator_id are required"}), 400
 
         db_result = get_db_connection()
