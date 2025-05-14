@@ -296,8 +296,7 @@ queries = {
         WHERE 1=1
     """,
     'get_notes': """
-        SELECT n.*, a.address, p.first_name AS first_name, p.last_name AS last_name
-        p.person_id
+        SELECT n.*, a.address, p.first_name AS first_name, p.last_name AS last_name, p.person_id
         FROM notes n
         LEFT JOIN units u ON n.target_type = 'units' AND n.target_id = u.unit_id
         LEFT JOIN addresses a ON u.address_id = a.address_id
