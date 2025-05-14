@@ -109,6 +109,8 @@ def safe_date(val):
 
 def update_deals_from_monday():
 
+	print("Updating deals from Monday...")
+
 	client = get_monday_client()
 	
 	lux_df = get_data(6019954751, client)
