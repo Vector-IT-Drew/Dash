@@ -13,7 +13,7 @@
   {
     "name": "every-2-min",
     "schedule": "*/2 * * * *",
-      "command": "python Services/Functions/update_deals_from_monday.py"
+      "command": "python -m Services.Functions.Monday"
     }
   ]
   

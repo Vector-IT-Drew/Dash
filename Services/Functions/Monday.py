@@ -109,7 +109,7 @@ def safe_date(val):
 
 def update_deals_from_monday():
 
-	print("Updating deals from Monday...")
+	print("Starting update_deals_from_monday cron job...")
 
 	client = get_monday_client()
 	
