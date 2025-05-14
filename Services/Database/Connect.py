@@ -156,7 +156,8 @@ def login():
                     "status": "success",
                     "session_key": session_key,
                     "first_name": user.get('first_name', ''),
-                    "last_name": user.get('last_name', '')
+                    "last_name": user.get('last_name', ''),
+                    "person_id": user.get('person_id', '')
                 })
             else:
                 return jsonify({"status": "error", "message": "Invalid credentials"}), 401
