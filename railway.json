@@ -7,5 +7,14 @@
     "startCommand": "gunicorn app:app",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10
-  }
+  },
+  
+  "crons": [
+    {
+      "name": "every-2-min",
+      "schedule": "*/2 * * * *",
+      "command": "python update_deals_from_monday.py"
+    }
+  ]
+  
 }
