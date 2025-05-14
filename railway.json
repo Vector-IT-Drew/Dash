@@ -9,11 +9,11 @@
     "restartPolicyMaxRetries": 10
   },
   
-  "crons": [
-    {
-      "name": "every-2-min",
-      "schedule": "*/2 * * * *",
-      "command": "python update_deals_from_monday.py"
+"crons": [
+  {
+    "name": "every-2-min",
+    "schedule": "*/2 * * * *",
+      "command": "python Services/Functions/update_deals_from_monday.py"
     }
   ]
   
