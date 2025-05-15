@@ -260,7 +260,7 @@ queries = {
             note.note AS most_recent_note,
             note.created_at AS note_created_at,
             note.creator_id AS note_creator_id,
-            CONCAT(p.first_name, ' ', p.last_name) AS creator_full_name.
+            CONCAT(p.first_name, ' ', p.last_name) AS creator_full_name,
             u.rentable
         FROM units u
         LEFT JOIN addresses a ON u.address_id = a.address_id
