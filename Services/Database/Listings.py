@@ -79,6 +79,8 @@ def get_filtered_listings_data(
     neighborhood=None, min_price=None, max_price=None, proximity=False, 
     limit=10000, available=False, sort=None, include_all=False, 
     direct_response=False, proximity_distance=1, move_out=None, rentable=True, portfolio=None):
+
+    print('Getting data for portfolio: ', portfolio)
     
     try:
         # Get database connection
@@ -184,6 +186,7 @@ def get_filtered_listings_data(
             params.append(unit)
 
         if portfolio:
+            print('Getting data for portfolio: ', portfolio)
             query += " AND p.portfolio = %s"
             params.append(portfolio)
 
