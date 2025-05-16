@@ -184,7 +184,7 @@ def get_filtered_listings_data(
             params.append(unit)
 
         if portfolio:
-            query += " AND p.portfolio_name = %s"
+            query += " AND p.portfolio = %s"
             params.append(portfolio)
 
         if beds == '0':
