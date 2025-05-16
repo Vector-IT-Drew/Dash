@@ -174,6 +174,7 @@ def get_filtered_listings_data(
                         )
                     )
                     {proximity_filter}
+                """
         except Exception as e:
             raise
 
