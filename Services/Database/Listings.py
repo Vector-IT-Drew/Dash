@@ -321,13 +321,21 @@ def get_listing():
         
         # Query to get all details for a specific unit
         query = """
-            SELECT u.*, d.*, a.*, p.portfolio_email
-            FROM units u
-            LEFT JOIN deals d ON u.unit_id = d.unit_id
-            LEFT JOIN addresses a ON u.address_id = a.address_id
-            LEFT JOIN entities e ON a.entity_id = e.entity_id
-            LEFT JOIN portfolios p ON e.portfolio_id = p.portfolio_id
-            WHERE u.unit_id = %s
+                    SELECT u.*, d.*, a.*, p.portfolio_email
+                    FROM units u
+                    LEFT JOIN (
+                        SELECT d1.*
+                        FROM deals d1
+                        INNER JOIN (
+                            SELECT unit_id, MAX(created_at) as max_created
+                            FROM deals
+                            GROUP BY unit_id
+                        ) d2 ON d1.unit_id = d2.unit_id AND d1.created_at = d2.max_created
+                    ) d ON u.unit_id = d.unit_id
+                    LEFT JOIN addresses a ON u.address_id = a.address_id
+                    LEFT JOIN entities e ON a.entity_id = e.entity_id
+                    LEFT JOIN portfolios p ON e.portfolio_id = p.portfolio_id
+                    WHERE u.unit_id = %s
         """
         
         # Execute the query
@@ -370,8 +378,8 @@ def get_listing():
     
     except Exception as e:
         logger.error(f"Error retrieving listing details: {str(e)}")
+        print('Error retrieving listing details: ', str(e))
         return jsonify({"status": "error", "message": str(e)}), 500
-
 
 def get_unique_neighborhoods_and_addresses():
     """
