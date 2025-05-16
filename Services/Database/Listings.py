@@ -37,6 +37,7 @@ def get_filtered_listings():
     available = request.args.get('available', False)
     move_out = request.args.get('move_out', None)
     rentable = request.args.get('rentable', True)
+    portfolio = request.args.get('portfolio', '')
    
     sort = request.args.get('sort', None)
     include_all = request.args.get('include_all', False)
@@ -65,7 +66,8 @@ def get_filtered_listings():
         sort=sort,
         include_all=include_all,
         move_out=move_out,
-        rentable=rentable
+        rentable=rentable,
+        portfolio=portfolio
     )
     
     # Return JSON response for the API endpoint
@@ -76,7 +78,7 @@ def get_filtered_listings_data(
     address=None, unit=None, beds=None, baths=None, 
     neighborhood=None, min_price=None, max_price=None, proximity=False, 
     limit=10000, available=False, sort=None, include_all=False, 
-    direct_response=False, proximity_distance=1, move_out=None, rentable=True):
+    direct_response=False, proximity_distance=1, move_out=None, rentable=True, portfolio=None):
     
     try:
         # Get database connection
@@ -180,6 +182,10 @@ def get_filtered_listings_data(
         if unit:
             query += " AND u.unit = %s"
             params.append(unit)
+
+        if portfolio:
+            query += " AND p.portfolio_name = %s"
+            params.append(portfolio)
 
         if beds == '0':
             query += " AND u.beds = 0"
