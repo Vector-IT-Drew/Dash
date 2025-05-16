@@ -271,7 +271,7 @@ queries = {
             FROM (
                 SELECT
                     d.*,
-                    ROW_NUMBER() OVER (PARTITION BY d.unit_id ORDER BY d.move_out DESC) as rn
+                    ROW_NUMBER() OVER (PARTITION BY d.unit_id ORDER BY d.created_at DESC) as rn
                 FROM deals d
             ) ranked
             WHERE ranked.rn = 1
@@ -281,7 +281,7 @@ queries = {
             FROM (
                 SELECT
                     d.*,
-                    ROW_NUMBER() OVER (PARTITION BY d.unit_id ORDER BY d.move_out DESC) as rn
+                    ROW_NUMBER() OVER (PARTITION BY d.unit_id ORDER BY d.created_at DESC) as rn
                 FROM deals d
             ) ranked
             WHERE ranked.rn = 2
