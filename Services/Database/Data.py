@@ -260,7 +260,7 @@ queries = {
             note.note AS most_recent_note,
             note.created_at AS note_created_at,
             note.creator_id AS note_creator_id,
-            CONCAT(p.first_name, ' ', p.last_name) AS creator_full_name,
+            CONCAT(per.first_name, ' ', per.last_name) AS creator_full_name,
             u.rentable
         FROM units u
         LEFT JOIN addresses a ON u.address_id = a.address_id
@@ -297,7 +297,7 @@ queries = {
             ) n2 ON n1.target_id = n2.target_id AND n1.created_at = n2.max_created
             WHERE n1.target_type = 'units'
         ) note ON note.target_id = u.unit_id
-        LEFT JOIN persons p ON note.creator_id = p.person_id
+        LEFT JOIN persons per ON note.creator_id = per.person_id
         WHERE 1=1
     """,
     'get_notes': """
