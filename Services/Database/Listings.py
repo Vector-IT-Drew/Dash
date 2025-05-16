@@ -144,7 +144,15 @@ def get_filtered_listings_data(
                     {distance_calculation} AS distance
                     {', u.*, d.*, a.*' if include_all else ''}
                 FROM units u
-                LEFT JOIN deals d ON u.unit_id = d.unit_id
+                LEFT JOIN (
+                    SELECT d1.*
+                    FROM deals d1
+                    INNER JOIN (
+                        SELECT unit_id, MAX(created_at) as max_created
+                        FROM deals
+                        GROUP BY unit_id
+                    ) d2 ON d1.unit_id = d2.unit_id AND d1.created_at = d2.max_created
+                ) d ON u.unit_id = d.unit_id
                 LEFT JOIN addresses a ON u.address_id = a.address_id
                 LEFT JOIN entities e ON a.entity_id = e.entity_id
                 LEFT JOIN portfolios p ON e.portfolio_id = p.portfolio_id
@@ -166,7 +174,6 @@ def get_filtered_listings_data(
                         )
                     )
                     {proximity_filter}
-            """
         except Exception as e:
             raise
 
