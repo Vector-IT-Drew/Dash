@@ -73,6 +73,7 @@ def submit_tour_request():
 
 	# Use email_address for calendar operations
 	service = get_gmail_service('it@vectorny.com')
+	print('Service is: it@vectorny.com')
 
 	# Use tenant_email for tenant-specific operations
 	version = str(data.get('version', '1'))
@@ -163,7 +164,7 @@ def submit_tour_request():
 	print('response', response)
 
 	calendar_id = [item for item in service.calendarList().list().execute()['items'] if item['summary'] == 'Vector Tours'][0]['id']
-
+	print('calendar_id', calendar_id)
 	resp = create_event(service, calendar_id, app_date.strftime('%m/%d/%Y %I:%M%p'), data['name'], tenant_email, data['tour-type'], data, portfolio_email=email_address)
 	print(resp)
 
