@@ -68,7 +68,7 @@ def get_gmail_service(email_address, api_name="calendar", api_version="v3", scop
         print('Error connecting to Gmail service:', e)
         return None
 
-def create_event(service, calendar_id, slot, tenant_name, tenant_email, tour_type, data):
+def create_event(service, calendar_id, slot, tenant_name, tenant_email, tour_type, data, portfolio_email):
 	"""Create an event in Google Calendar using a selected time slot."""
 	tz = pytz.timezone("America/New_York")
 	start_time = datetime.datetime.strptime(slot, "%m/%d/%Y %I:%M%p")
@@ -80,13 +80,14 @@ def create_event(service, calendar_id, slot, tenant_name, tenant_email, tour_typ
 	event = {
 		"summary": f"{tour_type} Apartment Tour - {tenant_name} - {data['apartment-size'].replace('-', ' ').title()}",
 		"description": f"""Tour scheduled with {tenant_name}.
-                        Desired Move In: {pd.to_datetime(data['move-in-date']).strftime('%m/%d/%Y')}
-                        Desired Budget: {format_dollar(float(data['budget']))}
-                        Contact Info: {tenant_email} {format_phone(data['phone-number'].replace('-','').replace('+', ''))}
+                Desired Move In: {pd.to_datetime(data['move-in-date']).strftime('%m/%d/%Y')}
+                Desired Budget: {format_dollar(float(data['budget']))}
+                Contact Info: {tenant_email} 
+                    {format_phone(data['phone-number'].replace('-','').replace('+', ''))}
                                                 """,
 		"start": {"dateTime": start_time_str, "timeZone": "America/New_York"},
 		"end": {"dateTime": end_time_str, "timeZone": "America/New_York"},
-		"attendees": [{"email": tenant_email}],
+		"attendees": [{"email": tenant_email}, {"email": portfolio_email}],
 		"reminders": {
 			"useDefault": True,
 			# "overrides": [
