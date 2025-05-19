@@ -43,6 +43,7 @@ def tour_schedule():
 def get_all_timeslots():
     # Retrieve the portfolio email address
     email_address = request.args.get('email_address', 'it@vectorny.com')
+	email_address = email_address.split('?')[0]
     all_available_slots = {}
     try:
         service = get_gmail_service(email_address)
