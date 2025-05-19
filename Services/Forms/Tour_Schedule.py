@@ -167,6 +167,7 @@ def submit_tour_request():
 	print('calendar_id', calendar_id)
 	resp = create_event(service, calendar_id, app_date.strftime('%m/%d/%Y %I:%M%p'), data['name'], tenant_email, data['tour-type'], data, portfolio_email=email_address)
 	print(resp)
+	print('!')
 
 	return jsonify({"success": True})
 
