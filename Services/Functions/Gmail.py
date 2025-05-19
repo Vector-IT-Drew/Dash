@@ -88,15 +88,15 @@ def create_event(service, calendar_id, slot, tenant_name, tenant_email, tour_typ
 		"end": {"dateTime": end_time_str, "timeZone": "America/New_York"},
 		"attendees": [{"email": tenant_email}],
 		"reminders": {
-			"useDefault": False,
-			"overrides": [
-				{"method": "email", "minutes": 1440},
-				{"method": "popup", "minutes": 30}
-			],
+			"useDefault": True,
+			# "overrides": [
+			# 	{"method": "email", "minutes": 1440},
+			# 	{"method": "popup", "minutes": 30}
+			# ],
 		},
 	}
 
-	event = service.events().insert(calendarId=calendar_id, body=event).execute()
+	event = service.events().insert(calendarId=calendar_id, body=event, sendUpdates='all').execute()
 	print(f"✅ Event created: {event.get('htmlLink')}")
 	return event
 
