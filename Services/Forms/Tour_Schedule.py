@@ -42,7 +42,7 @@ def tour_schedule():
 @tour_bp.route("/get-all-timeslots", methods=["GET"])
 def get_all_timeslots():
     # Retrieve the portfolio email address
-    email_address = request.args.get('email_address', 'default@portfolio.com')
+    email_address = request.args.get('email_address', 'it@vectorny.com')
     all_available_slots = {}
     try:
         service = get_gmail_service(email_address)
@@ -72,7 +72,7 @@ def submit_tour_request():
 	tenant_email = data.get('email', '')
 
 	# Use email_address for calendar operations
-	service = get_gmail_service(email_address)
+	service = get_gmail_service('it@vectorny.com')
 
 	# Use tenant_email for tenant-specific operations
 	version = str(data.get('version', '1'))
