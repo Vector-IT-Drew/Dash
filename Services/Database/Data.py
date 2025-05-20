@@ -326,6 +326,21 @@ queries = {
         LEFT JOIN addresses a ON u.address_id = a.address_id
         LEFT JOIN persons p ON n.creator_id = p.person_id
         WHERE n.target_type = %s AND n.target_id = %s
+    """,
+    'get_unit_deals': """
+        SELECT
+            deal_id,
+            unit_id,
+            start_date,
+            expiry,
+            move_in,
+            move_out,
+            gross,
+            actual_rent,
+            term,
+            concession
+        FROM deals
+        WHERE unit_id = %s
     """
 }
 #   d.prev_gross,
