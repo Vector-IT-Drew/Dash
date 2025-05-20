@@ -244,7 +244,24 @@ queries = {
             u.beds,
             u.baths,
             u.sqft,
-            u.unit_status,
+            CASE
+                WHEN u.unit_status = 'DNR' THEN 'DNR'
+                WHEN d1.start_date IS NOT NULL AND (
+                    (
+                        d1.move_out IS NOT NULL AND NOW() BETWEEN d1.start_date AND d1.move_out
+                    ) OR (
+                        d1.move_out IS NULL AND d1.expiry IS NOT NULL AND NOW() BETWEEN d1.start_date AND d1.expiry
+                    )
+                ) THEN 'Occupied'
+                WHEN d1.start_date IS NOT NULL AND (
+                    (
+                        d1.move_out IS NOT NULL AND NOW() > d1.move_out
+                    ) OR (
+                        d1.move_out IS NULL AND d1.expiry IS NOT NULL AND NOW() > d1.expiry
+                    )
+                ) THEN 'Vacant'
+                ELSE u.unit_status
+            END AS unit_status,
             d1.deal_status,
             d1.gross,
             d2.gross AS previous_gross,
