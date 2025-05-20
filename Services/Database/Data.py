@@ -261,7 +261,8 @@ queries = {
             note.created_at AS note_created_at,
             note.creator_id AS note_creator_id,
             CONCAT(per.first_name, ' ', per.last_name) AS creator_full_name,
-            u.rentable
+            u.rentable,
+            p.potfolio
         FROM units u
         LEFT JOIN addresses a ON u.address_id = a.address_id
         LEFT JOIN entities e ON a.entity_id = e.entity_id
