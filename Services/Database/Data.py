@@ -251,6 +251,7 @@ queries = {
             d1.actual_rent,
             d2.actual_rent AS previous_actual_rent,
             d2.deal_status AS previous_deal_status,
+            d2.move_out AS previous_move_out,
             d1.concession,
             d1.term,
             d1.move_in,
