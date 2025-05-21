@@ -361,8 +361,11 @@ def run_query(connection, credentials):
     query_id = request.args.get('query_id')
     target_type = request.args.get('target_type', '')
     target_id = request.args.get('target_id', '')
+    unit_id = request.args.get('unit_id', '')
 
-    if target_type:
+    if unit_id:
+        params = [unit_id]
+    elif target_type:
         params = [target_type, target_id]
     else:
         params = []
