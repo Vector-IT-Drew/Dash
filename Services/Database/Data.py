@@ -246,21 +246,14 @@ queries = {
             u.sqft,
             CASE
                 WHEN u.unit_status = 'DNR' THEN 'DNR'
-                WHEN d1.start_date IS NOT NULL AND (
-                    (
-                        d1.move_out IS NOT NULL AND NOW() BETWEEN d1.start_date AND d1.move_out
-                    ) OR (
-                        d1.move_out IS NULL AND d1.expiry IS NOT NULL AND NOW() BETWEEN d1.start_date AND d1.expiry
-                    )
-                ) THEN 'Occupied'
-                WHEN d1.start_date IS NOT NULL AND (
-                    (
-                        d1.move_out IS NOT NULL AND NOW() > d1.move_out
-                    ) OR (
-                        d1.move_out IS NULL AND d1.expiry IS NOT NULL AND NOW() > d1.expiry
-                    )
-                ) THEN 'Vacant'
-                ELSE u.unit_status
+                WHEN d1.start_date IS NOT NULL 
+                    AND (
+                        (d1.move_out IS NOT NULL AND CURRENT_TIMESTAMP < d1.move_out)
+                        OR 
+                        (d1.move_in IS NOT NULL AND CURRENT_TIMESTAMP > d1.move_in)
+                    ) 
+                THEN 'Occupied'
+                ELSE 'Vacant'
             END AS unit_status,
             d1.deal_status,
             d1.gross,
