@@ -246,7 +246,7 @@ queries = {
             u.sqft,
             CASE
                 WHEN u.unit_status = 'DNR' THEN 'DNR'
-                WHEN d1.start_date IS NOT NULL AND (
+                WHEN 
                     (d1.move_out IS NOT NULL AND CURRENT_TIMESTAMP < d1.move_out) OR
                     (d1.move_in IS NOT NULL AND CURRENT_TIMESTAMP > d1.move_in) OR
                     (d1.move_in IS NOT NULL AND d1.move_out IS NULL AND CURRENT_TIMESTAMP > d1.move_in)
