@@ -173,6 +173,10 @@ def get_filtered_listings_data(
                             u.unit_status = 'Vacant' 
                         )
                     )
+                    OR (
+                        p.portfolio = 'SMK'
+                        AND d.move_out IS NOT NULL
+                    )
                     {proximity_filter}
                 """
         except Exception as e:
