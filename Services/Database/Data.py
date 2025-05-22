@@ -350,7 +350,7 @@ queries = {
         LEFT JOIN addresses a ON u.address_id = a.address_id
         LEFT JOIN entities e ON a.entity_id = e.entity_id
         LEFT JOIN portfolios p ON e.portfolio_id = p.portfolio_id
-        WHERE unit_id = %s
+        WHERE u.unit_id = %s
     """
 }
 #   d.prev_gross,
