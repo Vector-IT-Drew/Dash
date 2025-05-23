@@ -138,43 +138,60 @@ def get_filtered_listings_data(
         try:
             query = f"""
                 SELECT u.unit_id, u.address, u.unit, u.beds, u.baths, u.sqft, u.exposure,
-                    u.floor_num, u.unit_status, d.expiry, d.actual_rent, u.unit_images, 
-                    a.building_name, a.neighborhood, a.borough, d.deal_status, d.move_out, 
+                    u.floor_num,
+                    CASE
+                        WHEN u.unit_status LIKE '%DNR%' THEN 'DNR'
+                        WHEN (
+                            (d1.move_out IS NOT NULL AND CURRENT_TIMESTAMP < d1.move_out) OR
+                            (d1.move_in IS NOT NULL AND CURRENT_TIMESTAMP > d1.move_in) OR
+                            (d1.move_in IS NOT NULL AND d1.move_out IS NULL AND CURRENT_TIMESTAMP > d1.move_in) OR
+                            (d2.move_in IS NOT NULL AND d2.move_out IS NULL AND CURRENT_TIMESTAMP > d2.move_in) OR
+                            (d2.move_in IS NOT NULL AND d2.move_out IS NOT NULL AND CURRENT_TIMESTAMP BETWEEN d2.move_in AND d2.move_out)
+                        ) THEN 'Occupied'
+                        ELSE 'Vacant'
+                    END AS unit_status,
+                    d1.expiry, d1.actual_rent, u.unit_images, 
+                    a.building_name, a.neighborhood, a.borough, d1.deal_status, d1.move_out, 
                     u.rentable, a.building_amenities, p.portfolio_email, a.building_image,
                     {distance_calculation} AS distance
-                    {', u.*, d.*, a.*' if include_all else ''}
+                    {', u.*, d1.*, a.*' if include_all else ''}
                 FROM units u
                 LEFT JOIN (
-                    SELECT d1.*
-                    FROM deals d1
-                    INNER JOIN (
-                        SELECT unit_id, MAX(created_at) as max_created
-                        FROM deals
-                        GROUP BY unit_id
-                    ) d2 ON d1.unit_id = d2.unit_id AND d1.created_at = d2.max_created
-                ) d ON u.unit_id = d.unit_id
+                    SELECT *
+                    FROM (
+                        SELECT d.*, ROW_NUMBER() OVER (PARTITION BY d.unit_id ORDER BY d.created_at DESC) as rn
+                        FROM deals d
+                    ) ranked
+                    WHERE ranked.rn = 1
+                ) d1 ON u.unit_id = d1.unit_id
+                LEFT JOIN (
+                    SELECT *
+                    FROM (
+                        SELECT d.*, ROW_NUMBER() OVER (PARTITION BY d.unit_id ORDER BY d.created_at DESC) as rn
+                        FROM deals d
+                    ) ranked
+                    WHERE ranked.rn = 2
+                ) d2 ON u.unit_id = d2.unit_id
                 LEFT JOIN addresses a ON u.address_id = a.address_id
                 LEFT JOIN entities e ON a.entity_id = e.entity_id
                 LEFT JOIN portfolios p ON e.portfolio_id = p.portfolio_id
                 WHERE 
-                    d.actual_rent IS NOT NULL 
-                    AND d.actual_rent != '' 
-                    AND d.actual_rent != 0
+                    d1.actual_rent IS NOT NULL 
+                    AND d1.actual_rent != '' 
+                    AND d1.actual_rent != 0
                     AND (
                         (
-                            d.move_out IS NOT NULL
+                            d1.move_out IS NOT NULL
                             AND u.unit_status = 'Occupied' 
-                            AND d.move_out <= DATE_ADD(CURDATE(), INTERVAL 3 MONTH) 
-                            AND d.deal_status != 'Closed' 
-                            AND d.deal_status != 'Renewal Check'
-                            {("AND d.move_out <= CURDATE()" if available else "")}
+                            AND d1.move_out <= DATE_ADD(CURDATE(), INTERVAL 3 MONTH) 
+                            AND d1.deal_status != 'Closed' 
+                            {("AND d1.move_out <= CURDATE()" if available else "")}
                         ) 
                         OR (
                             u.unit_status = 'Vacant' 
                         )
-                    
                         OR (
-                            p.portfolio = 'SMK' AND d.move_out IS NOT NULL
+                            p.portfolio = 'SMK' AND d1.move_out IS NOT NULL
                         )
                     )
                     {proximity_filter}
@@ -217,26 +234,26 @@ def get_filtered_listings_data(
             params.append(f"%{neighborhood}%")
             
         if min_price:
-            query += " AND d.actual_rent >= %s"
+            query += " AND d1.actual_rent >= %s"
             params.append(float(min_price))
             
         if max_price:
-            query += " AND d.actual_rent <= %s"
+            query += " AND d1.actual_rent <= %s"
             params.append(float(max_price))
         
         if move_out:
-            query += " AND (d.move_out <= %s OR d.move_out IS NULL)"
+            query += " AND (d1.move_out <= %s OR d1.move_out IS NULL)"
             params.append(move_out)
 
         # Add order by and limit
         if sort == 'price_asc':
-            query += ' ORDER BY d.actual_rent ASC '
+            query += ' ORDER BY d1.actual_rent ASC '
         elif sort == 'price_desc':
-            query += ' ORDER BY d.actual_rent DESC '
+            query += ' ORDER BY d1.actual_rent DESC '
         elif sort == 'size_desc':
             query += ' ORDER BY u.sqft DESC '
         else:
-            query += ' ORDER BY d.actual_rent DESC '  # Default sort
+            query += ' ORDER BY d1.actual_rent DESC '  # Default sort
 
 
         print('query', query )
