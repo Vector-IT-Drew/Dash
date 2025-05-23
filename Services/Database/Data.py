@@ -249,7 +249,10 @@ queries = {
                 WHEN (
                     (d1.move_out IS NOT NULL AND CURRENT_TIMESTAMP < d1.move_out) OR
                     (d1.move_in IS NOT NULL AND CURRENT_TIMESTAMP > d1.move_in) OR
-                    (d1.move_in IS NOT NULL AND d1.move_out IS NULL AND CURRENT_TIMESTAMP > d1.move_in)
+                    (d1.move_in IS NOT NULL AND d1.move_out IS NULL AND CURRENT_TIMESTAMP > d1.move_in) OR
+                    
+                    (d2.move_in IS NOT NULL AND d2.move_out IS NULL AND CURRENT_TIMESTAMP > d2.move_in) OR
+                    (d2.move_in IS NOT NULL AND d2.move_out IS NOT NULL AND CURRENT_TIMESTAMP BETWEEN d2.move_in AND d2.move_out)
                 ) THEN 'Occupied'
                 ELSE 'Vacant'
             END AS unit_status,
