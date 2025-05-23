@@ -182,13 +182,13 @@ def get_filtered_listings_data(
                     AND (
                         (
                             d1.move_out IS NOT NULL
-                            AND u.unit_status = 'Occupied' 
+                            AND unit_status = 'Occupied' 
                             AND d1.move_out <= DATE_ADD(CURDATE(), INTERVAL 3 MONTH) 
                             AND d1.deal_status != 'Closed' 
                             {("AND d1.move_out <= CURDATE()" if available else "")}
                         ) 
                         OR (
-                            u.unit_status = 'Vacant' 
+                            unit_status = 'Vacant' 
                         )
                         OR (
                             p.portfolio = 'SMK' AND d1.move_out IS NOT NULL
