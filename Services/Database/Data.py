@@ -245,7 +245,7 @@ queries = {
             u.baths,
             u.sqft,
             CASE
-                WHEN u.unit_status = 'DNR' THEN 'DNR'
+                WHEN u.unit_status LIKE '%DNR%' THEN 'DNR'
                 WHEN (
                     (d1.move_out IS NOT NULL AND CURRENT_TIMESTAMP < d1.move_out) OR
                     (d1.move_in IS NOT NULL AND CURRENT_TIMESTAMP > d1.move_in) OR
