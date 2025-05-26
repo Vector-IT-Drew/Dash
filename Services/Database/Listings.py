@@ -190,9 +190,7 @@ def get_filtered_listings_data(
                         OR (
                             unit_status = 'Vacant' 
                         )
-                        OR (
-                            p.portfolio = 'SMK' AND d1.move_out IS NOT NULL
-                        )
+                       
                     )
                     {proximity_filter}
                 """
