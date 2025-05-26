@@ -184,7 +184,6 @@ def get_filtered_listings_data(
                             d1.move_out IS NOT NULL
                             AND unit_status = 'Occupied' 
                             AND d1.move_out <= DATE_ADD(CURDATE(), INTERVAL 3 MONTH) 
-                            AND d1.deal_status != 'Closed' 
                             {("AND d1.move_out <= CURDATE()" if available else "")}
                         ) 
                         OR (
@@ -192,6 +191,7 @@ def get_filtered_listings_data(
                         )
                        
                     )
+                    AND u.rentable = True
                     {proximity_filter}
                 """
         except Exception as e:
