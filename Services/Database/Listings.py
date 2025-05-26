@@ -153,7 +153,7 @@ def get_filtered_listings_data(
                         END AS unit_status,
                         d1.expiry, d1.actual_rent, u.unit_images, 
                         a.building_name, a.neighborhood, a.borough, d1.deal_status, d1.move_out, 
-                        u.rentable, a.building_amenities, p.portfolio_email, a.building_image,
+                        u.rentable, a.building_amenities, p.portfolio_email, a.building_image, p.portfolio,
                         {distance_calculation} AS distance
                         {', u.*, d1.*, a.*' if include_all else ''}
                     FROM units u
