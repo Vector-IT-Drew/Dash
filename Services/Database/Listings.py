@@ -204,57 +204,56 @@ def get_filtered_listings_data(
 
         # Only add rentable filter if rentable is exactly True
         if rentable is True:
-            query += " AND u.rentable = True"
+            query += " AND subquery.rentable = True"
             
         if address:
-            query += " AND u.address LIKE %s"
+            query += " AND subquery.address LIKE %s"
             params.append(f"%{address}%")
             
         if unit:
-            query += " AND u.unit = %s"
+            query += " AND subquery.unit = %s"
             params.append(unit)
 
         if portfolio:
             print('Getting data for portfolio: ', portfolio)
-            query += " AND p.portfolio = %s"
+            query += " AND subquery.portfolio = %s"
             params.append(portfolio)
 
         if beds == '0':
-            query += " AND u.beds = 0"
+            query += " AND subquery.beds = 0"
         elif beds:
-            query += " AND u.beds = %s"
+            query += " AND subquery.beds = %s"
             params.append(float(beds))
             
         if baths:
-            query += " AND u.baths = %s"
+            query += " AND subquery.baths = %s"
             params.append(float(baths))
             
         if neighborhood:
-            query += " AND a.neighborhood LIKE %s"
+            query += " AND subquery.neighborhood LIKE %s"
             params.append(f"%{neighborhood}%")
             
         if min_price:
-            query += " AND d1.actual_rent >= %s"
+            query += " AND subquery.actual_rent >= %s"
             params.append(float(min_price))
             
         if max_price:
-            query += " AND d1.actual_rent <= %s"
+            query += " AND subquery.actual_rent <= %s"
             params.append(float(max_price))
         
         if move_out:
-            query += " AND (d1.move_out <= %s OR d1.move_out IS NULL)"
+            query += " AND (subquery.move_out <= %s OR subquery.move_out IS NULL)"
             params.append(move_out)
 
         # Add order by and limit
         if sort == 'price_asc':
-            query += ' ORDER BY d1.actual_rent ASC '
+            query += ' ORDER BY subquery.actual_rent ASC '
         elif sort == 'price_desc':
-            query += ' ORDER BY d1.actual_rent DESC '
+            query += ' ORDER BY subquery.actual_rent DESC '
         elif sort == 'size_desc':
-            query += ' ORDER BY u.sqft DESC '
+            query += ' ORDER BY subquery.sqft DESC '
         else:
-            query += ' ORDER BY d1.actual_rent DESC '  # Default sort
-
+            query += ' ORDER BY subquery.actual_rent DESC '  # Default sort
 
         print('query', query )
         print('params', params)
