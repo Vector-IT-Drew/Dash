@@ -137,61 +137,63 @@ def get_filtered_listings_data(
         
         try:
             query = f"""
-                SELECT u.unit_id, u.address, u.unit, u.beds, u.baths, u.sqft, u.exposure,
-                    u.floor_num,
-                    CASE
-                        WHEN u.unit_status LIKE '%DNR%' THEN 'DNR'
-                        WHEN (
-                            (d1.move_in IS NOT NULL AND d1.move_out IS NOT NULL AND CURRENT_DATE BETWEEN d1.move_in AND d1.move_out)
-                            OR
-                            (d2.move_in IS NOT NULL AND d2.move_out IS NOT NULL AND CURRENT_DATE BETWEEN d2.move_in AND d2.move_out)
-                            OR
-                            (d1.move_in IS NOT NULL AND d1.move_out IS NULL AND CURRENT_DATE >= d1.move_in)
-                        ) THEN 'Occupied'
-                        ELSE 'Vacant'
-                    END AS unit_status,
-                    d1.expiry, d1.actual_rent, u.unit_images, 
-                    a.building_name, a.neighborhood, a.borough, d1.deal_status, d1.move_out, 
-                    u.rentable, a.building_amenities, p.portfolio_email, a.building_image,
-                    {distance_calculation} AS distance
-                    {', u.*, d1.*, a.*' if include_all else ''}
-                FROM units u
-                LEFT JOIN (
-                    SELECT *
-                    FROM (
-                        SELECT d.*, ROW_NUMBER() OVER (PARTITION BY d.unit_id ORDER BY d.created_at DESC) as rn
-                        FROM deals d
-                    ) ranked
-                    WHERE ranked.rn = 1
-                ) d1 ON u.unit_id = d1.unit_id
-                LEFT JOIN (
-                    SELECT *
-                    FROM (
-                        SELECT d.*, ROW_NUMBER() OVER (PARTITION BY d.unit_id ORDER BY d.created_at DESC) as rn
-                        FROM deals d
-                    ) ranked
-                    WHERE ranked.rn = 2
-                ) d2 ON u.unit_id = d2.unit_id
-                LEFT JOIN addresses a ON u.address_id = a.address_id
-                LEFT JOIN entities e ON a.entity_id = e.entity_id
-                LEFT JOIN portfolios p ON e.portfolio_id = p.portfolio_id
+                SELECT * from (
+                    SELECT u.unit_id, u.address, u.unit, u.beds, u.baths, u.sqft, u.exposure,
+                        u.floor_num,
+                        CASE
+                            WHEN u.unit_status LIKE '%DNR%' THEN 'DNR'
+                            WHEN (
+                                (d1.move_in IS NOT NULL AND d1.move_out IS NOT NULL AND CURRENT_DATE BETWEEN d1.move_in AND d1.move_out)
+                                OR
+                                (d2.move_in IS NOT NULL AND d2.move_out IS NOT NULL AND CURRENT_DATE BETWEEN d2.move_in AND d2.move_out)
+                                OR
+                                (d1.move_in IS NOT NULL AND d1.move_out IS NULL AND CURRENT_DATE >= d1.move_in)
+                            ) THEN 'Occupied'
+                            ELSE 'Vacant'
+                        END AS unit_status,
+                        d1.expiry, d1.actual_rent, u.unit_images, 
+                        a.building_name, a.neighborhood, a.borough, d1.deal_status, d1.move_out, 
+                        u.rentable, a.building_amenities, p.portfolio_email, a.building_image,
+                        {distance_calculation} AS distance
+                        {', u.*, d1.*, a.*' if include_all else ''}
+                    FROM units u
+                    LEFT JOIN (
+                        SELECT *
+                        FROM (
+                            SELECT d.*, ROW_NUMBER() OVER (PARTITION BY d.unit_id ORDER BY d.created_at DESC) as rn
+                            FROM deals d
+                        ) ranked
+                        WHERE ranked.rn = 1
+                    ) d1 ON u.unit_id = d1.unit_id
+                    LEFT JOIN (
+                        SELECT *
+                        FROM (
+                            SELECT d.*, ROW_NUMBER() OVER (PARTITION BY d.unit_id ORDER BY d.created_at DESC) as rn
+                            FROM deals d
+                        ) ranked
+                        WHERE ranked.rn = 2
+                    ) d2 ON u.unit_id = d2.unit_id
+                    LEFT JOIN addresses a ON u.address_id = a.address_id
+                    LEFT JOIN entities e ON a.entity_id = e.entity_id
+                    LEFT JOIN portfolios p ON e.portfolio_id = p.portfolio_id
+                ) AS subquery
                 WHERE 
-                    d1.actual_rent IS NOT NULL 
-                    AND d1.actual_rent != '' 
-                    AND d1.actual_rent != 0
+                    subquery.actual_rent IS NOT NULL 
+                    AND subquery.actual_rent != '' 
+                    AND subquery.actual_rent != 0
                     AND (
                         (
-                            d1.move_out IS NOT NULL
-                            AND unit_status = 'Occupied' 
-                            AND d1.move_out <= DATE_ADD(CURDATE(), INTERVAL 3 MONTH) 
-                            {("AND d1.move_out <= CURDATE()" if available else "")}
+                            subquery.move_out IS NOT NULL
+                            AND subquery.unit_status = 'Occupied' 
+                            AND subquery.move_out <= DATE_ADD(CURDATE(), INTERVAL 3 MONTH) 
+                            {("AND subquery.move_out <= CURDATE()" if available else "")}
                         ) 
                         OR (
-                            unit_status = 'Vacant' 
+                            subquery.unit_status = 'Vacant' 
                         )
                        
                     )
-                    AND u.rentable = True
+                    AND subquery.rentable = True
                     {proximity_filter}
                 """
         except Exception as e:
