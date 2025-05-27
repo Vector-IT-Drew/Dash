@@ -351,7 +351,15 @@ queries = {
                 d.deal_status,
                 p.portfolio,
                 e.entity,
-                a.address
+                a.address,
+                CASE 
+                    WHEN d.created_at = (
+                        SELECT MAX(created_at) 
+                        FROM deals d2 
+                        WHERE d2.unit_id = d.unit_id
+                    ) THEN TRUE
+                    ELSE FALSE
+                END as current_deal
             FROM deals d
             LEFT JOIN units u ON d.unit_id = u.unit_id
             LEFT JOIN addresses a ON u.address_id = a.address_id
