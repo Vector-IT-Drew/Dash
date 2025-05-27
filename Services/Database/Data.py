@@ -321,8 +321,6 @@ queries = {
             person.first_name AS first_name, 
             person.last_name AS last_name, 
             person.person_id,
-            n.target_type,
-            n.target_id,
             a.address,
             p.portfolio,
             e.entity
