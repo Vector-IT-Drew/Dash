@@ -236,80 +236,83 @@ queries = {
         WHERE 1=1       
     """,
     'get_client_data': """
-        SELECT
-            a.address,
-            u.unit,
-            u.unit_id,
-            d1.lease_type,
-            u.beds,
-            u.baths,
-            u.sqft,
-            CASE
-            WHEN u.unit_status LIKE '%DNR%' THEN 'DNR'
-                WHEN (
-                    (d1.move_in IS NOT NULL AND d1.move_out IS NOT NULL AND CURRENT_DATE BETWEEN d1.move_in AND d1.move_out)
-                    OR
-                    (d2.move_in IS NOT NULL AND d2.move_out IS NOT NULL AND CURRENT_DATE BETWEEN d2.move_in AND d2.move_out)
-                    OR
-                    (d1.move_in IS NOT NULL AND d1.move_out IS NULL AND CURRENT_DATE >= d1.move_in)
-                ) THEN 'Occupied'
-                ELSE 'Vacant'
-            END AS unit_status,
-            d1.deal_status,
-            d1.gross,
-            d2.gross AS previous_gross,
-            d1.actual_rent,
-            d2.actual_rent AS previous_actual_rent,
-            d2.deal_status AS previous_deal_status,
-            d2.move_out AS previous_move_out,
-            d1.concession,
-            d1.term,
-            d1.move_in,
-            d1.start_date,
-            d1.move_out,
-            d1.expiry,
-            note.note AS most_recent_note,
-            note.created_at AS note_created_at,
-            note.creator_id AS note_creator_id,
-            CONCAT(per.first_name, ' ', per.last_name) AS creator_full_name,
-            u.rentable,
-            p.portfolio
-        FROM units u
-        LEFT JOIN addresses a ON u.address_id = a.address_id
-        LEFT JOIN entities e ON a.entity_id = e.entity_id
-        LEFT JOIN portfolios p ON e.portfolio_id = p.portfolio_id
-        LEFT JOIN (
-            SELECT *
-            FROM (
-                SELECT
-                    d.*,
-                    ROW_NUMBER() OVER (PARTITION BY d.unit_id ORDER BY d.created_at DESC) as rn
-                FROM deals d
-            ) ranked
-            WHERE ranked.rn = 1
-        ) d1 ON u.unit_id = d1.unit_id
-        LEFT JOIN (
-            SELECT *
-            FROM (
-                SELECT
-                    d.*,
-                    ROW_NUMBER() OVER (PARTITION BY d.unit_id ORDER BY d.created_at DESC) as rn
-                FROM deals d
-            ) ranked
-            WHERE ranked.rn = 2
-        ) d2 ON u.unit_id = d2.unit_id
-        LEFT JOIN (
-            SELECT n1.*
-            FROM notes n1
-            INNER JOIN (
-                SELECT target_id, MAX(created_at) AS max_created
-                FROM notes
-                WHERE target_type = 'units'
-                GROUP BY target_id
-            ) n2 ON n1.target_id = n2.target_id AND n1.created_at = n2.max_created
-            WHERE n1.target_type = 'units'
-        ) note ON note.target_id = u.unit_id
-        LEFT JOIN persons per ON note.creator_id = per.person_id
+        select * from(
+            SELECT
+                a.address,
+                u.unit,
+                u.unit_id,
+                d1.lease_type,
+                u.beds,
+                u.baths,
+                u.sqft,
+                CASE
+                WHEN u.unit_status LIKE '%DNR%' THEN 'DNR'
+                    WHEN (
+                        (d1.move_in IS NOT NULL AND d1.move_out IS NOT NULL AND CURRENT_DATE BETWEEN d1.move_in AND d1.move_out)
+                        OR
+                        (d2.move_in IS NOT NULL AND d2.move_out IS NOT NULL AND CURRENT_DATE BETWEEN d2.move_in AND d2.move_out)
+                        OR
+                        (d1.move_in IS NOT NULL AND d1.move_out IS NULL AND CURRENT_DATE >= d1.move_in)
+                    ) THEN 'Occupied'
+                    ELSE 'Vacant'
+                END AS unit_status,
+                d1.deal_status,
+                d1.gross,
+                d2.gross AS previous_gross,
+                d1.actual_rent,
+                d2.actual_rent AS previous_actual_rent,
+                d2.deal_status AS previous_deal_status,
+                d2.move_out AS previous_move_out,
+                d1.concession,
+                d1.term,
+                d1.move_in,
+                d1.start_date,
+                d1.move_out,
+                d1.expiry,
+                note.note AS most_recent_note,
+                note.created_at AS note_created_at,
+                note.creator_id AS note_creator_id,
+                CONCAT(per.first_name, ' ', per.last_name) AS creator_full_name,
+                u.rentable,
+                p.portfolio
+            FROM units u
+            LEFT JOIN addresses a ON u.address_id = a.address_id
+            LEFT JOIN entities e ON a.entity_id = e.entity_id
+            LEFT JOIN portfolios p ON e.portfolio_id = p.portfolio_id
+            LEFT JOIN (
+                SELECT *
+                FROM (
+                    SELECT
+                        d.*,
+                        ROW_NUMBER() OVER (PARTITION BY d.unit_id ORDER BY d.created_at DESC) as rn
+                    FROM deals d
+                ) ranked
+                WHERE ranked.rn = 1
+            ) d1 ON u.unit_id = d1.unit_id
+            LEFT JOIN (
+                SELECT *
+                FROM (
+                    SELECT
+                        d.*,
+                        ROW_NUMBER() OVER (PARTITION BY d.unit_id ORDER BY d.created_at DESC) as rn
+                    FROM deals d
+                ) ranked
+                WHERE ranked.rn = 2
+            ) d2 ON u.unit_id = d2.unit_id
+            LEFT JOIN (
+                SELECT n1.*
+                FROM notes n1
+                INNER JOIN (
+                    SELECT target_id, MAX(created_at) AS max_created
+                    FROM notes
+                    WHERE target_type = 'units'
+                    GROUP BY target_id
+                ) n2 ON n1.target_id = n2.target_id AND n1.created_at = n2.max_created
+                WHERE n1.target_type = 'units'
+            ) note ON note.target_id = u.unit_id
+            LEFT JOIN persons per ON note.creator_id = per.person_id
+            WHERE 1=1
+        ) subquery
         WHERE 1=1
     """,
     'get_notes': """
