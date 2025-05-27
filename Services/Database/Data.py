@@ -331,25 +331,26 @@ queries = {
     """,
     'get_unit_deals': """
        select * from (
-        SELECT
-            d.deal_id,
-            d.unit_id,
-            d.start_date,
-            d.expiry,
-            d.move_in,
-            d.move_out,
-            d.gross,
-            d.actual_rent,
-            d.term,
-            d.concession,
-            d.deal_status
-        FROM deals d
-        LEFT JOIN units u ON d.unit_id = u.unit_id
-        LEFT JOIN addresses a ON u.address_id = a.address_id
-        LEFT JOIN entities e ON a.entity_id = e.entity_id
-        LEFT JOIN portfolios p ON e.portfolio_id = p.portfolio_id
-        WHERE d.unit_id = %s
+            SELECT
+                d.deal_id,
+                d.unit_id,
+                d.start_date,
+                d.expiry,
+                d.move_in,
+                d.move_out,
+                d.gross,
+                d.actual_rent,
+                d.term,
+                d.concession,
+                d.deal_status
+            FROM deals d
+            LEFT JOIN units u ON d.unit_id = u.unit_id
+            LEFT JOIN addresses a ON u.address_id = a.address_id
+            LEFT JOIN entities e ON a.entity_id = e.entity_id
+            LEFT JOIN portfolios p ON e.portfolio_id = p.portfolio_id
+            
         ) subquery
+        WHERE subquery.unit_id = %s
     """
 }
 #   d.prev_gross,
