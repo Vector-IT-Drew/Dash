@@ -383,18 +383,18 @@ def run_query(connection, credentials):
     filters = json.loads(request.args.get('filters', '{}'))
     print('filters', filters)
 
-    # Apply data filters from credentials
+    # Apply data filters from credentials - Crednetials dont contain subquery. , so add this on prior
     data_filters = credentials.get("data_filters", [])
     for column, value in data_filters:
         if value and value not in ["Any", "", "undefined", "-", "0", " "] and column is not None and 'Any' not in value:
             query += f" AND subquery.{column} = %s"
             params.append(value)
 
-    # Apply additional filters from request
+    # Apply additional filters from request  - Filters dont contain subquery. , so add this on prior
     if filters:
         for column, value in filters.items():
             if value and value not in ["Any", "", "undefined", "-", "0", " "] and column is not None and 'Any' not in value:
-                query += f" AND LOWER({column}) LIKE LOWER(%s)"
+                query += f" AND LOWER(subquery.{column}) LIKE LOWER(%s)"
                 params.append(f"%{value}%")
 
 
