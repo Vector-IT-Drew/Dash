@@ -84,7 +84,9 @@ def create_event(service, calendar_id, slot, tenant_name, tenant_email, tour_typ
                 Desired Budget: {format_dollar(float(data['budget']))}
                 Contact Info: {tenant_email} 
                     {format_phone(data['phone-number'].replace('-','').replace('+', ''))}
-                                                """,
+
+                *This is an automated email. Please reply to {portfolio_email} if you have any questions.
+                """,
 		"start": {"dateTime": start_time_str, "timeZone": "America/New_York"},
 		"end": {"dateTime": end_time_str, "timeZone": "America/New_York"},
 		"attendees": [{"email": tenant_email}, {"email": portfolio_email}],
