@@ -330,6 +330,7 @@ queries = {
         WHERE n.target_type = %s AND n.target_id = %s
     """,
     'get_unit_deals': """
+       select * from (
         SELECT
             d.deal_id,
             d.unit_id,
@@ -348,6 +349,7 @@ queries = {
         LEFT JOIN entities e ON a.entity_id = e.entity_id
         LEFT JOIN portfolios p ON e.portfolio_id = p.portfolio_id
         WHERE d.unit_id = %s
+        ) subquery
     """
 }
 #   d.prev_gross,
