@@ -385,7 +385,7 @@ def run_query(connection, credentials):
     data_filters = credentials.get("data_filters", [])
     for column, value in data_filters:
         if value and value not in ["Any", "", "undefined", "-", "0", " "] and column is not None and 'Any' not in value:
-            query += f" AND {column} = %s"
+            query += f" AND subquery.{column} = %s"
             params.append(value)
 
     # Apply additional filters from request
