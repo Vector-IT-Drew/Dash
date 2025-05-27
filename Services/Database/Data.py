@@ -342,7 +342,10 @@ queries = {
                 d.actual_rent,
                 d.term,
                 d.concession,
-                d.deal_status
+                d.deal_status,
+                p.portfolio,
+                e.entity,
+                a.address
             FROM deals d
             LEFT JOIN units u ON d.unit_id = u.unit_id
             LEFT JOIN addresses a ON u.address_id = a.address_id
