@@ -316,18 +316,24 @@ queries = {
         WHERE 1=1
     """,
     'get_notes': """
+        select * from (
         SELECT n.*, a.address, 
             person.first_name AS first_name, 
             person.last_name AS last_name, 
-            person.person_id
+            person.person_id,
+            n.target_type,
+            n.target_id,
+            a.address,
+            p.portfolio,
+            e.entity
         FROM notes n
         LEFT JOIN units u ON n.target_type = 'units' AND n.target_id = u.unit_id
         LEFT JOIN addresses a ON u.address_id = a.address_id
         LEFT JOIN entities e ON a.entity_id = e.entity_id
         LEFT JOIN portfolios p ON e.portfolio_id = p.portfolio_id
         LEFT JOIN persons person ON n.creator_id = person.person_id
-        
-        WHERE n.target_type = %s AND n.target_id = %s
+        ) subquery
+        WHERE subquery.target_type = %s AND subquery.target_id = %s
     """,
     'get_unit_deals': """
        select * from (
