@@ -321,7 +321,6 @@ queries = {
             person.first_name AS first_name, 
             person.last_name AS last_name, 
             person.person_id,
-            a.address,
             p.portfolio,
             e.entity
         FROM notes n
