@@ -41,27 +41,30 @@ def tour_schedule():
 # AJAX endpoint to get all available timeslots
 @tour_bp.route("/get-all-timeslots", methods=["GET"])
 def get_all_timeslots():
-    # Retrieve the portfolio email address
-    email_address = request.args.get('email_address', 'it@vectorny.com')
-    email_address = email_address.split('?')[0]
-    all_available_slots = {}
-    try:
-        service = get_gmail_service(email_address)
-        if not service:
-            return {"status": "error", "message": "Failed to connect to Gmail service"}
+	# Retrieve the portfolio email address
+	email_address = request.args.get('email_address', 'it@vectorny.com')
+	email_address = email_address.split('?')[0]
 
-        calendar_list = service.calendarList().list().execute()
-        calendar_id = [item for item in calendar_list['items'] if item['summary'] == 'Vector Tours'][0]['id']
-        start_date = datetime.date.today()  # Start from today
-        
-        all_available_slots = get_available_slots(service, calendar_id, start_date)
-		
-        return jsonify(all_available_slots)
+	all_available_slots = {}
+	try:
+		service = get_gmail_service(email_address)
+		if not service:
+			return {"status": "error", "message": "Failed to connect to Gmail service"}
 
-    except Exception as e:
-        print('Error in run function:', e)
-        return {"status": "error", "message": str(e)}
+		calendar_list = service.calendarList().list().execute()
+		print('\n\nCALENDAR LIST', calendar_list, '\n\n')
+		# calendar_id = [item for item in calendar_list['items'] if item['summary'] == 'Vector Tours'][0]['id']
+		calendar_id = next(item['id'] for item in calendar_list['items'] if item.get('primary'))
+		print('\n\nCALENDAR ID', calendar_id, '\n\n')
+		start_date = datetime.date.today()  # Start from today
 
+		all_available_slots = get_available_slots(service, calendar_id, start_date)
+
+		return jsonify(all_available_slots)
+
+	except Exception as e:
+		print('Error in run function:', e)
+		return {"status": "error", "message": str(e)}
 
 # Add an endpoint to handle form submission
 @tour_bp.route("/submit-tour-request", methods=["POST"])

@@ -103,26 +103,23 @@ def create_event(service, calendar_id, slot, tenant_name, tenant_email, tour_typ
 	print(f"✅ Event created: {event.get('htmlLink')}")
 	return event
 
-# Function to get available timeslots from Gmail calendar
+# OLD?
 def get_available_timeslots(date):
-	# Add a fake delay to simulate API latency if needed
-	# time.sleep(1)
-	
-	# Get the email address from the request or use a default
-	email_address = request.args.get('email_address', '')
-	
 
-	# Get all available slots from Gmail
-	all_available_slots = get_gmail_timeslots(email_address)
-	
-	# If the requested date exists in available slots, return those slots
-	if date in all_available_slots:
-		# Convert to the format expected by the frontend
-		formatted_slots = [{"time": time_str, "available": True} for time_str in all_available_slots[date]]
-		return formatted_slots
-	else:
-		# Return empty list if no slots available for this date
-		return []
+    email_address = request.args.get('email_address', '')
+
+    print('\n\n', email_address, '\n\n')
+
+    all_available_slots = get_gmail_timeslots(email_address)
+
+    # If the requested date exists in available slots, return those slots
+    if date in all_available_slots:
+        # Convert to the format expected by the frontend
+        formatted_slots = [{"time": time_str, "available": True} for time_str in all_available_slots[date]]
+        return formatted_slots
+    else:
+        # Return empty list if no slots available for this date
+        return []
 
 # Function to get busy slots
 def get_busy_slots(service, calendar_id, start_date, end_date):
@@ -142,7 +139,9 @@ def get_busy_slots(service, calendar_id, start_date, end_date):
 
 # Function to get available 30-minute slots between 9 AM and 6 PM, excluding busy slots
 def get_available_slots(service, calendar_id, start_date, days_ahead=60):
+
     busy_slots = get_busy_slots(service, calendar_id, start_date, start_date + datetime.timedelta(days=days_ahead))
+    print('\n\nBUSY SLOTS', busy_slots, '\n\n')
     available_slots = {}
     eastern_tz = pytz.timezone("America/New_York")
     
@@ -169,6 +168,8 @@ def get_available_slots(service, calendar_id, start_date, days_ahead=60):
             
             current += pd.Timedelta(days=1)
 
+    print('\n\nBUSY BY DATE', busy_by_date, '\n\n')
+
     for day_offset in range(days_ahead + 1):
         current_day = start_date + datetime.timedelta(days=day_offset)
         weekday = current_day.weekday()  # Monday = 0, Sunday = 6
@@ -190,6 +191,7 @@ def get_available_slots(service, calendar_id, start_date, days_ahead=60):
         
         # Remove busy slots efficiently
         if date_str in busy_by_date:
+            print('Removing busy slots for', date_str)
             busy_periods = busy_by_date[date_str]
             available_day_slots = []
             
@@ -198,6 +200,7 @@ def get_available_slots(service, calendar_id, start_date, days_ahead=60):
                 for busy_start, busy_end in busy_periods:
                     if slot_start < busy_end and slot_end > busy_start:
                         is_available = False
+                        print('Busy slot found for', date_str, 'from', slot_start, 'to', slot_end)
                         break
                 
                 if is_available:
@@ -210,6 +213,7 @@ def get_available_slots(service, calendar_id, start_date, days_ahead=60):
         if available_day_slots:
             available_slots[date_str] = [slot.strftime("%I:%M %p") for slot in available_day_slots]
     
+    print('\n\nAVAILABLE SLOTS', available_slots, '\n\n')
     return available_slots
 
 
