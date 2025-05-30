@@ -58,7 +58,7 @@ def get_file_from_dropbox(dropbox_path, return_response=False):
 
 def save_report_to_dropbox(local_pdf_path, report_name):
     """Save a report PDF to the Vector Reports folder"""
-    file_name = os.path.basename(local_pdf_path)
+    file_name = os.path.basename(local_pdf_path)  # This will now include the timestamp
     dropbox_path = f"/Vector Official/Vector Leasing/Reports/{file_name}"
     
     return save_file_to_dropbox(local_pdf_path, dropbox_path)

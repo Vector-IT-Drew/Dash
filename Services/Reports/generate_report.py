@@ -110,17 +110,21 @@ def generate_report(report_config):
         # Combine all pages
         combined_html = '\n'.join(all_html_content)
         
+        # Generate filename with timestamp
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        filename = f"{report_config['name']}_{timestamp}.pdf"
+        
         # Save debug HTML
         debug_path = os.path.join(OUTPUT_DIR, f"{report_config['name']}_debug.html")
         with open(debug_path, 'w', encoding='utf-8') as f:
             f.write(combined_html)
         print(f"Debug HTML saved: {debug_path}")
         
-        # Generate PDF
+        # Generate PDF with timestamped filename
         css_content = get_shared_css()
         css = CSS(string=css_content)
         
-        pdf_path = os.path.join(OUTPUT_DIR, f"{report_config['name']}.pdf")
+        pdf_path = os.path.join(OUTPUT_DIR, filename)
         HTML(string=combined_html).write_pdf(pdf_path, stylesheets=[css])
         print(f"PDF generated successfully: {pdf_path}")
         
