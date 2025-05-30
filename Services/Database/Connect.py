@@ -136,7 +136,7 @@ def login():
             cursor = connection.cursor(dictionary=True)
             # Join dashboard_credentials with persons to get first_name and last_name
             query = """
-                SELECT dc.*, p.first_name, p.last_name, p.person_id
+                SELECT dc.*, p.first_name, p.last_name, p.person_id, p.email_address
                 FROM dashboard_credentials dc
                 LEFT JOIN persons p ON dc.person_id = p.person_id
                 WHERE dc.username = %s AND dc.password = %s
@@ -157,7 +157,8 @@ def login():
                     "session_key": session_key,
                     "first_name": user.get('first_name', ''),
                     "last_name": user.get('last_name', ''),
-                    "person_id": user.get('person_id', '')
+                    "person_id": user.get('person_id', ''),
+                    "email_address": user.get('email_address', '')
                 })
             else:
                 return jsonify({"status": "error", "message": "Invalid credentials"}), 401

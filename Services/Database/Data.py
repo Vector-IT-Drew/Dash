@@ -503,3 +503,105 @@ def create_note():
         if 'connection' in locals() and connection.is_connected():
             connection.close()
         return jsonify({"status": "error", "message": str(e)}), 500          
+
+def create_report_record(connection, credentials, name, status='pending'):
+    """Create a new report record in the database"""
+    try:
+        cursor = connection.cursor(dictionary=True)
+        
+        query = """
+        INSERT INTO reports (name, created_at, status)
+        VALUES (%s, NOW(), %s)
+        """
+        
+        cursor.execute(query, (name, status))
+        connection.commit()
+        
+        # Get the inserted report_id
+        report_id = cursor.lastrowid
+        cursor.close()
+        
+        return {
+            'status': 'success',
+            'report_id': report_id,
+            'message': f'Report record created with ID: {report_id}'
+        }
+        
+    except Exception as e:
+        connection.rollback()
+        return {
+            'status': 'error',
+            'message': f'Error creating report record: {str(e)}'
+        }
+
+def update_report_record(connection, credentials, report_id, status=None, file_path=None):
+    """Update an existing report record"""
+    try:
+        cursor = connection.cursor(dictionary=True)
+        
+        # Build dynamic query based on what needs to be updated
+        updates = []
+        params = []
+        
+        if status:
+            updates.append("status = %s")
+            params.append(status)
+            
+        if file_path:
+            updates.append("file_path = %s")
+            params.append(file_path)
+            
+        if not updates:
+            return {'status': 'error', 'message': 'No updates provided'}
+            
+        query = f"UPDATE reports SET {', '.join(updates)} WHERE report_id = %s"
+        params.append(report_id)
+        
+        cursor.execute(query, params)
+        connection.commit()
+        cursor.close()
+        
+        return {
+            'status': 'success',
+            'message': f'Report {report_id} updated successfully'
+        }
+        
+    except Exception as e:
+        connection.rollback()
+        return {
+            'status': 'error',
+            'message': f'Error updating report record: {str(e)}'
+        }
+
+@data_bp.route('/reports/create', methods=['POST'])
+@with_db_connection
+def create_report_endpoint(connection, credentials):
+    """API endpoint to create a report record"""
+    try:
+        data = request.get_json()
+        name = data.get('name')
+        status = data.get('status', 'pending')
+        
+        if not name:
+            return jsonify({'status': 'error', 'message': 'Report name is required'}), 400
+            
+        result = create_report_record(connection, credentials, name, status)
+        return jsonify(result)
+        
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+@data_bp.route('/reports/update/<int:report_id>', methods=['PUT'])
+@with_db_connection
+def update_report_endpoint(connection, credentials, report_id):
+    """API endpoint to update a report record"""
+    try:
+        data = request.get_json()
+        status = data.get('status')
+        file_path = data.get('file_path')
+        
+        result = update_report_record(connection, credentials, report_id, status, file_path)
+        return jsonify(result)
+        
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500          
