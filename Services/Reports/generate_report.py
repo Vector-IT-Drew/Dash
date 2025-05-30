@@ -193,17 +193,10 @@ def generate_report(report_config):
 REPORT_CONFIGS = {
     'full_market_report': {
         'name': 'market_report',
-        'title': 'NYC Rental Market Report',
+        'title': 'NYC Rental Market Comp Report',
         'pages': [
             {'template': 'intro_page.html'},
             {'template': 'general_metrics.html'},
-            {'template': 'weekly_price_review.html', 'config': {'bedroom_filter': [0, 1, 2]}}
-        ]
-    },
-    'simple_report': {
-        'name': 'price_review_only',
-        'title': 'Weekly Price Review',
-        'pages': [
             {'template': 'weekly_price_review.html', 'config': {'bedroom_filter': [0, 1, 2]}}
         ]
     }
@@ -214,7 +207,7 @@ try:
     from flask import request, jsonify
     from . import reports_bp
 
-    @reports_bp.route('/generate', methods=['POST'])
+    @reports_bp.route('/generate_report', methods=['POST'])
     def generate_report_endpoint():
         """Generate a report"""
         try:
