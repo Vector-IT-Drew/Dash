@@ -53,7 +53,7 @@ def generate_report(report_config):
             create_result = create_report_record(
                 connection, 
                 credentials, 
-                report_config.get('title', 'Market Report'), 
+                report_config.get('title', 'Unknown Report Title'), 
                 'pending'
             )
             print(f"DEBUG: Create result: {create_result}")
@@ -91,7 +91,7 @@ def generate_report(report_config):
             
             # Add common data
             template_data.update({
-                'report_title': report_config.get('title', 'Market Report'),
+                'report_title': report_config.get('title', 'Unknown Report Title'),
                 'generated_date': datetime.now().strftime('%B %d, %Y'),
                 'page_number': i,
                 'total_pages': len(report_config['pages'])
@@ -110,9 +110,9 @@ def generate_report(report_config):
         # Combine all pages
         combined_html = '\n'.join(all_html_content)
         
-        # Generate filename with timestamp
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        filename = f"{report_config['name']}_{timestamp}.pdf"
+        # Generate filename with timestamp using dash
+        timestamp = datetime.now().strftime('%Y%m%d-%H%M%S')
+        filename = f"{report_config['name']}-{timestamp}.pdf"
         
         # Save debug HTML
         debug_path = os.path.join(OUTPUT_DIR, f"{report_config['name']}_debug.html")

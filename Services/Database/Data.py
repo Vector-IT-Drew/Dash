@@ -370,8 +370,15 @@ queries = {
         SELECT * FROM streeteasy_units
     """,
     'get_reports': """
-        SELECT * FROM reports
-    """
+        SELECT 
+            report_id, 
+            name, 
+            created_at, 
+            file_path, 
+            status,
+        FROM reports 
+        ORDER BY created_at DESC
+    """,
 
 }
 #   d.prev_gross,
@@ -503,6 +510,8 @@ def create_note():
         if 'connection' in locals() and connection.is_connected():
             connection.close()
         return jsonify({"status": "error", "message": str(e)}), 500          
+
+
 
 def create_report_record(connection, credentials, name, status='pending'):
     """Create a new report record in the database"""
