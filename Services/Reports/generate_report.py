@@ -213,16 +213,16 @@ try:
         try:
             data = request.get_json()
             
-            if not data or 'report_type' not in data:
-                return jsonify({'error': 'report_type required'}), 400
+            if not data or 'report_name' not in data:
+                return jsonify({'error': 'report_name required'}), 400
             
-            report_type = data['report_type']
+            report_name = data['report_name']
             
-            if report_type not in REPORT_CONFIGS:
-                return jsonify({'error': 'Invalid report type'}), 400
+            if report_name not in REPORT_CONFIGS:
+                return jsonify({'error': 'Invalid report name'}), 400
             
             # Generate the report
-            config = REPORT_CONFIGS[report_type]
+            config = REPORT_CONFIGS[report_name]
             pdf_path = generate_report(config)
             
             return jsonify({
