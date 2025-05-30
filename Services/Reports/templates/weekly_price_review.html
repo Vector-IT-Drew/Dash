@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ report_title }} - Weekly Price Review</title>
+    <link rel="stylesheet" href="shared_styles.css">
+</head>
+<body>
+    <div class="page-container">
+        <div class="container full center">
+            <h2>{{ chart_title | default('Weekly Rent Price Trends') }}</h2>
+            
+            <div class="chart-grid">
+                <div class="chart-main">
+                    {{ price_chart | safe }}
+                </div>
+                
+                <div class="grid-1">
+                    <div class="metric-card">
+                        <div class="metric-title">Bedroom Types</div>
+                        <div class="metric-value">Studio - 3BR</div>
+                        <div class="metric-change">Filtered view</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-title">Data Source</div>
+                        <div class="metric-value">StreetEasy</div>
+                        <div class="metric-change">Rental listings</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-title">Update Frequency</div>
+                        <div class="metric-value">Weekly</div>
+                        <div class="metric-change">Price aggregation</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-title">Trend Analysis</div>
+                        <div class="metric-value">14 Months</div>
+                        <div class="metric-change">Historical data</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

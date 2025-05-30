@@ -365,7 +365,14 @@ queries = {
             
         ) subquery
         WHERE subquery.unit_id = %s
+    """,
+    'get_streeteasy_data': """
+        SELECT * FROM streeteasy_units
+    """,
+    'get_reports': """
+        SELECT * FROM reports
     """
+
 }
 #   d.prev_gross,
             # d.prev_payable,
@@ -377,15 +384,8 @@ queries = {
 # Conc	Term	Move Out	Lease Start	Move-In	
 # Expiry	Item ID	VNY Notes	Landlord Notes
 
-@data_bp.route('/run_query', methods=['GET'])
-@with_db_connection
-def run_query(connection, credentials):
+def run_query_system(connection, credentials, query_id, target_type=None, target_id=None, unit_id=None, filters=None):
     cursor = connection.cursor(dictionary=True)
-
-    query_id = request.args.get('query_id')
-    target_type = request.args.get('target_type', '')
-    target_id = request.args.get('target_id', '')
-    unit_id = request.args.get('unit_id', '')
 
     if unit_id:
         params = [unit_id]
@@ -395,10 +395,10 @@ def run_query(connection, credentials):
         params = []
 
     query = queries[query_id]
-    filters = json.loads(request.args.get('filters', '{}'))
-    print('filters', filters)
+    if filters is None:
+        filters = {}
 
-    # Apply data filters from credentials - Crednetials dont contain subquery. , so add this on prior
+    # Apply data filters from credentials - Credentials dont contain subquery. , so add this on prior
     data_filters = credentials.get("data_filters", [])
     for column, value in data_filters:
         if value and value not in ["Any", "", "undefined", "-", "0", " "] and column is not None and 'Any' not in value:
@@ -412,16 +412,34 @@ def run_query(connection, credentials):
                 query += f" AND LOWER(subquery.{column}) LIKE LOWER(%s)"
                 params.append(f"%{value}%")
 
-
     cursor.execute(query, params)
     data = cursor.fetchall()
 
     cursor.close()
     connection.close()
 
-    print(query,    params)
+    # Check if we're in a Flask context
+    try:
+        from flask import has_request_context
+        if has_request_context():
+            return jsonify({"status": "success", "count": len(data), "data": data})
+        else:
+            # Return raw dict when called outside Flask context
+            return {"status": "success", "count": len(data), "data": data}
+    except:
+        # Fallback: return raw dict
+        return {"status": "success", "count": len(data), "data": data}
 
-    return jsonify({"status": "success", "count": len(data), "data": data})          
+@data_bp.route('/run_query', methods=['GET'])
+@with_db_connection
+def run_query(connection, credentials):
+    query_id = request.args.get('query_id')
+    target_type = request.args.get('target_type', '')
+    target_id = request.args.get('target_id', '')
+    unit_id = request.args.get('unit_id', '')
+    filters = json.loads(request.args.get('filters', '{}'))
+
+    return run_query_system(connection, credentials, query_id, target_type, target_id, unit_id, filters)
 
 @data_bp.route('/create_note', methods=['POST'])
 def create_note():

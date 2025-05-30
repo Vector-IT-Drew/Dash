@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ report_title }} - Market Metrics</title>
+    <link rel="stylesheet" href="shared_styles.css">
+</head>
+<body>
+    <div class="page-container">
+        <div class="container full center">
+            <h2>{{ metrics_title | default('Market Overview') }}</h2>
+            
+            <div class="summary-section">
+                <div class="summary-title">{{ summary_title | default('Rental Market Summary') }}</div>
+                <div class="summary-text">{{ summary_text }}</div>
+            </div>
+            
+            <div class="grid-4">
+                <div class="metric-card">
+                    <div class="metric-title">Total Listings</div>
+                    <div class="metric-value">{{ total_listings }}</div>
+                    <div class="metric-change">Available rentals</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-title">Average Rent</div>
+                    <div class="metric-value">{{ avg_price }}</div>
+                    <div class="metric-change">Listed price</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-title">Days on Market</div>
+                    <div class="metric-value">{{ avg_days_on_market }}</div>
+                    <div class="metric-change">Average duration</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-title">Price per Sq Ft</div>
+                    <div class="metric-value">{{ avg_ppsf }}</div>
+                    <div class="metric-change">Average PPSF</div>
+                </div>
+            </div>
+            
+            <div class="source-text">
+                Source: {{ data_source | default('StreetEasy Listings Data') }} • Generated {{ date_generated }}
+            </div>
+        </div>
+    </div>
+</body>
+</html>
