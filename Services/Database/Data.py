@@ -371,13 +371,9 @@ queries = {
     """,
     'get_reports': """
         SELECT 
-            report_id, 
-            name, 
-            created_at, 
-            file_path, 
-            status,
+           *
         FROM reports 
-        ORDER BY created_at DESC
+       
     """,
 
 }
