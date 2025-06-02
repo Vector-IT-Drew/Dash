@@ -2,6 +2,8 @@
 setuptools>=65.5.0
 wheel>=0.40.0
 
+weasyprint
+
 # Web framework and related - specify compatible versions
 flask==2.3.3
 werkzeug==2.3.7  # This version is compatible with Flask 2.3.3 and Flask-Session
