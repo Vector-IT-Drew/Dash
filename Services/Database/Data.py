@@ -368,6 +368,7 @@ queries = {
     """,
     'get_streeteasy_data': """
         SELECT * FROM streeteasy_units
+        LIMIT 1000
     """,
     'get_reports': """
         SELECT 
