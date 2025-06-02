@@ -23,7 +23,11 @@ load_dotenv()
 app = Flask(__name__)
 
 # Configure CORS to allow credentials
-CORS(app, supports_credentials=True)
+CORS(app, 
+     origins='*',  # Allow all origins
+     methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+     allow_headers=['Content-Type', 'Authorization'],
+     supports_credentials=True)
 
 app.register_blueprint(connect_bp)
 app.register_blueprint(listings_bp)
