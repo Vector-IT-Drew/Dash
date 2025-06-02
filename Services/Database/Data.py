@@ -390,68 +390,76 @@ queries = {
 def run_query_system(connection, credentials, query_id, target_type=None, target_id=None, unit_id=None, filters=None):
     cursor = connection.cursor(dictionary=True)
 
-    if unit_id:
-        params = [unit_id]
-    elif target_type:
-        params = [target_type, target_id]
-    else:
-        params = []
-
-    query = queries[query_id]
-    if filters is None:
-        filters = {}
-
-    # Apply data filters from credentials - Credentials dont contain subquery. , so add this on prior
-    data_filters = credentials.get("data_filters", [])
-    for column, value in data_filters:
-        if value and value not in ["Any", "", "undefined", "-", "0", " "] and column is not None and 'Any' not in value:
-            query += f" AND subquery.{column} = %s"
-            params.append(value)
-
-    # Apply additional filters from request  - Filters dont contain subquery. , so add this on prior
-    if filters:
-        for column, value in filters.items():
-            if value and value not in ["Any", "", "undefined", "-", "0", " "] and column is not None and 'Any' not in value:
-                query += f" AND LOWER(subquery.{column}) LIKE LOWER(%s)"
-                params.append(f"%{value}%")
-
-    # Get column types before executing the main query
-    cursor.execute(f"SELECT * FROM ({query}) as temp LIMIT 0")
-    col_types = {desc[0]: desc[1] for desc in cursor.description}
-
-    # Execute the actual query
-    cursor.execute(query, params)
-    data = cursor.fetchall()
-
-    cursor.close()
-    connection.close()
-
-    # Check if we're in a Flask context
     try:
-        from flask import has_request_context
-        if has_request_context():
-            return jsonify({
-                "status": "success", 
-                "count": len(data), 
-                "data": data,
-                "col_types": col_types
-            })
+        if unit_id:
+            params = [unit_id]
+        elif target_type:
+            params = [target_type, target_id]
         else:
-            # Return raw dict when called outside Flask context
+            params = []
+
+        query = queries[query_id]
+        if filters is None:
+            filters = {}
+
+        # Apply data filters from credentials - Credentials dont contain subquery. , so add this on prior
+        data_filters = credentials.get("data_filters", [])
+        for column, value in data_filters:
+            if value and value not in ["Any", "", "undefined", "-", "0", " "] and column is not None and 'Any' not in value:
+                query += f" AND subquery.{column} = %s"
+                params.append(value)
+
+        # Apply additional filters from request  - Filters dont contain subquery. , so add this on prior
+        if filters:
+            for column, value in filters.items():
+                if value and value not in ["Any", "", "undefined", "-", "0", " "] and column is not None and 'Any' not in value:
+                    query += f" AND LOWER(subquery.{column}) LIKE LOWER(%s)"
+                    params.append(f"%{value}%")
+
+        # Get column types before executing the main query
+        # Use a separate cursor for the column type check
+        type_cursor = connection.cursor(dictionary=True)
+        try:
+            type_cursor.execute(f"SELECT * FROM ({query}) as temp LIMIT 0", params)
+            col_types = {desc[0]: desc[1] for desc in type_cursor.description}
+        finally:
+            type_cursor.close()
+
+        # Execute the actual query
+        cursor.execute(query, params)
+        data = cursor.fetchall()
+
+        # Check if we're in a Flask context
+        try:
+            from flask import has_request_context
+            if has_request_context():
+                return jsonify({
+                    "status": "success", 
+                    "count": len(data), 
+                    "data": data,
+                    "col_types": col_types
+                })
+            else:
+                # Return raw dict when called outside Flask context
+                return {
+                    "status": "success", 
+                    "count": len(data), 
+                    "data": data,
+                    "col_types": col_types
+                }
+        except:
+            # Fallback: return raw dict
             return {
                 "status": "success", 
                 "count": len(data), 
                 "data": data,
                 "col_types": col_types
             }
-    except:
-        # Fallback: return raw dict
-        return {
-            "status": "success", 
-            "count": len(data), 
-            "data": data,
-            "col_types": col_types
-        }
+
+    finally:
+        cursor.close()
+        # Don't close the connection here since it's managed by the decorator
+        # connection.close()
 
 @data_bp.route('/run_query', methods=['GET'])
 @with_db_connection
