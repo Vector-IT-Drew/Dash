@@ -388,8 +388,9 @@ queries = {
 # Conc	Term	Move Out	Lease Start	Move-In	
 # Expiry	Item ID	VNY Notes	Landlord Notes
 def run_query_system(connection, credentials, query_id, target_type=None, target_id=None, unit_id=None, filters=None):
-    cursor = connection.cursor(dictionary=True)
-
+    cursor = None
+    type_cursor = None
+    
     try:
         if unit_id:
             params = [unit_id]
@@ -402,36 +403,35 @@ def run_query_system(connection, credentials, query_id, target_type=None, target
         if filters is None:
             filters = {}
 
-        # Apply data filters from credentials - Credentials dont contain subquery. , so add this on prior
+        # Apply data filters from credentials
         data_filters = credentials.get("data_filters", [])
         for column, value in data_filters:
             if value and value not in ["Any", "", "undefined", "-", "0", " "] and column is not None and 'Any' not in value:
                 query += f" AND subquery.{column} = %s"
                 params.append(value)
 
-        # Apply additional filters from request  - Filters dont contain subquery. , so add this on prior
+        # Apply additional filters from request
         if filters:
             for column, value in filters.items():
                 if value and value not in ["Any", "", "undefined", "-", "0", " "] and column is not None and 'Any' not in value:
                     query += f" AND LOWER(subquery.{column}) LIKE LOWER(%s)"
                     params.append(f"%{value}%")
 
-        # Get column types before executing the main query
-        # Use a separate cursor for the column type check
-        type_cursor = connection.cursor(dictionary=True)
-        try:
-            type_cursor.execute(f"SELECT * FROM ({query}) as temp LIMIT 0", params)
-            col_types = {desc[0]: desc[1] for desc in type_cursor.description}
-        finally:
-            type_cursor.close()
-
-        # Execute the actual query
+        # Get column types - use a simpler approach
+        col_types = {}
+        
+        # Execute the main query
+        cursor = connection.cursor(dictionary=True)
         cursor.execute(query, params)
         data = cursor.fetchall()
+        
+        # Get column info from the cursor description after fetching data
+        if cursor.description:
+            col_types = {desc[0]: desc[1] for desc in cursor.description}
 
         # Check if we're in a Flask context
         try:
-            from flask import has_request_context
+            from flask import has_request_context, jsonify
             if has_request_context():
                 return jsonify({
                     "status": "success", 
@@ -456,10 +456,21 @@ def run_query_system(connection, credentials, query_id, target_type=None, target
                 "col_types": col_types
             }
 
+    except Exception as e:
+        print(f"Error in run_query_system: {e}")
+        raise e
     finally:
-        cursor.close()
-        # Don't close the connection here since it's managed by the decorator
-        # connection.close()
+        # Clean up cursors properly
+        if cursor:
+            try:
+                cursor.close()
+            except:
+                pass
+        if type_cursor:
+            try:
+                type_cursor.close()
+            except:
+                pass
 
 @data_bp.route('/run_query', methods=['GET'])
 @with_db_connection
