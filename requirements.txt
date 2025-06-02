@@ -2,7 +2,7 @@
 setuptools>=65.5.0
 wheel>=0.40.0
 
-weasyprint
+reportlab==4.0.4
 
 # Web framework and related - specify compatible versions
 flask==2.3.3
