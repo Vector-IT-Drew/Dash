@@ -387,7 +387,6 @@ queries = {
 # Prev Gross	Prev Payable	Price Suggestion	Gross	Actual Rent	Actual Rent Type	
 # Conc	Term	Move Out	Lease Start	Move-In	
 # Expiry	Item ID	VNY Notes	Landlord Notes
-
 def run_query_system(connection, credentials, query_id, target_type=None, target_id=None, unit_id=None, filters=None):
     cursor = connection.cursor(dictionary=True)
 
@@ -416,6 +415,11 @@ def run_query_system(connection, credentials, query_id, target_type=None, target
                 query += f" AND LOWER(subquery.{column}) LIKE LOWER(%s)"
                 params.append(f"%{value}%")
 
+    # Get column types before executing the main query
+    cursor.execute(f"SELECT * FROM ({query}) as temp LIMIT 0")
+    col_types = {desc[0]: desc[1] for desc in cursor.description}
+
+    # Execute the actual query
     cursor.execute(query, params)
     data = cursor.fetchall()
 
@@ -426,13 +430,28 @@ def run_query_system(connection, credentials, query_id, target_type=None, target
     try:
         from flask import has_request_context
         if has_request_context():
-            return jsonify({"status": "success", "count": len(data), "data": data})
+            return jsonify({
+                "status": "success", 
+                "count": len(data), 
+                "data": data,
+                "col_types": col_types
+            })
         else:
             # Return raw dict when called outside Flask context
-            return {"status": "success", "count": len(data), "data": data}
+            return {
+                "status": "success", 
+                "count": len(data), 
+                "data": data,
+                "col_types": col_types
+            }
     except:
         # Fallback: return raw dict
-        return {"status": "success", "count": len(data), "data": data}
+        return {
+            "status": "success", 
+            "count": len(data), 
+            "data": data,
+            "col_types": col_types
+        }
 
 @data_bp.route('/run_query', methods=['GET'])
 @with_db_connection
