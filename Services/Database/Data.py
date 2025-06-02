@@ -389,7 +389,27 @@ queries = {
 # Expiry	Item ID	VNY Notes	Landlord Notes
 def run_query_system(connection, credentials, query_id, target_type=None, target_id=None, unit_id=None, filters=None):
     cursor = None
-    type_cursor = None
+    
+    def convert_mysql_types_to_readable(col_types):
+        """Convert MySQL field type constants to readable type names"""
+        mysql_type_mapping = {
+            1: 'boolean',      # FIELD_TYPE_TINY (tinyint, boolean)
+            3: 'integer',      # FIELD_TYPE_LONG (int, bigint)
+            8: 'integer',      # FIELD_TYPE_LONGLONG (bigint)
+            10: 'datetime',    # FIELD_TYPE_DATE
+            12: 'datetime',    # FIELD_TYPE_DATETIME
+            245: 'json',       # FIELD_TYPE_JSON
+            246: 'decimal',    # FIELD_TYPE_NEWDECIMAL (decimal, numeric)
+            252: 'string',     # FIELD_TYPE_BLOB (text, varchar, char)
+            253: 'string',     # FIELD_TYPE_VAR_STRING (varchar)
+            254: 'string',     # FIELD_TYPE_STRING (char, binary)
+        }
+        
+        readable_types = {}
+        for column, type_code in col_types.items():
+            readable_types[column] = mysql_type_mapping.get(type_code, f'unknown_{type_code}')
+        
+        return readable_types
     
     try:
         if unit_id:
@@ -417,17 +437,17 @@ def run_query_system(connection, credentials, query_id, target_type=None, target
                     query += f" AND LOWER(subquery.{column}) LIKE LOWER(%s)"
                     params.append(f"%{value}%")
 
-        # Get column types - use a simpler approach
-        col_types = {}
-        
         # Execute the main query
         cursor = connection.cursor(dictionary=True)
         cursor.execute(query, params)
         data = cursor.fetchall()
         
         # Get column info from the cursor description after fetching data
+        col_types = {}
+        readable_col_types = {}
         if cursor.description:
             col_types = {desc[0]: desc[1] for desc in cursor.description}
+            readable_col_types = convert_mysql_types_to_readable(col_types)
 
         # Check if we're in a Flask context
         try:
@@ -437,7 +457,8 @@ def run_query_system(connection, credentials, query_id, target_type=None, target
                     "status": "success", 
                     "count": len(data), 
                     "data": data,
-                    "col_types": col_types
+                    "col_types": readable_col_types,
+                    "raw_col_types": col_types  # Keep original for debugging
                 })
             else:
                 # Return raw dict when called outside Flask context
@@ -445,7 +466,8 @@ def run_query_system(connection, credentials, query_id, target_type=None, target
                     "status": "success", 
                     "count": len(data), 
                     "data": data,
-                    "col_types": col_types
+                    "col_types": readable_col_types,
+                    "raw_col_types": col_types
                 }
         except:
             # Fallback: return raw dict
@@ -453,7 +475,8 @@ def run_query_system(connection, credentials, query_id, target_type=None, target
                 "status": "success", 
                 "count": len(data), 
                 "data": data,
-                "col_types": col_types
+                "col_types": readable_col_types,
+                "raw_col_types": col_types
             }
 
     except Exception as e:
@@ -464,11 +487,6 @@ def run_query_system(connection, credentials, query_id, target_type=None, target
         if cursor:
             try:
                 cursor.close()
-            except:
-                pass
-        if type_cursor:
-            try:
-                type_cursor.close()
             except:
                 pass
 
