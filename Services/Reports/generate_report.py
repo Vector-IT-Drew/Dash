@@ -209,9 +209,11 @@ REPORT_CONFIGS = {
 # Flask imports at the bottom to avoid circular import
 try:
     from flask import request, jsonify
+    from flask_cors import cross_origin
     from . import reports_bp
 
-    @reports_bp.route('/generate_report', methods=['POST'])
+    @reports_bp.route('/generate_report', methods=['POST', 'OPTIONS'])
+    @cross_origin(origins='*', methods=['POST', 'OPTIONS'], allow_headers=['Content-Type'])
     def generate_report_endpoint():
         """Generate a report"""
         try:
