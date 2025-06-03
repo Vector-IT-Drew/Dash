@@ -125,12 +125,19 @@ def scrape_streeteasy():
     agents = ['lunzer', '685']
     agent_ids = [348933, 348649, 365551, 348650, 348652, 360856, 360857, 360860, 369098]
     all_ids = []
+    agent_totals = {}  # Track totals per agent
+
+    print("\n🔍 Starting StreetEasy scrape...")
+    print("━" * 50)
 
     for agent_id in agent_ids:
-        print(f"Scraping agent {agent_id}")
+        print(f"\n📊 Agent {agent_id}")
+        print("─" * 30)
         page = 1
         has_next = True
+        agent_ids = []  # Track IDs for this agent
         time.sleep(np.random.randint(1,4))
+        
         while has_next:
             payload = {
                 "operationName": "getPaginatedListings",
@@ -158,35 +165,43 @@ def scrape_streeteasy():
             response = requests.post(url, headers=headers, cookies=cookies, json=payload)
             
             if response.status_code != 200:
+                print(f"❌ Page {page}: Failed with status {response.status_code}")
                 break
-            else:
-                print(f"✅ Response: {response.status_code}")
             
             try:
                 data = response.json()
-            except requests.exceptions.JSONDecodeError:
-                print(f"❌ Error: {response.status_code}")
-                break
-
-            try:
                 items = data['data']['agent_active_listings_paginated']['items']
                 page_info = data['data']['agent_active_listings_paginated']['page_info']
-            except KeyError:
-                print(f"❌ Error: {response.status_code}")
+                
+                ids_this_page = [item['id'] for item in items]
+                agent_ids.extend(ids_this_page)
+                
+                print(f"✓ Page {page}/{page_info['total_pages']}: {len(ids_this_page)} listings")
+                
+                has_next = page_info['has_next_page']
+                page += 1
+                time.sleep(np.random.choice([15, 16,19,17]))
+                
+            except (KeyError, requests.exceptions.JSONDecodeError) as e:
+                print(f"❌ Page {page}: Error processing data")
                 break
 
-            ids_this_page = [item['id'] for item in items]
-            all_ids.extend(ids_this_page)
+        agent_totals[agent_id] = len(agent_ids)
+        all_ids.extend(agent_ids)
+        print(f"📈 Agent {agent_id}: {len(agent_ids)} total listings")
 
-            has_next = page_info['has_next_page']
-            page += 1
-            time.sleep(np.random.choice([15, 16,19,17]))
-
-    print(f"📊 Total IDs collected: {len(all_ids)}")
+    print("\n" + "━" * 50)
+    print("📊 Collection Summary:")
+    for agent_id, count in agent_totals.items():
+        print(f"  • Agent {agent_id}: {count} listings")
+    print(f"📈 Total listings collected: {len(all_ids)}")
+    print("━" * 50 + "\n")
 
     final_df = pd.DataFrame()
     grouped_ids = [all_ids[i:i + 100] for i in range(0, len(all_ids), 100)]
-    print('grouped_ids', grouped_ids)
+    
+    print("🔄 Fetching detailed listing data...")
+    print("━" * 50)
     
     for i, rental_ids in enumerate(grouped_ids):
         json_data = {
@@ -277,22 +292,25 @@ def scrape_streeteasy():
         response = requests.post('https://api-internal.streeteasy.com/graphql', cookies=cookies, headers=headers, json=json_data)
         
         if response.status_code != 200:
-            print(f"❌ Error: {response.status_code}")
+            print(f"❌ Batch {i+1}/{len(grouped_ids)}: Failed with status {response.status_code}")
             continue
-        else:
-            print(f"✅ Response: {response.status_code}")
             
         try:
             batch_data = response.json()
-            final_df = pd.concat([final_df, pd.DataFrame(batch_data['data']['rentals'])])
-            print(f"📈 Retrieved data for batch {i+1}/{len(grouped_ids)} ({len(final_df)} total records)")
+            batch_df = pd.DataFrame(batch_data['data']['rentals'])
+            final_df = pd.concat([final_df, batch_df])
+            print(f"✓ Batch {i+1}/{len(grouped_ids)}: {len(batch_df)} listings processed")
         except Exception as e:
+            print(f"❌ Batch {i+1}/{len(grouped_ids)}: Error processing data")
             continue
             
         time.sleep(np.random.choice([15, 16,19,17]))
         
+    print("\n" + "━" * 50)
+    print(f"💾 Final dataset: {len(final_df)} listings")
+    print("━" * 50 + "\n")
+    
     final_df.to_csv('Streeteasy Data.csv')
-    print(f"💾 Saved {len(final_df)} records to Streeteasy Data.csv")
     return final_df
 
 def fix_json_column(value):
