@@ -138,24 +138,28 @@ def get_filtered_listings_data(
         try:
             query = f"""
                 SELECT * from (
-                    SELECT u.unit_id, u.address, u.unit, u.beds, u.baths, u.sqft, u.exposure,
-                        u.floor_num,
-                        CASE
-                            WHEN u.unit_status LIKE '%DNR%' THEN 'DNR'
-                            WHEN (
-                                (d1.move_in IS NOT NULL AND d1.move_out IS NOT NULL AND CURRENT_DATE BETWEEN d1.move_in AND d1.move_out)
-                                OR
-                                (d2.move_in IS NOT NULL AND d2.move_out IS NOT NULL AND CURRENT_DATE BETWEEN d2.move_in AND d2.move_out)
-                                OR
-                                (d1.move_in IS NOT NULL AND d1.move_out IS NULL AND CURRENT_DATE >= d1.move_in)
-                            ) THEN 'Occupied'
-                            ELSE 'Vacant'
-                        END AS unit_status,
-                        d1.expiry, d1.actual_rent, u.unit_images, 
-                        a.building_name, a.neighborhood, a.borough, d1.deal_status, d1.move_out, 
-                        u.rentable, a.building_amenities, p.portfolio_email, a.building_image, p.portfolio,
-                        {distance_calculation} AS distance
-                        {', u.*, d1.*, a.*' if include_all else ''}
+                    SELECT 
+                        CASE 
+                            WHEN {include_all} THEN u.*, d1.*, a.*, p.portfolio_email, p.portfolio, {distance_calculation} AS distance
+                            ELSE 
+                                u.unit_id, u.address, u.unit, u.beds, u.baths, u.sqft, u.exposure,
+                                u.floor_num,
+                                CASE
+                                    WHEN u.unit_status LIKE '%DNR%' THEN 'DNR'
+                                    WHEN (
+                                        (d1.move_in IS NOT NULL AND d1.move_out IS NOT NULL AND CURRENT_DATE BETWEEN d1.move_in AND d1.move_out)
+                                        OR
+                                        (d2.move_in IS NOT NULL AND d2.move_out IS NOT NULL AND CURRENT_DATE BETWEEN d2.move_in AND d2.move_out)
+                                        OR
+                                        (d1.move_in IS NOT NULL AND d1.move_out IS NULL AND CURRENT_DATE >= d1.move_in)
+                                    ) THEN 'Occupied'
+                                    ELSE 'Vacant'
+                                END AS unit_status,
+                                d1.expiry, d1.actual_rent, u.unit_images, 
+                                a.building_name, a.neighborhood, a.borough, d1.deal_status, d1.move_out, 
+                                u.rentable, a.building_amenities, p.portfolio_email, a.building_image, p.portfolio,
+                                {distance_calculation} AS distance
+                        END
                     FROM units u
                     LEFT JOIN (
                         SELECT *
