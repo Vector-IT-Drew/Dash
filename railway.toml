@@ -1,0 +1,20 @@
+[build]
+builder = "nixpacks"
+
+[deploy]
+healthcheckPath = "/"
+healthcheckTimeout = 300
+restartPolicyType = "always"
+
+# Main web service
+[[services]]
+name = "web"
+source = "."
+variables = { PORT = "8000" }
+
+# Cron job for scraping StreetEasy
+[[services]]
+name = "scrape-streeteasy"
+source = "."
+schedule = "55 15 * * *"  # Runs at 3:55 PM every day
+command = "PYTHONPATH=$PYTHONPATH:. python Services/Streeteasy/scrape_streeteasy.py"
