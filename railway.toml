@@ -13,8 +13,7 @@ restartPolicyMaxRetries = 10
 "us-west2" = { numReplicas = 1 }
 
 # Cron service for StreetEasy scraping
-[[services]]
+[[cron]]
 name = "scrape-streeteasy"
-type = "cron"
-schedule = "07 16 * * *"  # Runs at 4:03 PM every day
+schedule = "12 16 * * *"  # Runs at 4:07 PM every day
 command = "PYTHONPATH=$PYTHONPATH:. python Services/Streeteasy/scrape_streeteasy.py"
