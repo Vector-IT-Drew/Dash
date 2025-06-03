@@ -13,6 +13,7 @@ from Services.Forms.Tour_Schedule import tour_bp
 from Services.Emails.Notify import notify_bp
 from Services.Emails.EmailWatcher import emailwatcher_bp
 from Services.Reports import reports_bp
+from Services.Streeteasy.scrape_streeteasy import save_to_db
 
 from flask_session import Session
 from datetime import timedelta
@@ -141,6 +142,23 @@ def after_request(response):
     api_logger.info(f"RESPONSE {request_id}: {response.status_code} {round(duration * 1000)}ms - {str(response_json)[:300]}")
     
     return response
+
+@app.route('/api/streeteasy-scrape', methods=['GET'])
+def run_streeteasy_scrape():
+    try:
+        # Run the scraper
+        save_to_db()
+        return jsonify({
+            "status": "success",
+            "message": "StreetEasy scrape completed successfully",
+            "timestamp": time.strftime('%Y-%m-%d %H:%M:%S')
+        }), 200
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": str(e),
+            "timestamp": time.strftime('%Y-%m-%d %H:%M:%S')
+        }), 500
 
 if __name__ == '__main__':
     port = 5004
