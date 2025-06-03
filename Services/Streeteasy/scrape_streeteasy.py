@@ -8,6 +8,8 @@ import ast
 from Services.Database.Connect import get_db_connection
 from Services.Database.Data import run_query_system
 import os
+import threading
+import queue
 
 
 url = "https://api-internal.streeteasy.com/graphql"
@@ -125,6 +127,7 @@ def scrape_streeteasy():
     all_ids = []
 
     for agent_id in agent_ids:
+        print(f"Scraping agent {agent_id}")
         page = 1
         has_next = True
         time.sleep(np.random.randint(1,4))
@@ -156,16 +159,20 @@ def scrape_streeteasy():
             
             if response.status_code != 200:
                 break
+            else:
+                print(f"✅ Response: {response.status_code}")
             
             try:
                 data = response.json()
             except requests.exceptions.JSONDecodeError:
+                print(f"❌ Error: {response.status_code}")
                 break
 
             try:
                 items = data['data']['agent_active_listings_paginated']['items']
                 page_info = data['data']['agent_active_listings_paginated']['page_info']
             except KeyError:
+                print(f"❌ Error: {response.status_code}")
                 break
 
             ids_this_page = [item['id'] for item in items]
@@ -173,12 +180,13 @@ def scrape_streeteasy():
 
             has_next = page_info['has_next_page']
             page += 1
-            time.sleep(np.random.randint(13, 25))
+            time.sleep(np.random.choice([15, 16,19,17]))
 
     print(f"📊 Total IDs collected: {len(all_ids)}")
 
     final_df = pd.DataFrame()
     grouped_ids = [all_ids[i:i + 100] for i in range(0, len(all_ids), 100)]
+    print('grouped_ids', grouped_ids)
     
     for i, rental_ids in enumerate(grouped_ids):
         json_data = {
@@ -269,7 +277,10 @@ def scrape_streeteasy():
         response = requests.post('https://api-internal.streeteasy.com/graphql', cookies=cookies, headers=headers, json=json_data)
         
         if response.status_code != 200:
+            print(f"❌ Error: {response.status_code}")
             continue
+        else:
+            print(f"✅ Response: {response.status_code}")
             
         try:
             batch_data = response.json()
@@ -469,5 +480,50 @@ def save_to_db():
     cursor.close()
     db_connection.close()
 
+# Global status queue for communication between threads
+status_queue = queue.Queue()
+
+def scrape_with_status():
+    """Run the scraper and update status in the queue"""
+    try:
+        status_queue.put({"status": "started", "message": "Scraping started", "timestamp": time.strftime('%Y-%m-%d %H:%M:%S')})
+        save_to_db()
+        status_queue.put({"status": "completed", "message": "Scraping completed successfully", "timestamp": time.strftime('%Y-%m-%d %H:%M:%S')})
+    except Exception as e:
+        status_queue.put({"status": "error", "message": str(e), "timestamp": time.strftime('%Y-%m-%d %H:%M:%S')})
+
+def start_scrape():
+    """Start the scraper in a background thread and return immediately"""
+    # Clear any old status
+    while not status_queue.empty():
+        status_queue.get()
+    
+    # Start the scraper in a background thread
+    thread = threading.Thread(target=scrape_with_status)
+    thread.daemon = True  # Thread will exit when main program exits
+    thread.start()
+    
+    # Return initial status
+    return {
+        "status": "started",
+        "message": "Scraping started in background",
+        "timestamp": time.strftime('%Y-%m-%d %H:%M:%S')
+    }
+
+def get_scrape_status():
+    """Get the current status of the scraping process"""
+    try:
+        # Get the latest status without blocking
+        status = status_queue.get_nowait()
+        return status
+    except queue.Empty:
+        # If no status update, return running status
+        return {
+            "status": "running",
+            "message": "Scraping in progress",
+            "timestamp": time.strftime('%Y-%m-%d %H:%M:%S')
+        }
+
 if __name__ == "__main__":
+    # For direct script execution, run normally
     save_to_db()
