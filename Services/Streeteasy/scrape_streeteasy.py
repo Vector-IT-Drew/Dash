@@ -121,13 +121,12 @@ def clean_list_column(df, column_name):
 
 def scrape_streeteasy():    
     agents = ['lunzer', '685']
-    agent_ids = [348933, 348649, 365551, 348650, 348652, 360856, 360857, 360860, 369098]  # Replace with real agent IDs
+    agent_ids = [348933, 348649, 365551, 348650, 348652, 360856, 360857, 360860, 369098]
     all_ids = []
 
     for agent_id in agent_ids:
         page = 1
         has_next = True
-        print(f"Processing agent {agent_id}")
         time.sleep(np.random.randint(1,4))
         while has_next:
             payload = {
@@ -155,53 +154,40 @@ def scrape_streeteasy():
 
             response = requests.post(url, headers=headers, cookies=cookies, json=payload)
             
-            # Add debugging
-            print(f"Response status: {response.status_code}")
-            print(f"Response headers: {dict(response.headers)}")
-            
             if response.status_code != 200:
-                print(f"❌ HTTP Error {response.status_code}")
-                print(f"Response text: {response.text[:500]}")
                 break
             
             try:
                 data = response.json()
             except requests.exceptions.JSONDecodeError:
-                print(f"❌ Invalid JSON response")
-                print(f"Response text: {response.text[:500]}")
                 break
 
             try:
                 items = data['data']['agent_active_listings_paginated']['items']
-                print('Len Items', len(items))
                 page_info = data['data']['agent_active_listings_paginated']['page_info']
             except KeyError:
-                print(f"Failed for agent {agent_id} on page {page}: {data}")
                 break
 
             ids_this_page = [item['id'] for item in items]
             all_ids.extend(ids_this_page)
 
             has_next = page_info['has_next_page']
-            print('Has Next:', has_next)
             page += 1
             time.sleep(np.random.randint(13, 25))
-            print('Sleeping...')
 
-    print("Total IDs collected:", len(all_ids))
-
+    print(f"📊 Total IDs collected: {len(all_ids)}")
 
     final_df = pd.DataFrame()
     grouped_ids = [all_ids[i:i + 100] for i in range(0, len(all_ids), 100)]
     
     for i, rental_ids in enumerate(grouped_ids):
         json_data = {
-        'operationName': 'Highlights',
-        'variables': {
-            'listing_ids': [int(val) for val in rental_ids],  
-        },
-        'query': '''query Highlights($listing_ids: [ID!]!) {
-            rentals(ids: $listing_ids) {
+            'operationName': 'Highlights',
+            'variables': {
+                'listing_ids': [int(val) for val in rental_ids],  
+            },
+            'query': '''query Highlights($listing_ids: [ID!]!) {
+                rentals(ids: $listing_ids) {
                     price_history { date description price }
                     address   { pretty_address unit }
                     amenities { name }
@@ -283,22 +269,20 @@ def scrape_streeteasy():
         response = requests.post('https://api-internal.streeteasy.com/graphql', cookies=cookies, headers=headers, json=json_data)
         
         if response.status_code != 200:
-            print(f"❌ Batch {i} failed with status {response.status_code}")
             continue
             
         try:
             batch_data = response.json()
             final_df = pd.concat([final_df, pd.DataFrame(batch_data['data']['rentals'])])
-            print('Length:', len(final_df))
-            print(i, int(i / len(grouped_ids)*100), '%')
+            print(f"📈 Retrieved data for batch {i+1}/{len(grouped_ids)} ({len(final_df)} total records)")
         except Exception as e:
-            print(f"❌ Error processing batch {i}: {e}")
             continue
             
         time.sleep(np.random.choice([15, 16,19,17]))
         
     final_df.to_csv('Streeteasy Data.csv')
-    print(f"✅ Saved {len(final_df)} records to Streeteasy Data.csv")
+    print(f"💾 Saved {len(final_df)} records to Streeteasy Data.csv")
+    return final_df
 
 def fix_json_column(value):
     try:
@@ -376,45 +360,26 @@ def save_to_db():
     # Get units
     unit_df = get_unit_df(db_connection)
     
-    print("🔌 Connected to database")
     cursor = db_connection.cursor()
 
-  
-    print("📊 Scraping StreetEasy data...")
-    scrape_streeteasy()
+    print("🔄 Starting StreetEasy data scrape...")
+    final_df = scrape_streeteasy()
     
-    # Load the data
-    if os.path.exists("Streeteasy Data.csv"):
-        print("📁 Loading StreetEasy data from CSV...")
-        streeteasy_data = pd.read_csv("Streeteasy Data.csv")
-    else:
-        print("❌ No StreetEasy data available")
-        cursor.close()
-        db_connection.close()
-        return
-
-    print(f"📈 Loaded {len(streeteasy_data)} StreetEasy records")
-    
-    if len(streeteasy_data) == 0:
+    if len(final_df) == 0:
         print("❌ No data to process")
         cursor.close()
         db_connection.close()
         return
 
-    # Extract address and unit from the nested structure
-    print("🔧 Processing address and unit data...")
-    
-    # Parse the address column which contains JSON-like data
+    # Process the data
+    print("🔧 Processing data...")
     addresses = []
     units = []
     
-    for idx, row in streeteasy_data.iterrows():
+    for idx, row in final_df.iterrows():
         try:
-            # The address column contains a dict-like string
             address_str = str(row['address'])
             if 'pretty_address' in address_str:
-                # Use regex to extract the values
-                import re
                 pretty_address_match = re.search(r"'pretty_address': '([^']*)'", address_str)
                 unit_match = re.search(r"'unit': '([^']*)'", address_str)
                 
@@ -432,50 +397,41 @@ def save_to_db():
                 addresses.append(None)
                 units.append(None)
         except Exception as e:
-            print(f"⚠️ Error processing row {idx}: {e}")
             addresses.append(None)
             units.append(None)
     
-    # Add the extracted columns
-    streeteasy_data['address'] = addresses
-    streeteasy_data['unit'] = units
-    
-    print(f"✅ Extracted {len([a for a in addresses if a])} addresses and {len([u for u in units if u])} units")
+    final_df['address'] = addresses
+    final_df['unit'] = units
 
     # Format unit column for matching
     unit_df_formatted = unit_df.copy()
     unit_df_formatted['unit'] = unit_df_formatted['unit'].str.lstrip('0').str.strip()
 
-    print("🔗 Merging with unit database...")
     # Merge with unit data
-    streeteasy_data = streeteasy_data.merge(
+    final_df = final_df.merge(
         unit_df_formatted, 
         how='left', 
         on=['address', 'unit']
     ).dropna(subset=['address'])
-    
-    print(f"📊 After merge: {len(streeteasy_data)} records with unit matches")
 
-    if len(streeteasy_data) == 0:
+    if len(final_df) == 0:
         print("❌ No matching units found")
         cursor.close()
         db_connection.close()
         return
 
     # Process listed_price
-    if 'listed_price' in streeteasy_data.columns:
-        streeteasy_data['listed_price'] = streeteasy_data['listed_price'].astype(str).str.replace('$','').str.replace(',','')
+    if 'listed_price' in final_df.columns:
+        final_df['listed_price'] = final_df['listed_price'].astype(str).str.replace('$','').str.replace(',','')
 
     # Get database schema and filter columns
-    print("🗃️ Filtering columns for database...")
     db_columns = get_db_columns_and_types(db_connection, 'streeteasy_units')
-    streeteasy_data = filter_csv_columns(streeteasy_data, db_columns)
-    streeteasy_data = convert_column_types(streeteasy_data, db_columns)
+    final_df = filter_csv_columns(final_df, db_columns)
+    final_df = convert_column_types(final_df, db_columns)
 
     # Process price_history if exists
-    if 'price_history' in streeteasy_data.columns:
-        print("💰 Processing price history...")
-        streeteasy_data['price_history'] = streeteasy_data['price_history'].apply(eval_json)
+    if 'price_history' in final_df.columns:
+        final_df['price_history'] = final_df['price_history'].apply(eval_json)
 
     # Select only available columns for insertion
     expected_columns = ['address', 'unit', 'amenities', 'building_amenities', 'source', 'id', 'created_at', 'listed_at', 'price_history',
@@ -484,28 +440,19 @@ def save_to_db():
         'total_featured_impressions', 'net_rent', 'is_vector', 'ctr', 'areaName', 'longitude',
         'latitude', 'calc_dom', 'is_no_fee', 'unit_id']
     
-    available_columns = [col for col in expected_columns if col in streeteasy_data.columns]
-    streeteasy_data = streeteasy_data[available_columns]
-
-    print(f"📋 Final dataset: {len(streeteasy_data)} records with {len(available_columns)} columns")
-
-    if len(streeteasy_data) == 0:
-        print("❌ No data remaining after filtering")
-        cursor.close()
-        db_connection.close()
-        return
+    available_columns = [col for col in expected_columns if col in final_df.columns]
+    final_df = final_df[available_columns]
 
     # Build insert query
-    columns = ', '.join(streeteasy_data.columns)
-    placeholders = ', '.join(['%s'] * len(streeteasy_data.columns))
+    columns = ', '.join(final_df.columns)
+    placeholders = ', '.join(['%s'] * len(final_df.columns))
     query = f"INSERT INTO streeteasy_units ({columns}) VALUES ({placeholders})"
 
     # Prepare data for insertion
-    print("💾 Preparing data for database insertion...")
     data_to_insert = []
-    for _, row in streeteasy_data.iterrows():
+    for _, row in final_df.iterrows():
         row_data = []
-        for col in streeteasy_data.columns:
+        for col in final_df.columns:
             value = row[col]
             if pd.isna(value):
                 row_data.append(None)
@@ -513,15 +460,11 @@ def save_to_db():
                 row_data.append(value)
         data_to_insert.append(tuple(row_data))
 
-    # Insert into database
-    # print("🗄️ Truncating existing data...")
-    # cursor.execute('TRUNCATE TABLE streeteasy_units')
-    
-    print("⬆️ Inserting new data...")
+    print(f"⬆️ Uploading {len(data_to_insert)} records to database...")
     cursor.executemany(query, data_to_insert)
     db_connection.commit()
     
-    print(f"✅ Successfully saved {len(data_to_insert)} records to streeteasy_units table")
+    print(f"✅ Successfully uploaded {len(data_to_insert)} records to streeteasy_units table")
     
     cursor.close()
     db_connection.close()
