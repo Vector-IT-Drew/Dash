@@ -11,10 +11,11 @@ restartPolicyType = "always"
 name = "web"
 source = "."
 variables = { PORT = "8000" }
+command = "python app.py"
 
 # Cron job for scraping StreetEasy
 [[services]]
 name = "scrape-streeteasy"
 source = "."
-schedule = "55 15 * * *"  # Runs at 3:55 PM every day
+schedule = "58 15 * * *"  # Runs at 3:55 PM every day
 command = "PYTHONPATH=$PYTHONPATH:. python Services/Streeteasy/scrape_streeteasy.py"
