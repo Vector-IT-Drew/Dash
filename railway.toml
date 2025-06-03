@@ -10,12 +10,17 @@ restartPolicyType = "always"
 [[services]]
 name = "web"
 source = "."
-variables = { PORT = "8000" }
-command = "python app.py"
+variables = { 
+    PORT = "8000",
+    PYTHONPATH = ".",
+    FLASK_APP = "app.py",
+    FLASK_ENV = "production"
+}
+command = "gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --threads 2 --timeout 0"
 
 # Cron job for scraping StreetEasy
 [[services]]
 name = "scrape-streeteasy"
 source = "."
-schedule = "58 15 * * *"  # Runs at 3:55 PM every day
+schedule = "59 15 * * *"  # Runs at 3:58 PM every day
 command = "PYTHONPATH=$PYTHONPATH:. python Services/Streeteasy/scrape_streeteasy.py"
