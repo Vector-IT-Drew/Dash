@@ -360,6 +360,20 @@ queries = {
                 d.term,
                 d.concession,
                 d.deal_status,
+                d.tenant_ids,
+                (
+                    SELECT JSON_ARRAYAGG(
+                        JSON_OBJECT(
+                            'person_id', p.person_id,
+                            'first_name', p.first_name,
+                            'last_name', p.last_name,
+                            'email_address', p.email_address,
+                            'phone_number', p.phone_number
+                        )
+                    )
+                    FROM persons p
+                    WHERE JSON_CONTAINS(d.tenant_ids, CAST(p.person_id AS JSON))
+                ) as tenant_info,
                 p.portfolio,
                 e.entity,
                 a.address,
