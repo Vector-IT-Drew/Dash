@@ -455,8 +455,15 @@ def run_query_system(connection, credentials, query_id, target_type=None, target
         data_filters = credentials.get("data_filters", [])
         for column, value in data_filters:
             if value and value not in ["Any", "", "undefined", "-", "0", " "] and column is not None and 'Any' not in value:
-                query += f" AND subquery.{column} = %s"
-                params.append(value)
+                if column == 'agg_filter' and value == 'prelease':
+                    # Add prelease specific conditions
+                    query += """
+                        AND subquery.unit_status = 'Occupied'
+                        AND subquery.move_out BETWEEN CURRENT_DATE AND DATE_ADD(CURRENT_DATE, INTERVAL 1 MONTH)
+                    """
+                else:
+                    query += f" AND subquery.{column} = %s"
+                    params.append(value)
 
         # Apply additional filters from request
         if filters:
