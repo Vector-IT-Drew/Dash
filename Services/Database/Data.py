@@ -469,7 +469,7 @@ def run_query_system(connection, credentials, query_id, target_type=None, target
                                 AND subquery.unit_status = 'Occupied'
                                 AND subquery.move_out IS NOT NULL
                             """
-                        elif value.lower() == 'renewal':
+                        elif value.lower() == 'renewal check':
                             # Renewal: Units with move out in next 3 months
                             query += """
                                 AND subquery.unit_status = 'Occupied'
