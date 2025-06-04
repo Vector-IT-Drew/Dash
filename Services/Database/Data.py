@@ -246,7 +246,7 @@ queries = {
                 u.baths,
                 u.sqft,
                 CASE
-                WHEN u.unit_status LIKE '%DNR%' THEN 'DNR'
+                    WHEN u.unit_status LIKE '%DNR%' THEN 'DNR'
                     WHEN (
                         (d1.move_in IS NOT NULL AND d1.move_out IS NOT NULL AND CURRENT_DATE BETWEEN d1.move_in AND d1.move_out)
                         OR
@@ -269,6 +269,20 @@ queries = {
                 d1.start_date,
                 d1.move_out,
                 d1.expiry,
+                d1.tenant_ids,
+                (
+                    SELECT JSON_ARRAYAGG(
+                        JSON_OBJECT(
+                            'person_id', p.person_id,
+                            'first_name', p.first_name,
+                            'last_name', p.last_name,
+                            'email_address', p.email_address,
+                            'phone_number', p.phone_number
+                        )
+                    )
+                    FROM persons p
+                    WHERE JSON_CONTAINS(d1.tenant_ids, CAST(p.person_id AS JSON))
+                ) as tenant_info,
                 note.note AS most_recent_note,
                 note.created_at AS note_created_at,
                 note.creator_id AS note_creator_id,
