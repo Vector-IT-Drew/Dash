@@ -462,12 +462,19 @@ def run_query_system(connection, credentials, query_id, target_type=None, target
         if filters:
             for column, value in filters.items():
                 if value and value not in ["Any", "", "undefined", "-", "0", " "] and column is not None and 'Any' not in value:
-                    if column == 'agg_filter' and value.lower() == 'prelease':
-                        # Add prelease specific conditions
-                        query += """
-                            AND subquery.unit_status = 'Occupied'
-                            AND subquery.move_out BETWEEN CURRENT_DATE AND DATE_ADD(CURRENT_DATE, INTERVAL 1 MONTH)
-                        """
+                    if column == 'agg_filter':
+                        if value.lower() == 'prelease':
+                            # Prelease: Occupied units with move out date
+                            query += """
+                                AND subquery.unit_status = 'Occupied'
+                                AND subquery.move_out IS NOT NULL
+                            """
+                        elif value.lower() == 'renewal':
+                            # Renewal: Units with move out in next 3 months
+                            query += """
+                                AND subquery.unit_status = 'Occupied'
+                                AND subquery.move_out BETWEEN CURRENT_DATE AND DATE_ADD(CURRENT_DATE, INTERVAL 3 MONTH)
+                            """
                     else:
                         query += f" AND LOWER(subquery.{column}) LIKE LOWER(%s)"
                         params.append(f"%{value}%")
