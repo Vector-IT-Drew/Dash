@@ -395,8 +395,11 @@ queries = {
         WHERE subquery.unit_id = %s
     """,
     'get_streeteasy_data': """
+    select * from (
         SELECT * FROM streeteasy_units
         LIMIT 1000
+        ) subquery
+        WHERE 1=1
     """,
     'get_reports': """
         SELECT 
