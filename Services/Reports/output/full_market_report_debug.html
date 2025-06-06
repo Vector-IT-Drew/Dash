@@ -1,0 +1,1553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NYC Rental Market Comp Report</title>
+    <style>
+        /* PDF-compatible styles - no viewport units, no sticky, no box-shadow */
+        @page { 
+            size: A4 landscape; 
+            margin: 0; 
+            background: white;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background: white;
+            color: #1e293b;
+            width: 100%;
+            height: 100%;
+        }
+
+        .pdf-page {
+            width: 297mm;
+            height: 210mm;
+            margin: 0;
+            padding: 15px;
+            background: white;
+            overflow: hidden;
+            page-break-inside: avoid;
+        }
+
+        .pdf-page.intro {
+            display: table-cell;
+            text-align: center;
+            vertical-align: middle;
+            padding: 60px;
+        }
+
+        h1 { 
+            color: #1e293b; 
+            font-size: 2.8em; 
+            margin: 0 0 0.3em 0;
+            font-weight: 700;
+            line-height: 1.1;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 1.1em;
+            margin-bottom: 1.5em;
+            text-align: center;
+        }
+
+        .date {
+            color: #94a3b8;
+            font-size: 1.1em;
+            margin-top: 3em;
+            padding-top: 1.5em;
+            border-top: 2px solid #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="pdf-page intro">
+        <h1>NYC Rental Market Comp Report</h1>
+        <div class="subtitle">Comprehensive Market Analysis</div>
+        <div class="date">Generated on June 06, 2025</div>
+    </div>
+</body>
+</html> <div style="page-break-after: always;"></div><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Comp Report June 06, 2025</title>
+    <style>
+        @page { 
+            size: A4 landscape; 
+            margin: 0; 
+            background: white;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background: white;
+            color: #1e293b;
+            width: 100%;
+            height: 100%;
+        }
+
+        .pdf-page {
+            width: 297mm;
+            height: 210mm;
+            margin: 0;
+            padding: 15px;
+            background: white;
+            overflow: hidden;
+            page-break-inside: avoid;
+        }
+
+        .pdf-page.tables {
+            display: flex;
+            flex-direction: column;
+        }
+
+        h2 {
+            color: #1e293b;
+            font-size: 1.6em;
+            margin: 0 0 0.3em 0;
+            font-weight: 400;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 1.1em;
+            margin-bottom: 1.5em;
+            text-align: center;
+        }
+
+        .grid-2x2 {
+            display: table;
+            width: 100%;
+            height: calc(100% - 100px);
+            border-spacing: 20px;
+        }
+
+        .grid-row {
+            display: table-row;
+            height: 50%;
+        }
+
+        .grid-cell {
+            display: table-cell;
+            width: 50%;
+            vertical-align: top;
+        }
+
+        .table-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px 10px 8px 10px;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .table-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+            text-align: left;
+        }
+
+        .table-wrapper {
+            height: calc(100% - 30px);
+            overflow: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 9px;
+            table-layout: auto;
+        }
+
+        th, td {
+            border: 1px solid #cbd5e1;
+            padding: 3px 4px;
+            text-align: center;
+            font-size: 9px;
+            word-wrap: break-word;
+            vertical-align: middle;
+        }
+
+        th {
+            background: #1e293b;
+            color: #fff;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .variance-col {
+            background: #fff7e6;
+            color: #1e293b;
+        }
+
+        tr:nth-child(even) { background: #f8fafc; }
+        tr:nth-child(odd) { background: #fff; }
+
+        td:first-child, th:first-child { 
+            text-align: left; 
+            font-weight: bold;
+            background: #f1f5f9;
+        }
+
+        th:first-child {
+            background: #0f172a;
+        }
+    </style>
+</head>
+<body>
+    <div class="pdf-page tables">
+        <h2>Comp Report June 06, 2025</h2>
+        <div class="subtitle">Comped by No Fee listings with elevator, doorman, &amp; laundry</div>
+        <div class="grid-2x2">
+            <div class="grid-row">
+                <div class="grid-cell">
+                    <div class="table-card">
+                        <div class="table-title">Market Data</div>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                    
+                                        <th>Market</th>
+                                    
+                                        <th>Avg Price</th>
+                                    
+                                        <th>Avg SqFt</th>
+                                    
+                                        <th>Avg PSf</th>
+                                    
+                                        <th>Count</th>
+                                    
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                    <tr>
+                                        
+                                            <td>0</td>
+                                        
+                                            <td>$3,754</td>
+                                        
+                                            <td>485</td>
+                                        
+                                            <td>$7.90</td>
+                                        
+                                            <td>89</td>
+                                        
+                                    </tr>
+                                    
+                                    <tr>
+                                        
+                                            <td>1</td>
+                                        
+                                            <td>$4,629</td>
+                                        
+                                            <td>697</td>
+                                        
+                                            <td>$6.74</td>
+                                        
+                                            <td>186</td>
+                                        
+                                    </tr>
+                                    
+                                    <tr>
+                                        
+                                            <td>2</td>
+                                        
+                                            <td>$5,368</td>
+                                        
+                                            <td>834</td>
+                                        
+                                            <td>$6.64</td>
+                                        
+                                            <td>65</td>
+                                        
+                                    </tr>
+                                    
+                                    <tr>
+                                        
+                                            <td>3</td>
+                                        
+                                            <td>$5,196</td>
+                                        
+                                            <td>904</td>
+                                        
+                                            <td>$5.67</td>
+                                        
+                                            <td>10</td>
+                                        
+                                    </tr>
+                                    
+                                    <tr>
+                                        
+                                            <td>4</td>
+                                        
+                                            <td>$3,100</td>
+                                        
+                                            <td>956</td>
+                                        
+                                            <td>$3.24</td>
+                                        
+                                            <td>1</td>
+                                        
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid-cell">
+                    <div class="table-card">
+                        <div class="table-title">Filter 1</div>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                    
+                                        <th>Market</th>
+                                    
+                                        <th>Avg Price</th>
+                                    
+                                        <th>Avg SqFt</th>
+                                    
+                                        <th>Avg PSf</th>
+                                    
+                                        <th>Count</th>
+                                    
+                                        <th class="variance-col">Price Variance</th>
+                                    
+                                        <th class="variance-col">Avg SqFt Var</th>
+                                    
+                                        <th class="variance-col">Avg PSf Var</th>
+                                    
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                    <tr>
+                                        
+                                            <td>0</td>
+                                        
+                                            <td>$3,754</td>
+                                        
+                                            <td>485</td>
+                                        
+                                            <td>$7.90</td>
+                                        
+                                            <td>89</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                    </tr>
+                                    
+                                    <tr>
+                                        
+                                            <td>1</td>
+                                        
+                                            <td>$4,629</td>
+                                        
+                                            <td>697</td>
+                                        
+                                            <td>$6.74</td>
+                                        
+                                            <td>186</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                    </tr>
+                                    
+                                    <tr>
+                                        
+                                            <td>2</td>
+                                        
+                                            <td>$5,368</td>
+                                        
+                                            <td>834</td>
+                                        
+                                            <td>$6.64</td>
+                                        
+                                            <td>65</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                    </tr>
+                                    
+                                    <tr>
+                                        
+                                            <td>3</td>
+                                        
+                                            <td>$5,196</td>
+                                        
+                                            <td>904</td>
+                                        
+                                            <td>$5.67</td>
+                                        
+                                            <td>10</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                    </tr>
+                                    
+                                    <tr>
+                                        
+                                            <td>4</td>
+                                        
+                                            <td>$3,100</td>
+                                        
+                                            <td>956</td>
+                                        
+                                            <td>$3.24</td>
+                                        
+                                            <td>1</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="grid-row">
+                <div class="grid-cell">
+                    <div class="table-card">
+                        <div class="table-title">Filter 2</div>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                    
+                                        <th>Market</th>
+                                    
+                                        <th>Avg Price</th>
+                                    
+                                        <th>Avg SqFt</th>
+                                    
+                                        <th>Avg PSf</th>
+                                    
+                                        <th>Count</th>
+                                    
+                                        <th class="variance-col">Price Variance</th>
+                                    
+                                        <th class="variance-col">Avg SqFt Var</th>
+                                    
+                                        <th class="variance-col">Avg PSf Var</th>
+                                    
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                    <tr>
+                                        
+                                            <td>0</td>
+                                        
+                                            <td>$3,754</td>
+                                        
+                                            <td>485</td>
+                                        
+                                            <td>$7.90</td>
+                                        
+                                            <td>89</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                    </tr>
+                                    
+                                    <tr>
+                                        
+                                            <td>1</td>
+                                        
+                                            <td>$4,629</td>
+                                        
+                                            <td>697</td>
+                                        
+                                            <td>$6.74</td>
+                                        
+                                            <td>186</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                    </tr>
+                                    
+                                    <tr>
+                                        
+                                            <td>2</td>
+                                        
+                                            <td>$5,368</td>
+                                        
+                                            <td>834</td>
+                                        
+                                            <td>$6.64</td>
+                                        
+                                            <td>65</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                    </tr>
+                                    
+                                    <tr>
+                                        
+                                            <td>3</td>
+                                        
+                                            <td>$5,196</td>
+                                        
+                                            <td>904</td>
+                                        
+                                            <td>$5.67</td>
+                                        
+                                            <td>10</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                    </tr>
+                                    
+                                    <tr>
+                                        
+                                            <td>4</td>
+                                        
+                                            <td>$3,100</td>
+                                        
+                                            <td>956</td>
+                                        
+                                            <td>$3.24</td>
+                                        
+                                            <td>1</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid-cell">
+                    <div class="table-card">
+                        <div class="table-title">Filter 3</div>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                    
+                                        <th>Market</th>
+                                    
+                                        <th>Avg Price</th>
+                                    
+                                        <th>Avg SqFt</th>
+                                    
+                                        <th>Avg PSf</th>
+                                    
+                                        <th>Count</th>
+                                    
+                                        <th class="variance-col">Price Variance</th>
+                                    
+                                        <th class="variance-col">Avg SqFt Var</th>
+                                    
+                                        <th class="variance-col">Avg PSf Var</th>
+                                    
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                    <tr>
+                                        
+                                            <td>0</td>
+                                        
+                                            <td>$3,754</td>
+                                        
+                                            <td>485</td>
+                                        
+                                            <td>$7.90</td>
+                                        
+                                            <td>89</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                    </tr>
+                                    
+                                    <tr>
+                                        
+                                            <td>1</td>
+                                        
+                                            <td>$4,629</td>
+                                        
+                                            <td>697</td>
+                                        
+                                            <td>$6.74</td>
+                                        
+                                            <td>186</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                    </tr>
+                                    
+                                    <tr>
+                                        
+                                            <td>2</td>
+                                        
+                                            <td>$5,368</td>
+                                        
+                                            <td>834</td>
+                                        
+                                            <td>$6.64</td>
+                                        
+                                            <td>65</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                    </tr>
+                                    
+                                    <tr>
+                                        
+                                            <td>3</td>
+                                        
+                                            <td>$5,196</td>
+                                        
+                                            <td>904</td>
+                                        
+                                            <td>$5.67</td>
+                                        
+                                            <td>10</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                    </tr>
+                                    
+                                    <tr>
+                                        
+                                            <td>4</td>
+                                        
+                                            <td>$3,100</td>
+                                        
+                                            <td>956</td>
+                                        
+                                            <td>$3.24</td>
+                                        
+                                            <td>1</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                            <td class="variance-col">+0.00%</td>
+                                        
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> <div style="page-break-after: always;"></div><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>YTD PPSF Trends</title>
+    <style>
+        @page { 
+            size: A4 landscape; 
+            margin: 0; 
+            background: white;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background: white;
+            color: #1e293b;
+            width: 100%;
+            height: 100%;
+        }
+
+        .pdf-page {
+            width: 297mm;
+            height: 210mm;
+            margin: 0;
+            padding: 15px;
+            background: white;
+            overflow: hidden;
+            page-break-inside: avoid;
+        }
+
+        .pdf-page.charts {
+            display: flex;
+            flex-direction: column;
+        }
+
+        h2 {
+            color: #1e293b;
+            font-size: 1.6em;
+            margin: 0 0 15px 0;
+            font-weight: 400;
+            text-align: center;
+        }
+
+        .grid-2x2 {
+            display: table;
+            width: 100%;
+            height: calc(100% - 50px);
+            border-spacing: 15px;
+        }
+
+        .grid-row {
+            display: table-row;
+            height: 50%;
+        }
+
+        .grid-cell {
+            display: table-cell;
+            width: 50%;
+            vertical-align: top;
+        }
+
+        .chart-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px;
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .chart-image {
+            flex: 0 0 60%;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .chart-image img {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+        }
+
+        .chart-table {
+            flex: 1;
+            overflow: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 7px;
+            table-layout: auto;
+        }
+
+        th, td {
+            border: 1px solid #cbd5e1;
+            padding: 2px 3px;
+            text-align: center;
+            font-size: 7px;
+            word-wrap: break-word;
+            vertical-align: middle;
+        }
+
+        th {
+            background: #1e293b;
+            color: #fff;
+            font-size: 8px;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) { background: #f8fafc; }
+        tr:nth-child(odd) { background: #fff; }
+
+        td:first-child, th:first-child { 
+            text-align: left; 
+            font-weight: bold;
+            background: #f1f5f9;
+        }
+
+        th:first-child {
+            background: #0f172a;
+        }
+
+        .variance-row {
+            background: #fff7e6 !important;
+            color: #1e293b;
+        }
+    </style>
+</head>
+<body>
+    <div class="pdf-page charts">
+        <h2>YTD Price Per Square Foot Trends</h2>
+        <div class="grid-2x2">
+            <div class="grid-row">
+                <div class="grid-cell">
+                    <div class="chart-card">
+                        <div class="chart-title">Full Market Data</div>
+                        
+                        <div class="chart-image">
+                            <img src="ppsf_chart_Full_Market_Data_1.png" alt="Full Market Data Chart">
+                        </div>
+                        
+                        <div class="chart-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Category</th>
+                                        <th>Year</th>
+                                        
+                                            <th>Jan</th>
+                                        
+                                            <th>Feb</th>
+                                        
+                                            <th>Mar</th>
+                                        
+                                            <th>Apr</th>
+                                        
+                                            <th>May</th>
+                                        
+                                            <th>Jun</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                    <tr>
+                                        <td>Current Year</td>
+                                        <td>2025</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>$6.97</td>
+                                        
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td>Prior Year</td>
+                                        <td>2024</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td>Variance</td>
+                                        <td>% Change</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid-cell">
+                    <div class="chart-card">
+                        <div class="chart-title">Full Market Data</div>
+                        
+                        <div class="chart-image">
+                            <img src="ppsf_chart_Full_Market_Data_2.png" alt="Full Market Data Chart">
+                        </div>
+                        
+                        <div class="chart-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Category</th>
+                                        <th>Year</th>
+                                        
+                                            <th>Jan</th>
+                                        
+                                            <th>Feb</th>
+                                        
+                                            <th>Mar</th>
+                                        
+                                            <th>Apr</th>
+                                        
+                                            <th>May</th>
+                                        
+                                            <th>Jun</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                    <tr>
+                                        <td>Current Year</td>
+                                        <td>2025</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>$6.97</td>
+                                        
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td>Prior Year</td>
+                                        <td>2024</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td>Variance</td>
+                                        <td>% Change</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="grid-row">
+                <div class="grid-cell">
+                    <div class="chart-card">
+                        <div class="chart-title">Full Market Data</div>
+                        
+                        <div class="chart-image">
+                            <img src="ppsf_chart_Full_Market_Data_3.png" alt="Full Market Data Chart">
+                        </div>
+                        
+                        <div class="chart-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Category</th>
+                                        <th>Year</th>
+                                        
+                                            <th>Jan</th>
+                                        
+                                            <th>Feb</th>
+                                        
+                                            <th>Mar</th>
+                                        
+                                            <th>Apr</th>
+                                        
+                                            <th>May</th>
+                                        
+                                            <th>Jun</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                    <tr>
+                                        <td>Current Year</td>
+                                        <td>2025</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>$6.97</td>
+                                        
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td>Prior Year</td>
+                                        <td>2024</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td>Variance</td>
+                                        <td>% Change</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid-cell">
+                    <div class="chart-card">
+                        <div class="chart-title">Full Market Data</div>
+                        
+                        <div class="chart-image">
+                            <img src="ppsf_chart_Full_Market_Data_4.png" alt="Full Market Data Chart">
+                        </div>
+                        
+                        <div class="chart-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Category</th>
+                                        <th>Year</th>
+                                        
+                                            <th>Jan</th>
+                                        
+                                            <th>Feb</th>
+                                        
+                                            <th>Mar</th>
+                                        
+                                            <th>Apr</th>
+                                        
+                                            <th>May</th>
+                                        
+                                            <th>Jun</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                    <tr>
+                                        <td>Current Year</td>
+                                        <td>2025</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>$6.97</td>
+                                        
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td>Prior Year</td>
+                                        <td>2024</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td>Variance</td>
+                                        <td>% Change</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                            <td>-</td>
+                                        
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> <div style="page-break-after: always;"></div><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weekly Rent Price Trends</title>
+    <style>
+        @page { 
+            size: A4 landscape; 
+            margin: 0; 
+            background: white;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background: white;
+            color: #1e293b;
+            width: 100%;
+            height: 100%;
+        }
+
+        .pdf-page {
+            width: 297mm;
+            height: 210mm;
+            margin: 0;
+            padding: 15px;
+            background: white;
+            overflow: hidden;
+            page-break-inside: avoid;
+        }
+
+        .pdf-page.chart {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page-title {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 15px;
+        }
+
+        .chart-table-grid {
+            display: table;
+            width: 100%;
+            height: calc(100% - 60px);
+        }
+
+        .chart-section {
+            display: table-row;
+            height: 65%;
+        }
+
+        .chart-section-cell {
+            display: table-cell;
+            text-align: center;
+            vertical-align: middle;
+            padding-bottom: 10px;
+        }
+
+        .table-section {
+            display: table-row;
+            height: 35%;
+        }
+
+        .table-section-cell {
+            display: table-cell;
+            vertical-align: top;
+            overflow: auto;
+        }
+
+        .chart-img {
+            max-width: 100%;
+            max-height: 400px;
+            width: auto;
+            height: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 9px;
+            table-layout: auto;
+        }
+
+        th, td {
+            border: 1px solid #cbd5e1;
+            padding: 3px 4px;
+            text-align: center;
+            font-size: 9px;
+            word-wrap: break-word;
+            vertical-align: middle;
+        }
+
+        th {
+            background: #1e293b;
+            color: #fff;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) { background: #f8fafc; }
+        tr:nth-child(odd) { background: #fff; }
+
+        td:first-child, th:first-child { 
+            text-align: left; 
+            font-weight: bold;
+            background: #f1f5f9;
+        }
+
+        th:first-child {
+            background: #0f172a;
+        }
+
+        .table-wide th, .table-wide td { 
+            font-size: 8px; 
+            padding: 2px 1px; 
+        }
+
+        .table-narrow th, .table-narrow td {
+            font-size: 10px;
+            padding: 4px 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="pdf-page chart">
+        <div class="page-title">Weekly Rent Price Trends</div>
+        <div class="chart-table-grid">
+            <div class="chart-section">
+                <div class="chart-section-cell">
+                    <img class="chart-img" src="weekly_trends_chart.png" alt="Weekly Rent Price Trends">
+                </div>
+            </div>
+            <div class="table-section">
+                <div class="table-section-cell">
+                    <table class="table-wide">
+                        <thead>
+                            <tr>
+                                
+                                    <th>Bed</th>
+                                
+                                    <th>Mar-23</th>
+                                
+                                    <th>Mar-30</th>
+                                
+                                    <th>Apr-06</th>
+                                
+                                    <th>Apr-13</th>
+                                
+                                    <th>Apr-20</th>
+                                
+                                    <th>Apr-27</th>
+                                
+                                    <th>May-04</th>
+                                
+                                    <th>May-11</th>
+                                
+                                    <th>May-18</th>
+                                
+                                    <th>May-25</th>
+                                
+                                    <th>Jun-01</th>
+                                
+                                    <th>Jun-08</th>
+                                
+                                    <th>WoW</th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            <tr>
+                                
+                                    <td>Studio</td>
+                                
+                                    <td>$3,405</td>
+                                
+                                    <td>$3,408</td>
+                                
+                                    <td>$3,415</td>
+                                
+                                    <td>$3,418</td>
+                                
+                                    <td>$3,444</td>
+                                
+                                    <td>$3,488</td>
+                                
+                                    <td>$3,521</td>
+                                
+                                    <td>$3,561</td>
+                                
+                                    <td>$3,607</td>
+                                
+                                    <td>$3,734</td>
+                                
+                                    <td>$3,781</td>
+                                
+                                    <td>$3,781</td>
+                                
+                                    <td>-0.01%</td>
+                                
+                            </tr>
+                            
+                            <tr>
+                                
+                                    <td>1 Bed</td>
+                                
+                                    <td>$4,291</td>
+                                
+                                    <td>$4,316</td>
+                                
+                                    <td>$4,337</td>
+                                
+                                    <td>$4,341</td>
+                                
+                                    <td>$4,350</td>
+                                
+                                    <td>$4,356</td>
+                                
+                                    <td>$4,440</td>
+                                
+                                    <td>$4,539</td>
+                                
+                                    <td>$4,622</td>
+                                
+                                    <td>$4,699</td>
+                                
+                                    <td>$4,754</td>
+                                
+                                    <td>$4,754</td>
+                                
+                                    <td>+0.00%</td>
+                                
+                            </tr>
+                            
+                            <tr>
+                                
+                                    <td>2 Bed</td>
+                                
+                                    <td>$5,453</td>
+                                
+                                    <td>$5,468</td>
+                                
+                                    <td>$5,417</td>
+                                
+                                    <td>$5,456</td>
+                                
+                                    <td>$5,462</td>
+                                
+                                    <td>$5,463</td>
+                                
+                                    <td>$5,470</td>
+                                
+                                    <td>$5,618</td>
+                                
+                                    <td>$5,680</td>
+                                
+                                    <td>$5,650</td>
+                                
+                                    <td>$5,656</td>
+                                
+                                    <td>$5,658</td>
+                                
+                                    <td>+0.05%</td>
+                                
+                            </tr>
+                            
+                            <tr>
+                                
+                                    <td>3 Bed</td>
+                                
+                                    <td>$6,264</td>
+                                
+                                    <td>$6,264</td>
+                                
+                                    <td>$6,264</td>
+                                
+                                    <td>$6,264</td>
+                                
+                                    <td>$5,912</td>
+                                
+                                    <td>$5,770</td>
+                                
+                                    <td>$5,491</td>
+                                
+                                    <td>$5,337</td>
+                                
+                                    <td>$5,441</td>
+                                
+                                    <td>$5,848</td>
+                                
+                                    <td>$5,985</td>
+                                
+                                    <td>$5,986</td>
+                                
+                                    <td>+0.01%</td>
+                                
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

@@ -9,6 +9,8 @@ import io
 from collections import defaultdict
 from Services.Database.Connect import get_db_connection
 from Services.Database.Data import run_query_system
+from calendar import month_abbr
+import os
 
 def get_streeteasy_data():
     """Fetch StreetEasy data from database"""
@@ -284,20 +286,415 @@ def create_price_chart(rent_df, bedroom_filter=[0, 1, 2, 3], title="Weekly Rent 
         plt.close(fig)
         return f"<div>Chart error: {str(e)}</div>"
 
-def process_all_data(raw_df):
-    """Process all data once and return processed datasets"""
-    print(f"PROCESS DEBUG: raw_df shape: {raw_df.shape if not raw_df.empty else 'empty'}")
-    processed_data = {}
+def get_comparison_tables(df, filters=None, filter_titles=None):
+    def generate_table_rows(df):
+        grouped = df.groupby('bedrooms')
+        table_rows = []
+        for bedrooms, group in grouped:
+            try:
+                avg_price = group['listed_price'].mean()
+                avg_sqft = group['size_sqft'].mean()
+                avg_ppsf = group['ppsf'].mean()
+                count = len(group)
+                row = {
+                    'Market': int(bedrooms) if pd.notnull(bedrooms) else '-',
+                    'Avg Price': f"${avg_price:,.0f}" if pd.notnull(avg_price) else '-',
+                    'Avg SqFt': f"{avg_sqft:,.0f}" if pd.notnull(avg_sqft) else '-',
+                    'Avg PSf': f"${avg_ppsf:,.2f}" if pd.notnull(avg_ppsf) and np.isfinite(avg_ppsf) else '-',
+                    'Count': int(count) if pd.notnull(count) else '-',
+                }
+            except Exception:
+                row = {'Market': bedrooms, 'Avg Price': '-', 'Avg SqFt': '-', 'Avg PSf': '-', 'Count': '-'}
+            table_rows.append(row)
+        table_rows = sorted(table_rows, key=lambda x: (x['Market'] if isinstance(x['Market'], int) else 99))
+        return table_rows
+    def add_variance_columns(filtered_rows, market_rows):
+        market_map = {row['Market']: row for row in market_rows}
+        for row in filtered_rows:
+            m = market_map.get(row['Market'])
+            if not m or m['Avg Price'] in ('-', 0) or row['Avg Price'] in ('-', 0):
+                row['Price Variance'] = '-'
+                row['Avg SqFt Var'] = '-'
+                row['Avg PSf Var'] = '-'
+                continue
+            def pct(var, base):
+                try:
+                    return f"{((var-base)/base)*100:+.2f}%"
+                except Exception:
+                    return '-'
+            def to_num(s): return float(str(s).replace('$','').replace(',','')) if s not in ('-', None) else 0
+            row['Price Variance'] = pct(to_num(row['Avg Price']), to_num(m['Avg Price']))
+            row['Avg SqFt Var'] = pct(to_num(row['Avg SqFt']), to_num(m['Avg SqFt']))
+            row['Avg PSf Var'] = pct(to_num(row['Avg PSf']), to_num(m['Avg PSf']))
+        return filtered_rows
+    # Market table (no filter, no variance)
+    market_rows = generate_table_rows(df)
+    tables = [{
+        'title': 'Market Data',
+        'columns': ['Market', 'Avg Price', 'Avg SqFt', 'Avg PSf', 'Count'],
+        'rows': market_rows
+    }]
+    # Subset tables (with variance)
+    if filters is None:
+        filters = [{} for _ in range(3)]
+    if filter_titles is None:
+        filter_titles = [f'Filter {i+1}' for i in range(3)]
+    for i, f in enumerate(filters):
+        subset = df.copy()
+        for k, v in f.items():
+            subset = subset[subset[k] == v]
+        rows = generate_table_rows(subset)
+        rows = add_variance_columns(rows, market_rows)
+        tables.append({
+            'title': filter_titles[i],
+            'columns': ['Market', 'Avg Price', 'Avg SqFt', 'Avg PSf', 'Count', 'Price Variance', 'Avg SqFt Var', 'Avg PSf Var'],
+            'rows': rows
+        })
+    return tables
+
+def get_weekly_trends(df, title="Weekly Rent Price Trends", bedroom_filter=None):
+    if bedroom_filter is None:
+        bedroom_filter = [0, 1, 2, 3]
+        
+    rent_df = process_streeteasy_rent_history(df)
+    if 'date' not in rent_df.columns:
+        rent_df = rent_df.reset_index()
+    rent_df = rent_df.sort_values('date')
+    rent_df = rent_df.set_index('date').resample('W').mean().reset_index()
+    rent_df = rent_df.iloc[-12:]  # Last 12 weeks
+    rent_df = rent_df.reset_index(drop=True)
     
-    # Process rent history data once
-    rent_df = process_streeteasy_rent_history(raw_df)
-    print(f"PROCESS DEBUG: rent_df shape after processing: {rent_df.shape if not rent_df.empty else 'empty'}")
-    processed_data['rent_data'] = rent_df
+    bed_labels = {0: 'Studio', 1: '1 Bed', 2: '2 Bed', 3: '3 Bed', 4: '4 Bed'}
+    week_cols = [d.strftime('%b-%d') for d in rent_df['date']]
     
-    # Calculate general metrics
-    processed_data['general_metrics'] = calculate_general_metrics(raw_df)
+    # Create table data
+    table_rows = []
+    available_bedrooms = [bed for bed in bedroom_filter if bed in rent_df.columns]
     
-    return processed_data
+    for bed in available_bedrooms:
+        row = {'Bed': bed_labels.get(bed, str(bed))}
+        vals = [rent_df[bed].iloc[i] for i in range(len(rent_df))]
+        for i, v in enumerate(vals):
+            row[week_cols[i]] = f"${v:,.0f}" if pd.notnull(v) else '-'
+        
+        # Calculate WoW change
+        if len(vals) > 1 and pd.notnull(vals[-2]) and pd.notnull(vals[-1]) and vals[-2] != 0:
+            wow = (vals[-1] - vals[-2]) / vals[-2] * 100
+            row['WoW'] = f"{wow:+.2f}%"
+        else:
+            row['WoW'] = '-'
+        table_rows.append(row)
+    
+    # --- Generate clean line chart ---
+    plt.style.use('default')
+    fig, ax = plt.subplots(figsize=(12, 4.5))  # Reduced height to fit better with table
+    
+    # Color palette - clean blues like in the image
+    colors = ['#7FB3D3', '#5B9BD5', '#4472C4', '#2F528F']
+    
+    # Plot lines for each bedroom type
+    for i, bed in enumerate(available_bedrooms):
+        if bed in rent_df.columns:
+            # Get data and remove NaN values
+            x_data = rent_df['date']
+            y_data = rent_df[bed]
+            
+            # Plot the line
+            ax.plot(x_data, y_data, 
+                   color=colors[i % len(colors)], 
+                   linewidth=3, 
+                   marker='o', 
+                   markersize=6,
+                   label=bed_labels.get(bed, str(bed)),
+                   markerfacecolor=colors[i % len(colors)],
+                   markeredgecolor='white',
+                   markeredgewidth=1)
+            
+            # Add value labels above each point
+            for x, y in zip(x_data, y_data):
+                if pd.notnull(y):
+                    ax.annotate(f"${y:,.0f}", 
+                               (x, y), 
+                               textcoords="offset points", 
+                               xytext=(0, 6), 
+                               ha='center', 
+                               fontsize=8, 
+                               color=colors[i % len(colors)],
+                               fontweight='bold')
+    
+    # Customize the chart
+    ax.set_xlabel('')  # Remove x-axis label for cleaner look
+    ax.set_ylabel('')  # Remove y-axis label for cleaner look
+    
+    # Format y-axis to show currency
+    ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: f'${x:,.0f}'))
+    ax.tick_params(axis='y', labelsize=10, colors='#666666')
+    
+    # Format x-axis dates
+    ax.set_xticks(rent_df['date'])
+    ax.set_xticklabels([d.strftime('%b-%d') for d in rent_df['date']], 
+                       fontsize=10, 
+                       color='#666666',
+                       rotation=0)
+    
+    # Add subtle grid
+    ax.grid(True, alpha=0.3, linestyle='-', linewidth=0.5, color='#E5E5E5')
+    ax.set_axisbelow(True)
+    
+    # Clean up spines
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['left'].set_color('#E5E5E5')
+    ax.spines['bottom'].set_color('#E5E5E5')
+    
+    # Set background color
+    ax.set_facecolor('white')
+    fig.patch.set_facecolor('white')
+    
+    # Add legend - positioned to the right, more compact
+    legend = ax.legend(loc='center left', 
+                      bbox_to_anchor=(1.01, 0.5),
+                      frameon=False, 
+                      fontsize=10,
+                      labelcolor='#333333')
+    
+    # Adjust layout to accommodate legend - more compact
+    plt.subplots_adjust(right=0.88)
+    plt.tight_layout()
+    
+    # Save chart
+    OUTPUT_DIR = os.path.join(os.path.dirname(__file__), 'output')
+    chart_path = os.path.join(OUTPUT_DIR, 'weekly_trends_chart.png')
+    fig.savefig(chart_path, format='png', bbox_inches='tight', facecolor='white', dpi=150)
+    plt.close(fig)
+    
+    rel_chart_path = os.path.relpath(chart_path, OUTPUT_DIR)
+    
+    return {
+        'table_rows': table_rows,
+        'week_cols': week_cols,
+        'table_columns': ['Bed'] + week_cols + ['WoW'],
+        'chart_path': rel_chart_path,
+        'chart_title': title,
+        'bedroom_filter': available_bedrooms
+    }
+
+def get_ytd_ppsf_data(df, address_filters=None):
+    """
+    Generate YTD PPSF data for 4 charts
+    If address_filters is None, show full market data for all 4 charts
+    If address_filters provided, use those specific filters
+    """
+    this_year = datetime.now().year
+    last_year = this_year - 1
+    months = [month_abbr[m] for m in range(1, datetime.now().month+1)]
+    
+    # Define datasets - if no filters provided, show full market data for all 4 charts
+    if not address_filters:
+        # Default: Show full market data for all 4 charts
+        datasets = [
+            {'name': 'Full Market Data', 'filter': {}},
+            {'name': 'Full Market Data', 'filter': {}},
+            {'name': 'Full Market Data', 'filter': {}},
+            {'name': 'Full Market Data', 'filter': {}}
+        ]
+    else:
+        # Use provided address filters
+        datasets = address_filters[:4]  # Limit to 4 charts
+    
+    charts_data = []
+    
+    for i, dataset in enumerate(datasets):
+        chart_info = {
+            'title': dataset['name'],
+            'chart_path': '',
+            'table_rows': [],
+            'months': months
+        }
+        
+        # Apply filter to dataframe
+        filtered_df = df.copy()
+        
+        for filter_key, filter_value in dataset['filter'].items():
+            if filter_key == 'address':
+                filtered_df = filtered_df[filtered_df['address'].str.contains(filter_value, na=False, case=False)]
+            else:
+                # For any other filter, apply it directly
+                filtered_df = filtered_df[filtered_df[filter_key] == filter_value]
+        
+        if filtered_df.empty:
+            chart_info['chart_path'] = None
+            charts_data.append(chart_info)
+            continue
+        
+        # Generate chart data for this dataset - aggregate all bedrooms together
+        chart_data = {}
+        table_rows = []
+        
+        # Current year data (all bedrooms combined)
+        current_year_data = []
+        prior_year_data = []
+        
+        for month in range(1, datetime.now().month + 1):
+            # Current year
+            current_mask = (filtered_df['year'] == this_year) & (filtered_df['month'] == month)
+            current_data = filtered_df.loc[current_mask, 'ppsf']
+            current_ppsf = current_data.mean()
+            current_year_data.append(current_ppsf if pd.notnull(current_ppsf) else np.nan)
+            
+            # Prior year
+            prior_mask = (filtered_df['year'] == last_year) & (filtered_df['month'] == month)
+            prior_data = filtered_df.loc[prior_mask, 'ppsf']
+            prior_ppsf = prior_data.mean()
+            prior_year_data.append(prior_ppsf if pd.notnull(prior_ppsf) else np.nan)
+        
+        # Store chart data
+        chart_data['all_current'] = current_year_data
+        chart_data['all_prior'] = prior_year_data
+        
+        # Create table rows
+        # Current year row
+        current_row = {'category': 'Current Year', 'year': str(this_year)}
+        for j, month in enumerate(months):
+            val = current_year_data[j]
+            current_row[month] = f"${val:,.2f}" if pd.notnull(val) else '-'
+        table_rows.append(current_row)
+        
+        # Prior year row
+        prior_row = {'category': 'Prior Year', 'year': str(last_year)}
+        for j, month in enumerate(months):
+            val = prior_year_data[j]
+            prior_row[month] = f"${val:,.2f}" if pd.notnull(val) else '-'
+        table_rows.append(prior_row)
+        
+        # Variance row
+        variance_row = {'category': 'Variance', 'year': '% Change'}
+        for j, month in enumerate(months):
+            curr = current_year_data[j]
+            prior = prior_year_data[j]
+            if pd.notnull(curr) and pd.notnull(prior) and prior != 0:
+                variance = ((curr - prior) / prior) * 100
+                variance_row[month] = f"{variance:+.1f}%"
+            else:
+                variance_row[month] = '-'
+        table_rows.append(variance_row)
+        
+        # Generate chart image
+        chart_path = generate_ppsf_chart_simple(chart_data, months, f"{dataset['name']}_{i+1}", this_year, last_year)
+        chart_info['chart_path'] = chart_path
+        chart_info['table_rows'] = table_rows
+        
+        charts_data.append(chart_info)
+    
+    return {
+        'charts': charts_data,
+        'months': months
+    }
+
+def generate_ppsf_chart_simple(chart_data, months, title, current_year, prior_year):
+    """Generate a simple line chart for PPSF data comparing current vs prior year"""
+    if not chart_data:
+        return None
+        
+    plt.style.use('default')
+    fig, ax = plt.subplots(figsize=(6, 3))  # Smaller size for grid layout
+    
+    # Create month positions for x-axis
+    x_positions = range(len(months))
+    
+    # Plot current year line (solid blue)
+    current_data = chart_data.get('all_current', [])
+    current_clean = [val if pd.notnull(val) else None for val in current_data]
+    ax.plot(x_positions, current_clean, 
+           color='#4472C4', 
+           linewidth=3, 
+           marker='o', 
+           markersize=4,
+           label=f'{current_year}',
+           linestyle='-')
+    
+    # Plot prior year line (dashed light blue)
+    prior_data = chart_data.get('all_prior', [])
+    prior_clean = [val if pd.notnull(val) else None for val in prior_data]
+    ax.plot(x_positions, prior_clean, 
+           color='#A5C6EA', 
+           linewidth=3, 
+           marker='s', 
+           markersize=4,
+           label=f'{prior_year}',
+           linestyle='--')
+    
+    # Customize chart
+    ax.set_xlabel('')
+    ax.set_ylabel('')
+    
+    # Format y-axis
+    ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: f'${x:,.0f}'))
+    ax.tick_params(axis='y', labelsize=8, colors='#666666')
+    
+    # Format x-axis
+    ax.set_xticks(x_positions)
+    ax.set_xticklabels(months, fontsize=8, color='#666666')
+    
+    # Styling
+    ax.grid(True, alpha=0.3, linestyle='-', linewidth=0.5, color='#E5E5E5')
+    ax.set_axisbelow(True)
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['left'].set_color('#E5E5E5')
+    ax.spines['bottom'].set_color('#E5E5E5')
+    ax.set_facecolor('white')
+    fig.patch.set_facecolor('white')
+    
+    # Compact legend
+    ax.legend(fontsize=8, frameon=False, loc='upper left')
+    
+    plt.tight_layout()
+    
+    # Save chart
+    OUTPUT_DIR = os.path.join(os.path.dirname(__file__), 'output')
+    safe_title = title.replace(' ', '_').replace('.', '').replace(',', '')
+    chart_path = os.path.join(OUTPUT_DIR, f'ppsf_chart_{safe_title}.png')
+    fig.savefig(chart_path, format='png', bbox_inches='tight', facecolor='white', dpi=120)
+    plt.close(fig)
+    
+    return os.path.relpath(chart_path, OUTPUT_DIR)
+
+def preprocess_df(df):
+    df = df.copy()
+    # Convert columns to numeric
+    for col in ['listed_price', 'size_sqft', 'bedrooms', 'net_rent']:
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors='coerce')
+    # Only use rows with valid, positive price and sqft and bedrooms
+    if 'listed_price' in df.columns and 'size_sqft' in df.columns:
+        df = df[(df['listed_price'] > 0) & (df['size_sqft'] > 0)]
+    if 'bedrooms' in df.columns:
+        df = df[df['bedrooms'].notnull()]
+    # Calculate PPSF and NPSF
+    if 'listed_price' in df.columns and 'size_sqft' in df.columns:
+        df['ppsf'] = df['listed_price'] / df['size_sqft']
+    if 'net_rent' in df.columns and 'size_sqft' in df.columns:
+        df['npsf'] = df['net_rent'] / df['size_sqft']
+    else:
+        df['npsf'] = np.nan
+    # Add year/month for YTD
+    if 'date_listed' in df.columns:
+        df['year'] = pd.to_datetime(df['date_listed'], errors='coerce').dt.year
+        df['month'] = pd.to_datetime(df['date_listed'], errors='coerce').dt.month
+    else:
+        df['year'] = datetime.now().year
+        df['month'] = datetime.now().month
+    return df
+
+def process_all_data(df):
+    df = preprocess_df(df)
+    return {
+        'comparison_tables': get_comparison_tables(df),
+        'ytd_ppsf': get_ytd_ppsf_data(df),
+        'weekly_trends': get_weekly_trends(df),
+        'general_metrics': calculate_general_metrics(df),
+    }
 
 def get_template_data(template_name, processed_data, **kwargs):
     """Get data for specific template using pre-processed data"""
