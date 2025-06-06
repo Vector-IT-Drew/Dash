@@ -5,6 +5,8 @@ from .Connect import get_db_connection
 import decimal
 import json
 from functools import wraps
+import numpy as np
+import pandas as pd
 
 
 # Create a Blueprint
@@ -397,6 +399,7 @@ queries = {
     'get_streeteasy_data': """
     select * from (
         SELECT * FROM streeteasy_units
+        LIMIT 2000
         ) subquery
         WHERE 1=1
     """,

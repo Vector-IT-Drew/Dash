@@ -12,6 +12,7 @@ import io
 import base64
 import pandas as pd
 from .data_processor import get_streeteasy_data, calculate_general_metrics
+import numpy as np
 
 # Add the Services directory to the path so we can import modules
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -57,7 +58,7 @@ def draw_text_page(c, heading, text):
     c.drawText(text_object)
     c.showPage()
 
-def draw_comparison_table_page(c, title, subtitle, table_data, table_columns):
+def draw_comparison_table_page(c, title, subtitle, multi_tables, table_columns):
     # Title
     c.setFont("Helvetica-Bold", 22)
     c.setFillColor(colors.darkblue)
@@ -66,47 +67,49 @@ def draw_comparison_table_page(c, title, subtitle, table_data, table_columns):
     c.setFillColor(colors.black)
     c.drawCentredString(4.25*inch, 9.7*inch, subtitle)
 
-    # Table position and size
-    x0 = 1*inch
-    y0 = 9.2*inch
-    row_height = 0.5*inch
-    col_widths = [1.2*inch, 1.2*inch, 1.2*inch, 1.2*inch, 1.2*inch]
+    # Table layout
+    x0 = 0.7*inch
+    y0 = 9.1*inch
+    row_height = 0.32*inch
+    col_widths = [1.0*inch, 1.0*inch, 1.0*inch, 1.0*inch, 1.0*inch]
     n_cols = len(table_columns)
-    n_rows = len(table_data) + 1
-    table_width = sum(col_widths)
-    table_height = n_rows * row_height
-
-    # Draw table background
-    c.setFillColorRGB(0.92, 0.97, 1.0)
-    c.roundRect(x0-0.08*inch, y0-table_height-0.08*inch, table_width+0.16*inch, table_height+0.16*inch, 10, fill=1, stroke=0)
-
-    # Draw header row
-    c.setFillColor(colors.darkblue)
-    c.rect(x0, y0-row_height, table_width, row_height, fill=1, stroke=0)
-    c.setFont("Helvetica-Bold", 13)
-    c.setFillColor(colors.whitesmoke)
-    for i, col in enumerate(table_columns):
-        c.drawCentredString(x0 + sum(col_widths[:i]) + col_widths[i]/2, y0-row_height+0.16*inch, str(col))
-
-    # Draw data rows
-    c.setFont("Helvetica", 12)
-    for r, row in enumerate(table_data):
-        y = y0 - row_height*(r+2)
-        # Alternate row color
-        if r % 2 == 0:
-            c.setFillColorRGB(0.85, 0.92, 1.0)
-            c.rect(x0, y, table_width, row_height, fill=1, stroke=0)
-        c.setFillColor(colors.black)
+    max_tables = min(4, len(multi_tables))
+    table_height = 1.1*inch + row_height * 6  # header + up to 5 rows
+    spacing = 0.25*inch
+    for t, table in enumerate(multi_tables[:max_tables]):
+        y_table = y0 - t * (table_height + spacing)
+        # Section title
+        c.setFont("Helvetica-Bold", 14)
+        c.setFillColor(colors.darkblue)
+        c.drawString(x0, y_table, table['title'])
+        y_table -= 0.18*inch
+        # Table background
+        c.setFillColorRGB(0.92, 0.97, 1.0)
+        c.roundRect(x0-0.05*inch, y_table-row_height*(len(table['rows'])+1)-0.05*inch, sum(col_widths)+0.1*inch, row_height*(len(table['rows'])+1)+0.1*inch, 7, fill=1, stroke=0)
+        # Header
+        c.setFillColor(colors.darkblue)
+        c.rect(x0, y_table-row_height, sum(col_widths), row_height, fill=1, stroke=0)
+        c.setFont("Helvetica-Bold", 11)
+        c.setFillColor(colors.whitesmoke)
         for i, col in enumerate(table_columns):
-            val = row.get(col, '')
-            c.drawCentredString(x0 + sum(col_widths[:i]) + col_widths[i]/2, y + 0.16*inch, str(val))
-
-    # Draw grid lines
-    c.setStrokeColor(colors.black)
-    for i in range(n_cols+1):
-        c.line(x0 + sum(col_widths[:i]), y0-row_height, x0 + sum(col_widths[:i]), y0-table_height)
-    for r in range(n_rows+1):
-        c.line(x0, y0-row_height*r, x0+table_width, y0-row_height*r)
+            c.drawCentredString(x0 + sum(col_widths[:i]) + col_widths[i]/2, y_table-row_height+0.11*inch, str(col))
+        # Data rows
+        c.setFont("Helvetica", 10)
+        for r, row in enumerate(table['rows'][:5]):
+            y = y_table - row_height*(r+2)
+            if r % 2 == 0:
+                c.setFillColorRGB(0.85, 0.92, 1.0)
+                c.rect(x0, y, sum(col_widths), row_height, fill=1, stroke=0)
+            c.setFillColor(colors.black)
+            for i, col in enumerate(table_columns):
+                val = row.get(col, '')
+                c.drawCentredString(x0 + sum(col_widths[:i]) + col_widths[i]/2, y + 0.11*inch, str(val))
+        # Grid lines
+        c.setStrokeColor(colors.black)
+        for i in range(n_cols+1):
+            c.line(x0 + sum(col_widths[:i]), y_table-row_height, x0 + sum(col_widths[:i]), y_table-row_height*(len(table['rows'])+1))
+        for r in range(len(table['rows'])+2):
+            c.line(x0, y_table-row_height*r, x0+sum(col_widths), y_table-row_height*r)
     c.showPage()
 
 def draw_chart_page(c, heading, chart_func, chart_data):
@@ -183,21 +186,13 @@ REPORT_CONFIGS = {
         {'type': 'comparison_table',
          'title': 'UES',
          'subtitle': 'Comped by No Fee listings with elevator, doorman, & laundry',
-         'table_data_key': 'comparison_table_data',
+         'multi_tables_key': 'multi_tables',
          'table_columns': ['Market', 'Avg Price', 'Avg SqFt', 'Avg PSf', 'Count']},
         {'type': 'text', 'heading': 'Summary', 'text_key': 'summary_text'},
     ],
 }
 
-def get_report_data():
-    df = get_streeteasy_data()
-    # Only use rows with valid price and sqft
-    df = df[(df['listed_price'].notnull()) & (df['size_sqft'].notnull()) & (df['bedrooms'].notnull())]
-    # Convert to float to avoid Decimal errors
-    df = df.copy()
-    df['listed_price'] = df['listed_price'].astype(float)
-    df['size_sqft'] = df['size_sqft'].astype(float)
-    df['ppsf'] = df['listed_price'] / df['size_sqft']
+def generate_table_rows(df):
     # Group by bedrooms
     grouped = df.groupby('bedrooms')
     table_rows = []
@@ -211,7 +206,7 @@ def get_report_data():
                 'Market': int(bedrooms) if pd.notnull(bedrooms) else '-',
                 'Avg Price': f"${avg_price:,.0f}" if pd.notnull(avg_price) else '-',
                 'Avg SqFt': f"${avg_sqft:,.0f}" if pd.notnull(avg_sqft) else '-',
-                'Avg PSf': f"${avg_ppsf:,.0f}" if pd.notnull(avg_ppsf) else '-',
+                'Avg PSf': f"${avg_ppsf:,.2f}" if pd.notnull(avg_ppsf) and np.isfinite(avg_ppsf) else '-',
                 'Count': int(count) if pd.notnull(count) else '-',
             }
         except Exception as e:
@@ -219,9 +214,41 @@ def get_report_data():
         table_rows.append(row)
     # Sort by Market (bedrooms)
     table_rows = sorted(table_rows, key=lambda x: (x['Market'] if isinstance(x['Market'], int) else 99))
-    summary_text = "This table shows the average price, square footage, and price per square foot for all StreetEasy listings, grouped by bedroom count."
+    return table_rows
+
+def get_report_data(filters=None):
+    df = get_streeteasy_data()
+    df = df.copy()
+    # Convert to float, coerce errors to NaN
+    df['listed_price'] = pd.to_numeric(df['listed_price'], errors='coerce')
+    df['size_sqft'] = pd.to_numeric(df['size_sqft'], errors='coerce')
+    df['bedrooms'] = pd.to_numeric(df['bedrooms'], errors='coerce')
+    # Only use rows with valid, positive price and sqft and bedrooms
+    df = df[
+        (df['listed_price'].notnull()) & (df['size_sqft'].notnull()) & (df['bedrooms'].notnull()) &
+        (df['listed_price'] > 0) & (df['size_sqft'] > 0)
+    ]
+    # Calculate PPSF
+    df['ppsf'] = df['listed_price'] / df['size_sqft']
+    # Remove any rows where PPSF is not finite
+    df = df[np.isfinite(df['ppsf'])]
+    # Apply filter if provided
+    if filters:
+        for k, v in filters.items():
+            df = df[df[k] == v]
+
+    all_data = df[df['is_no_fee'] == 1] if 'is_no_fee' in df.columns else df
+    table1 = generate_table_rows(all_data)
+    table2 = generate_table_rows(df[(df['address'] == '3 Sutton Street') & (df['source'].str.lower() == 'vector')])
+
+    table2 = generate_table_rows(df[(df['source'].str.lower() == 'vector')])
+
+    summary_text = "This page shows grouped market stats for all no-fee listings, and for 3 Sutton Street (Vector)."
     return {
-        'comparison_table_data': table_rows,
+        'multi_tables': [
+            {'title': 'Market Data', 'rows': table1},
+            {'title': '3 Sutton Street (Vector)', 'rows': table2},
+        ],
         'summary_text': summary_text
     }
 
@@ -264,9 +291,9 @@ def generate_report(report_name):
             text = data.get(page.get('text_key', ''), '')
             func(c, page.get('heading', ''), text)
         elif page_type == 'comparison_table':
-            table_data = data.get(page.get('table_data_key', ''), [])
+            multi_tables = data.get(page.get('multi_tables_key', ''), [])
             table_columns = page.get('table_columns', [])
-            func(c, page.get('title', ''), page.get('subtitle', ''), table_data, table_columns)
+            func(c, page.get('title', ''), page.get('subtitle', ''), multi_tables, table_columns)
         elif page_type == 'chart':
             chart_data = data.get(page.get('chart_data_key', ''), pd.DataFrame())
             func(c, page.get('heading', ''), page.get('chart_func'), chart_data)
