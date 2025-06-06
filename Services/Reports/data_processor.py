@@ -909,13 +909,24 @@ def get_inventory_data():
             # Filter for units with future move-out dates only
             if 'move_out' in df.columns:
                 # Convert move_out to datetime and filter for future dates
-                df['move_out'] = pd.to_datetime(df['move_out'], errors='coerce')
+                # Handle both formatted dates (MM/dd/yy) and other formats
+                def parse_move_out_date(date_str):
+                    if pd.isna(date_str) or date_str == '-' or date_str == '':
+                        return pd.NaT
+                    try:
+                        # Try to parse MM/dd/yy format first
+                        return pd.to_datetime(date_str, format='%m/%d/%y', errors='coerce')
+                    except:
+                        # Fallback to general parsing
+                        return pd.to_datetime(date_str, errors='coerce')
+                
+                df['move_out_parsed'] = df['move_out'].apply(parse_move_out_date)
                 current_date = pd.Timestamp.now()
                 
                 # Only show units where move_out is in the future (unit will become available)
                 future_moveouts = df[
-                    df['move_out'].notna() & 
-                    (df['move_out'] > current_date)
+                    df['move_out_parsed'].notna() & 
+                    (df['move_out_parsed'] > current_date)
                 ].copy()
                 
                 if future_moveouts.empty:
@@ -924,30 +935,13 @@ def get_inventory_data():
                 # Format the data for display
                 formatted_units = []
                 for _, row in future_moveouts.iterrows():
-                    # Parse tenant info if it exists
-                    tenant_names = ""
-                    if pd.notna(row.get('tenant_info')) and row.get('tenant_info'):
-                        try:
-                            import json
-                            tenant_data = json.loads(row['tenant_info']) if isinstance(row['tenant_info'], str) else row['tenant_info']
-                            if isinstance(tenant_data, list) and tenant_data:
-                                tenant_names = ", ".join([f"{t.get('first_name', '')} {t.get('last_name', '')}" for t in tenant_data])
-                        except:
-                            tenant_names = ""
-                    
-                    # Format currency values
-                    def format_currency(val):
-                        if pd.isna(val) or val is None:
-                            return "-"
-                        try:
-                            return f"${float(val):,.0f}"
-                        except:
-                            return "-"
-                    
-                    # Format dates
+                    # Format dates - keep original format if it's already formatted correctly
                     def format_date(date_val):
-                        if pd.isna(date_val):
+                        if pd.isna(date_val) or date_val == '-' or date_val == '':
                             return "-"
+                        # If it's already in MM/dd/yy format, keep it
+                        if isinstance(date_val, str) and '/' in date_val:
+                            return date_val
                         try:
                             if isinstance(date_val, str):
                                 date_obj = pd.to_datetime(date_val)
@@ -955,25 +949,58 @@ def get_inventory_data():
                                 date_obj = date_val
                             return date_obj.strftime('%m/%d/%y')
                         except:
-                            return "-"
+                            return str(date_val) if date_val != '-' else "-"
+                    
+                    # Handle currency and other values that may already be formatted
+                    def safe_format_value(val, default='-'):
+                        if pd.isna(val) or val == '' or val == '-':
+                            return default
+                        return str(val)
+                    
+                    # Handle numeric values with proper conversion
+                    def safe_numeric(val, default_val=0):
+                        if pd.isna(val) or val == '' or val == '-':
+                            return default_val
+                        try:
+                            return int(float(val))
+                        except:
+                            return default_val
+                    
+                    def safe_float(val, default_val=0.0):
+                        if pd.isna(val) or val == '' or val == '-':
+                            return default_val
+                        try:
+                            return float(val)
+                        except:
+                            return default_val
+                    
+                    # Calculate days until vacant
+                    days_until_vacant = 0
+                    if pd.notna(row.get('move_out_parsed')):
+                        days_until_vacant = (row['move_out_parsed'] - current_date).days
+                    elif pd.notna(row.get('days_until_vacant')):
+                        try:
+                            days_until_vacant = int(row['days_until_vacant'])
+                        except:
+                            days_until_vacant = 0
                     
                     unit_data = {
-                        'address': str(row.get('address', '')),
-                        'unit': str(row.get('unit', '')),
-                        'beds': int(row.get('beds', 0)) if pd.notna(row.get('beds')) else 0,
-                        'baths': float(row.get('baths', 0)) if pd.notna(row.get('baths')) else 0,
-                        'sqft': int(row.get('sqft', 0)) if pd.notna(row.get('sqft')) else 0,
-                        'unit_status': str(row.get('unit_status', '')),
-                        'deal_status': str(row.get('deal_status', '')),
-                        'gross': format_currency(row.get('gross')),
-                        'actual_rent': format_currency(row.get('actual_rent')),
-                        'concession': format_currency(row.get('concession')),
-                        'term': str(row.get('term', '')) if pd.notna(row.get('term')) else '-',
+                        'address': safe_format_value(row.get('address')),
+                        'unit': safe_format_value(row.get('unit')),
+                        'beds': safe_numeric(row.get('beds')),
+                        'baths': safe_float(row.get('baths')),
+                        'sqft': safe_numeric(row.get('sqft')),
+                        'unit_status': safe_format_value(row.get('unit_status')),
+                        'deal_status': safe_format_value(row.get('deal_status')),
+                        'gross': safe_format_value(row.get('gross')),
+                        'actual_rent': safe_format_value(row.get('actual_rent')),
+                        'concession': safe_format_value(row.get('concession')),
+                        'term': safe_format_value(row.get('term')),
                         'move_in': format_date(row.get('move_in')),
                         'move_out': format_date(row.get('move_out')),
-                        'tenant_names': tenant_names.strip(),
-                        'most_recent_note': str(row.get('most_recent_note', ''))[:50] + '...' if pd.notna(row.get('most_recent_note')) and len(str(row.get('most_recent_note', ''))) > 50 else str(row.get('most_recent_note', '')),
-                        'days_until_vacant': (row['move_out'] - current_date).days if pd.notna(row['move_out']) else 0
+                        'tenant_names': safe_format_value(row.get('tenant_names'), ''),
+                        'most_recent_note': safe_format_value(row.get('most_recent_note')),
+                        'days_until_vacant': days_until_vacant
                     }
                     formatted_units.append(unit_data)
                 

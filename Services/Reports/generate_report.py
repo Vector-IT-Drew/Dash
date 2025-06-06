@@ -104,14 +104,14 @@ def generate_report(report_name, address_filters=None):
         **data['weekly_trends']
     )
     
-    # Render inventory page (5th page)
-    inventory_html = env.get_template('inventory_report.html').render(
-        **data['inventory_data'],
-        report_title='Inventory Report',
-        date=datetime.now().strftime('%B %d, %Y')
-    )
+    # # Render inventory page (5th page)
+    # inventory_html = env.get_template('inventory_report.html').render(
+    #     **data['inventory_data'],
+    #     report_title='Inventory Report',
+    #     date=datetime.now().strftime('%B %d, %Y')
+    # )
 
-    print('data', data['inventory_data'])
+    # print('data')
 
     # Step 6: Concatenate HTML with inventory as 5th page
     full_html = (intro_html + 
@@ -120,9 +120,10 @@ def generate_report(report_name, address_filters=None):
                 '<div style="page-break-after: always;"></div>' + 
                 ytd_ppsf_html + 
                 '<div style="page-break-after: always;"></div>' + 
-                chart_table_html + 
-                '<div style="page-break-after: always;"></div>' + 
-                inventory_html)
+                chart_table_html 
+               )
+     # '<div style="page-break-after: always;"></div>' + 
+                # inventory_html
 
     html_path = os.path.join(OUTPUT_DIR, f'{report_name}_debug.html')
     with open(html_path, 'w') as f:
