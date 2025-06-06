@@ -111,7 +111,7 @@ def generate_report(report_name, address_filters=None):
         date=datetime.now().strftime('%B %d, %Y')
     )
 
-    print('inventory_html'inventory_html)
+    print('data', data['inventory_data'])
 
     # Step 6: Concatenate HTML with inventory as 5th page
     full_html = (intro_html + 

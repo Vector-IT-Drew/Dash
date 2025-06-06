@@ -17,7 +17,7 @@ mysql-connector-python==8.1.0
 # Data processing - use versions compatible with Python 3.12
 numpy==2.0.2
 pandas==2.2.2
-matplotlib==3.8.2
+matplotlib==3.9.2
 
 # API and authentication
 openai==1.72.0
