@@ -6,57 +6,50 @@
     <style>
         @page { 
             size: A4 landscape; 
-            margin: 0; 
+            margin: 8mm; 
             background: white;
         }
 
         * {
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body { 
-            font-family: 'Segoe UI', Arial, sans-serif; 
-            margin: 0; 
-            padding: 0; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             background: white;
-            color: #1e293b;
-            width: 100%;
-            height: 100%;
+            color: #2d3748;
+            width: 277mm;
+            height: 190mm;
         }
 
-        .pdf-page {
-            width: 297mm;
-            height: 210mm;
-            margin: 0;
-            padding: 15px;
-            background: white;
-            overflow: hidden;
-            page-break-inside: avoid;
+        .page-container {
+            width: 277mm;
+            height: 190mm;
         }
 
-        .pdf-page.charts {
-            display: flex;
-            flex-direction: column;
-        }
-
-        h2 {
-            color: #1e293b;
-            font-size: 1.6em;
-            margin: 0 0 15px 0;
-            font-weight: 400;
+        .page-title {
             text-align: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 12px;
+            padding: 8px 0;
+            border-bottom: 2px solid #e2e8f0;
+            height: 40px;
         }
 
-        .grid-2x2 {
+        .grid-container {
+            width: 277mm;
+            height: 150mm;
             display: table;
-            width: 100%;
-            height: calc(100% - 50px);
-            border-spacing: 15px;
+            border-spacing: 12px;
         }
 
         .grid-row {
             display: table-row;
-            height: 50%;
+            height: 75mm;
         }
 
         .grid-cell {
@@ -65,106 +58,156 @@
             vertical-align: top;
         }
 
-        .chart-card {
-            background: #fff;
-            border: 1px solid #e2e8f0;
+        .quadrant {
+            background: #ffffff;
+            border: 1.5px solid #e2e8f0;
             border-radius: 8px;
             padding: 10px;
-            height: 100%;
+            width: 100%;
+            height: 75mm;
+            overflow: hidden;
+        }
+
+        .quadrant-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+            text-align: center;
+            padding: 4px 0;
+            background: #f7fafc;
+            border-radius: 4px;
+            width: 100%;
+            height: 20px;
+        }
+
+        .chart-section {
+            height: 32mm;
+            width: 100%;
+            margin-bottom: 8px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chart-section img {
+            width: 100%;
+            height: 32mm;
+            object-fit: contain;
+            display: block;
+        }
+
+        .table-section {
+            width: 100%;
+            height: 35mm;
             overflow: hidden;
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
-        .chart-title {
-            font-size: 12px;
-            font-weight: 700;
-            color: #1e293b;
-            margin-bottom: 8px;
-            text-align: center;
-        }
-
-        .chart-image {
-            flex: 0 0 60%;
-            text-align: center;
-            margin-bottom: 8px;
-        }
-
-        .chart-image img {
-            max-width: 100%;
-            max-height: 100%;
-            width: auto;
-            height: auto;
-        }
-
-        .chart-table {
-            flex: 1;
-            overflow: auto;
-        }
-
-        table {
+        .data-table {
             width: 100%;
+            height: 100%;
             border-collapse: collapse;
-            font-size: 7px;
-            table-layout: auto;
+            font-size: 8px;
+            table-layout: fixed;
         }
 
-        th, td {
+        .data-table th,
+        .data-table td {
             border: 1px solid #cbd5e1;
             padding: 2px 3px;
             text-align: center;
-            font-size: 7px;
-            word-wrap: break-word;
             vertical-align: middle;
+            line-height: 1.2;
+            word-wrap: break-word;
+            overflow: hidden;
         }
 
-        th {
-            background: #1e293b;
-            color: #fff;
-            font-size: 8px;
+        .data-table th {
+            background: #4a5568;
+            color: #ffffff;
             font-weight: 600;
+            font-size: 7px;
         }
 
-        tr:nth-child(even) { background: #f8fafc; }
-        tr:nth-child(odd) { background: #fff; }
-
-        td:first-child, th:first-child { 
-            text-align: left; 
-            font-weight: bold;
-            background: #f1f5f9;
+        .data-table td:first-child,
+        .data-table th:first-child {
+            text-align: left;
+            font-weight: 600;
+            width: 20%;
         }
 
-        th:first-child {
-            background: #0f172a;
+        .data-table th:nth-child(2),
+        .data-table td:nth-child(2) {
+            width: 15%;
+        }
+
+        .data-table th:nth-child(n+3),
+        .data-table td:nth-child(n+3) {
+            width: 10.8%;
+        }
+
+        .data-table tbody tr:nth-child(odd) {
+            background: #f8fafc;
+        }
+
+        .data-table tbody tr:nth-child(even) {
+            background: #ffffff;
         }
 
         .variance-row {
-            background: #fff7e6 !important;
-            color: #1e293b;
+            background: #fff7ed !important;
+            font-weight: 600;
+        }
+
+        .variance-row td {
+            color: #9c4221;
+        }
+
+        .no-data {
+            text-align: center;
+            color: #718096;
+            font-style: italic;
+            padding: 20px;
+            font-size: 12px;
         }
     </style>
 </head>
 <body>
-    <div class="pdf-page charts">
-        <h2>YTD Price Per Square Foot Trends</h2>
-        <div class="grid-2x2">
+    <div class="page-container">
+        <div class="page-title">YTD Price Per Square Foot Trends</div>
+        
+        <div class="grid-container">
             <div class="grid-row">
                 <div class="grid-cell">
-                    <div class="chart-card">
-                        <div class="chart-title">{{ charts[0].title }}</div>
-                        {% if charts[0].chart_path %}
-                        <div class="chart-image">
+                    <!-- Top Left Quadrant -->
+                    <div class="quadrant">
+                        <div class="quadrant-title">
+                            {{ charts[0].title if charts and charts|length > 0 else 'Full Market Data' }}
+                        </div>
+                        
+                        {% if charts and charts|length > 0 and charts[0].chart_path %}
+                        <div class="chart-section">
                             <img src="{{ charts[0].chart_path }}" alt="{{ charts[0].title }} Chart">
                         </div>
+                        {% else %}
+                        <div class="chart-section">
+                            <div class="no-data">Chart not available</div>
+                        </div>
                         {% endif %}
-                        <div class="chart-table">
-                            <table>
+                        
+                        <div class="table-section">
+                            {% if charts and charts|length > 0 and charts[0].table_rows %}
+                            <table class="data-table">
                                 <thead>
                                     <tr>
                                         <th>Category</th>
                                         <th>Year</th>
                                         {% for month in charts[0].months %}
-                                            <th>{{ month }}</th>
+                                        <th>{{ month }}</th>
                                         {% endfor %}
                                     </tr>
                                 </thead>
@@ -174,31 +217,45 @@
                                         <td>{{ row.category }}</td>
                                         <td>{{ row.year }}</td>
                                         {% for month in charts[0].months %}
-                                            <td>{{ row.get(month, '-') }}</td>
+                                        <td>{{ row.get(month, '-') }}</td>
                                         {% endfor %}
                                     </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
+                            {% else %}
+                            <div class="no-data">No data available</div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
+
                 <div class="grid-cell">
-                    <div class="chart-card">
-                        <div class="chart-title">{{ charts[1].title }}</div>
-                        {% if charts[1].chart_path %}
-                        <div class="chart-image">
+                    <!-- Top Right Quadrant -->
+                    <div class="quadrant">
+                        <div class="quadrant-title">
+                            {{ charts[1].title if charts and charts|length > 1 else 'Studio & 1BR' }}
+                        </div>
+                        
+                        {% if charts and charts|length > 1 and charts[1].chart_path %}
+                        <div class="chart-section">
                             <img src="{{ charts[1].chart_path }}" alt="{{ charts[1].title }} Chart">
                         </div>
+                        {% else %}
+                        <div class="chart-section">
+                            <div class="no-data">Chart not available</div>
+                        </div>
                         {% endif %}
-                        <div class="chart-table">
-                            <table>
+                        
+                        <div class="table-section">
+                            {% if charts and charts|length > 1 and charts[1].table_rows %}
+                            <table class="data-table">
                                 <thead>
                                     <tr>
                                         <th>Category</th>
                                         <th>Year</th>
                                         {% for month in charts[1].months %}
-                                            <th>{{ month }}</th>
+                                        <th>{{ month }}</th>
                                         {% endfor %}
                                     </tr>
                                 </thead>
@@ -208,33 +265,47 @@
                                         <td>{{ row.category }}</td>
                                         <td>{{ row.year }}</td>
                                         {% for month in charts[1].months %}
-                                            <td>{{ row.get(month, '-') }}</td>
+                                        <td>{{ row.get(month, '-') }}</td>
                                         {% endfor %}
                                     </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
+                            {% else %}
+                            <div class="no-data">No data available</div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
             </div>
+
             <div class="grid-row">
                 <div class="grid-cell">
-                    <div class="chart-card">
-                        <div class="chart-title">{{ charts[2].title }}</div>
-                        {% if charts[2].chart_path %}
-                        <div class="chart-image">
+                    <!-- Bottom Left Quadrant -->
+                    <div class="quadrant">
+                        <div class="quadrant-title">
+                            {{ charts[2].title if charts and charts|length > 2 else '2BR & 3BR' }}
+                        </div>
+                        
+                        {% if charts and charts|length > 2 and charts[2].chart_path %}
+                        <div class="chart-section">
                             <img src="{{ charts[2].chart_path }}" alt="{{ charts[2].title }} Chart">
                         </div>
+                        {% else %}
+                        <div class="chart-section">
+                            <div class="no-data">Chart not available</div>
+                        </div>
                         {% endif %}
-                        <div class="chart-table">
-                            <table>
+                        
+                        <div class="table-section">
+                            {% if charts and charts|length > 2 and charts[2].table_rows %}
+                            <table class="data-table">
                                 <thead>
                                     <tr>
                                         <th>Category</th>
                                         <th>Year</th>
                                         {% for month in charts[2].months %}
-                                            <th>{{ month }}</th>
+                                        <th>{{ month }}</th>
                                         {% endfor %}
                                     </tr>
                                 </thead>
@@ -244,31 +315,45 @@
                                         <td>{{ row.category }}</td>
                                         <td>{{ row.year }}</td>
                                         {% for month in charts[2].months %}
-                                            <td>{{ row.get(month, '-') }}</td>
+                                        <td>{{ row.get(month, '-') }}</td>
                                         {% endfor %}
                                     </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
+                            {% else %}
+                            <div class="no-data">No data available</div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
+
                 <div class="grid-cell">
-                    <div class="chart-card">
-                        <div class="chart-title">{{ charts[3].title }}</div>
-                        {% if charts[3].chart_path %}
-                        <div class="chart-image">
+                    <!-- Bottom Right Quadrant -->
+                    <div class="quadrant">
+                        <div class="quadrant-title">
+                            {{ charts[3].title if charts and charts|length > 3 else 'Luxury (3BR+)' }}
+                        </div>
+                        
+                        {% if charts and charts|length > 3 and charts[3].chart_path %}
+                        <div class="chart-section">
                             <img src="{{ charts[3].chart_path }}" alt="{{ charts[3].title }} Chart">
                         </div>
+                        {% else %}
+                        <div class="chart-section">
+                            <div class="no-data">Chart not available</div>
+                        </div>
                         {% endif %}
-                        <div class="chart-table">
-                            <table>
+                        
+                        <div class="table-section">
+                            {% if charts and charts|length > 3 and charts[3].table_rows %}
+                            <table class="data-table">
                                 <thead>
                                     <tr>
                                         <th>Category</th>
                                         <th>Year</th>
                                         {% for month in charts[3].months %}
-                                            <th>{{ month }}</th>
+                                        <th>{{ month }}</th>
                                         {% endfor %}
                                     </tr>
                                 </thead>
@@ -278,12 +363,15 @@
                                         <td>{{ row.category }}</td>
                                         <td>{{ row.year }}</td>
                                         {% for month in charts[3].months %}
-                                            <td>{{ row.get(month, '-') }}</td>
+                                        <td>{{ row.get(month, '-') }}</td>
                                         {% endfor %}
                                     </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
+                            {% else %}
+                            <div class="no-data">No data available</div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

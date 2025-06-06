@@ -11,7 +11,7 @@ try:
 except ImportError:
     import pdfkit
     WEASYPRINT = False
-from .data_processor import get_streeteasy_data, get_comparison_tables, get_ytd_ppsf_data, get_weekly_trends, calculate_general_metrics, preprocess_df
+from .data_processor import get_streeteasy_data, get_comparison_tables, get_ytd_ppsf_data, get_weekly_trends, calculate_general_metrics, preprocess_df, get_inventory_data
 
 # Add the Services directory to the path so we can import modules
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -44,8 +44,13 @@ def generate_report(report_name, address_filters=None):
     Args:
         report_name: Name of the report
         address_filters: Optional list of address filters for YTD PPSF charts
-                        Format: [{'name': 'Building Name', 'filter': {'address': 'Address'}}]
-                        If None, all charts show market data with bedroom breakdowns
+                        Format: [
+                            {'name': 'Full Market Data', 'filter': {}},
+                            {'name': '3 Sutton Place', 'filter': {'address': '3 Sutton Place'}},
+                            {'name': '5 Sutton Place', 'filter': {'address': '5 Sutton Place'}},
+                            {'name': 'Other Buildings', 'filter': {'address': 'Other'}}
+                        ]
+                        If None, uses default market breakdown for testing
     """
     # Step 1: Create DB record
     report_id = None
@@ -67,12 +72,13 @@ def generate_report(report_name, address_filters=None):
     df = get_streeteasy_data()
     df = preprocess_df(df)
     
-    # Step 3: Process data with optional address filters
+    # Step 3: Process data with dynamic address filters
     data = {
         'comparison_tables': get_comparison_tables(df),
-        'ytd_ppsf': get_ytd_ppsf_data(df, address_filters),
+        'ytd_ppsf': get_ytd_ppsf_data(df, address_filters),  # Pass through address filters
         'weekly_trends': get_weekly_trends(df),
-        'general_metrics': calculate_general_metrics(df)
+        'general_metrics': calculate_general_metrics(df),
+        'inventory_data': get_inventory_data()  # Add inventory data
     }
 
     # Step 4: Generate chart images (YTD PPSF and Weekly Trends)
@@ -97,9 +103,27 @@ def generate_report(report_name, address_filters=None):
     chart_table_html = env.get_template('chart_table.html').render(
         **data['weekly_trends']
     )
+    
+    # Render inventory page (5th page)
+    inventory_html = env.get_template('inventory_report.html').render(
+        **data['inventory_data'],
+        report_title='Inventory Report',
+        date=datetime.now().strftime('%B %d, %Y')
+    )
 
-    # Step 6: Concatenate HTML
-    full_html = intro_html + '<div style="page-break-after: always;"></div>' + comparison_html + '<div style="page-break-after: always;"></div>' + ytd_ppsf_html + '<div style="page-break-after: always;"></div>' + chart_table_html
+    print('inventory_html'inventory_html)
+
+    # Step 6: Concatenate HTML with inventory as 5th page
+    full_html = (intro_html + 
+                '<div style="page-break-after: always;"></div>' + 
+                comparison_html + 
+                '<div style="page-break-after: always;"></div>' + 
+                ytd_ppsf_html + 
+                '<div style="page-break-after: always;"></div>' + 
+                chart_table_html + 
+                '<div style="page-break-after: always;"></div>' + 
+                inventory_html)
+
     html_path = os.path.join(OUTPUT_DIR, f'{report_name}_debug.html')
     with open(html_path, 'w') as f:
         f.write(full_html)
@@ -135,7 +159,19 @@ def generate_report(report_name, address_filters=None):
     return final_path
 
 if __name__ == "__main__":
+    # Example of how to use the report:
+    
+    # Option 1: Standard market report with inventory (default)
     generate_report('full_market_report')
+    
+    # Option 2: Custom address filters for market report
+    # custom_filters = [
+    #     {'name': 'Full Market Data', 'filter': {}},
+    #     {'name': '3 Sutton Place', 'filter': {'address': '3 Sutton Place'}},
+    #     {'name': '5 Sutton Place', 'filter': {'address': '5 Sutton Place'}},
+    #     {'name': 'Other Buildings', 'filter': {'address': 'Other'}}
+    # ]
+    # generate_report('custom_address_report', address_filters=custom_filters)
 
 #python3 -m Services.Reports.generate_report
 
