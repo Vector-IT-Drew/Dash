@@ -478,17 +478,18 @@ def run_query_system(connection, credentials, query_id, target_type=None, target
             for column, value in filters.items():
                 if value and value not in ["Any", "", "undefined", "-", "0", " "] and column is not None and 'Any' not in value:
                     if column == 'agg_filter':
-                        if value.lower() == 'prelease':
-                            # Prelease: Occupied units with move out date
+                        #   Add filters for the report
+                        if value.lower() == '4/1/25 onwards':
+                            # 4/1/25 Onwards: Lease start > 4/1/25 OR Current deals move out is populated
                             query += """
-                                AND subquery.unit_status = 'Occupied'
-                                AND subquery.move_out IS NOT NULL
+                                AND (subquery.start_date > '2025-04-01' 
+                                     OR subquery.move_out IS NOT NULL)
                             """
-                        elif value.lower() == 'renewal check':
-                            # Renewal: Units with move out in next 3 months
+                        elif value.lower() == 'renewal horizon':
+                            # Renewal Horizon: Expiry within next 120 days or the past, for the current deal
                             query += """
-                                AND subquery.unit_status = 'Occupied'
-                                AND subquery.move_out BETWEEN CURRENT_DATE AND DATE_ADD(CURRENT_DATE, INTERVAL 3 MONTH)
+                                AND subquery.expiry IS NOT NULL
+                                AND subquery.expiry <= DATE_ADD(CURRENT_DATE, INTERVAL 120 DAY)
                             """
                     else:
                         query += f" AND LOWER(subquery.{column}) LIKE LOWER(%s)"
