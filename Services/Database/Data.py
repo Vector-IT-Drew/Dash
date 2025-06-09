@@ -163,7 +163,7 @@ def get_unique_values(connection, credentials):
     params = []
     for col, value in data_filters:
         if col and col != "Any" and col in column_to_table:
-            query += f" AND {col.split(".")[1]} = %s"
+            query += f" AND {col.split('.')[1]} = %s"
             params.append(value)
 
     cursor.execute(query, params)
