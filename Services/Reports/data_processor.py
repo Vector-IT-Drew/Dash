@@ -387,7 +387,7 @@ def get_weekly_trends(df, title="Weekly Rent Price Trends", bedroom_filter=None)
     
     # --- Generate clean line chart ---
     plt.style.use('default')
-    fig, ax = plt.subplots(figsize=(12, 4.5))  # Reduced height to fit better with table
+    fig, ax = plt.subplots(figsize=(16, 6))  # Reduced height to fit better with table
     
     # Color palette - clean blues like in the image
     colors = ['#7FB3D3', '#5B9BD5', '#4472C4', '#2F528F']

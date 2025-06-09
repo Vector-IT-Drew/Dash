@@ -49,7 +49,7 @@ if services_dir not in sys.path:
 try:
     from Database.Data import create_report_record, update_report_record
     from Database.Connect import get_db_connection
-    from Functions.Dropbox import save_report_to_dropbox
+    from Functions.Dropbox import save_report_to_dropbox, get_file_from_dropbox
 except ImportError as e:
     print(f"Warning: Could not import database functions: {e}")
 
@@ -436,7 +436,7 @@ def generate_report_endpoint():
 
 @reports_bp.route('/download', methods=['GET'])
 def download_report_endpoint():
-    """Simple endpoint to download reports"""
+    """Download reports from Dropbox"""
     try:
         # Get filename from query params
         filename = request.args.get('filename')
@@ -447,18 +447,43 @@ def download_report_endpoint():
                 "message": "filename parameter is required"
             }), 400
         
-        # Build file path
-        file_path = os.path.join(OUTPUT_DIR, filename)
-        
-        # Check if file exists
-        if not os.path.exists(file_path):
+        # Import Dropbox function
+        try:
+            from Functions.Dropbox import get_file_from_dropbox
+        except ImportError:
             return jsonify({
                 "status": "error",
-                "message": f"File '{filename}' not found"
-            }), 404
+                "message": "Dropbox integration not available"
+            }), 500
         
-        # Send the file
-        return send_file(file_path, as_attachment=True, download_name=filename)
+        # Build Dropbox path - reports are stored in the Reports folder
+        dropbox_path = f"/Vector Official/Vector Leasing/Reports/{filename}"
+        
+        try:
+            # Get file from Dropbox
+            file_data = get_file_from_dropbox(dropbox_path)
+            
+            # Send the file as a download
+            return send_file(
+                file_data, 
+                as_attachment=True, 
+                download_name=filename,
+                mimetype='application/pdf'
+            )
+            
+        except Exception as e:
+            # If file not found in Dropbox, try local fallback
+            print(f"Dropbox download failed: {e}")
+            local_file_path = os.path.join(OUTPUT_DIR, filename)
+            
+            if os.path.exists(local_file_path):
+                print(f"Using local fallback for {filename}")
+                return send_file(local_file_path, as_attachment=True, download_name=filename)
+            else:
+                return jsonify({
+                    "status": "error",
+                    "message": f"File '{filename}' not found in Dropbox or local storage"
+                }), 404
         
     except Exception as e:
         return jsonify({
