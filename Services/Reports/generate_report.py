@@ -131,8 +131,6 @@ def generate_report(report_name, address_filters=None):
         </div>
         """
 
-
-
     # Step 6: Concatenate HTML - try without inventory first to test
     try:
         # First test without inventory
@@ -282,6 +280,43 @@ def generate_report(report_name, address_filters=None):
             if connection and connection.is_connected():
                 connection.close()
     return final_path
+
+# Add Flask endpoint
+from flask import request, jsonify
+from . import reports_bp
+
+@reports_bp.route('/generate_report', methods=['GET', 'POST'])
+def generate_report_endpoint():
+    """Simple endpoint to generate reports"""
+    try:
+        # Get report name from query params or JSON
+        if request.method == 'POST':
+            data = request.get_json() or {}
+            report_name = data.get('report_name', 'market_report')
+        else:
+            report_name = request.args.get('report_name', 'market_report')
+        
+        # Generate the report
+        result_path = generate_report(report_name)
+        
+        if result_path:
+            return jsonify({
+                "status": "success",
+                "message": "Report generated successfully",
+                "file_path": result_path,
+                "report_name": report_name
+            })
+        else:
+            return jsonify({
+                "status": "error", 
+                "message": "Failed to generate report"
+            }), 500
+            
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
 
 if __name__ == "__main__":
     # Example of how to use the report:
