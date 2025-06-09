@@ -285,7 +285,7 @@ def generate_report(report_name, address_filters=None):
 from flask import request, jsonify
 from . import reports_bp
 
-@reports_bp.route('/generate_report', methods=['GET', 'POST'])
+@reports_bp.route('/generate', methods=['GET', 'POST'])
 def generate_report_endpoint():
     """Simple endpoint to generate reports"""
     try:
