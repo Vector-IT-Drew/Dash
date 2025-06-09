@@ -322,7 +322,7 @@ if __name__ == "__main__":
     # Example of how to use the report:
     
     # Option 1: Standard market report with inventory (default)
-    generate_report('full_market_report')
+    generate_report('Full_Market_Report_SMK')
     
     # Option 2: Custom address filters for market report
     # custom_filters = [
