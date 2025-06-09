@@ -8,9 +8,16 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 try:
     from weasyprint import HTML as WeasyHTML
     WEASYPRINT = True
-except ImportError:
-    import pdfkit
-    WEASYPRINT = False
+    print("WeasyPrint loaded successfully")
+except ImportError as e:
+    print(f"WeasyPrint not available: {e}")
+    try:
+        import pdfkit
+        WEASYPRINT = False
+        print("Using pdfkit as fallback")
+    except ImportError as e2:
+        print(f"pdfkit also not available: {e2}")
+        WEASYPRINT = None
 from .data_processor import get_streeteasy_data, get_comparison_tables, get_ytd_ppsf_data, get_weekly_trends, calculate_general_metrics, preprocess_df, get_inventory_data
 
 # Add the Services directory to the path so we can import modules
@@ -164,6 +171,14 @@ def generate_report(report_name, address_filters=None):
 
     # Step 7: Convert HTML to PDF with error handling
     pdf_path = os.path.join(OUTPUT_DIR, f"{report_name}-{datetime.now().strftime('%Y%m%d-%H%M%S')}.pdf")
+    
+    if WEASYPRINT is None:
+        print("ERROR: No PDF generation libraries available")
+        print("Please install WeasyPrint: pip install weasyprint")
+        print("Or install wkhtmltopdf for pdfkit")
+        print("Returning HTML file path instead")
+        return html_path
+    
     try:
         if WEASYPRINT:
             print("Using WeasyPrint for PDF conversion...")
@@ -199,7 +214,22 @@ def generate_report(report_name, address_filters=None):
             WeasyHTML(string=full_html, base_url=OUTPUT_DIR).write_pdf(pdf_path)
         else:
             print("Using pdfkit for PDF conversion...")
-            pdfkit.from_file(html_path, pdf_path)
+            # Check if wkhtmltopdf is available
+            try:
+                import pdfkit
+                pdfkit.from_file(html_path, pdf_path)
+            except OSError as e:
+                if "wkhtmltopdf" in str(e):
+                    print("ERROR: wkhtmltopdf not found. Please install it:")
+                    print("Ubuntu/Debian: sudo apt-get install wkhtmltopdf")
+                    print("CentOS/RHEL: sudo yum install wkhtmltopdf")
+                    print("macOS: brew install wkhtmltopdf")
+                    print("Or install WeasyPrint instead: pip install weasyprint")
+                    print("Returning HTML file path instead")
+                    return html_path
+                else:
+                    raise e
+                    
         print(f"PDF generated successfully: {pdf_path}")
         
         # Check if PDF was actually created and has content
@@ -282,7 +312,7 @@ def generate_report(report_name, address_filters=None):
     return final_path
 
 # Add Flask endpoint
-from flask import request, jsonify
+from flask import request, jsonify, send_file
 from . import reports_bp
 
 @reports_bp.route('/generate', methods=['GET', 'POST'])
@@ -312,6 +342,38 @@ def generate_report_endpoint():
                 "message": "Failed to generate report"
             }), 500
             
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+
+@reports_bp.route('/download', methods=['GET'])
+def download_report_endpoint():
+    """Simple endpoint to download reports"""
+    try:
+        # Get filename from query params
+        filename = request.args.get('filename')
+        
+        if not filename:
+            return jsonify({
+                "status": "error",
+                "message": "filename parameter is required"
+            }), 400
+        
+        # Build file path
+        file_path = os.path.join(OUTPUT_DIR, filename)
+        
+        # Check if file exists
+        if not os.path.exists(file_path):
+            return jsonify({
+                "status": "error",
+                "message": f"File '{filename}' not found"
+            }), 404
+        
+        # Send the file
+        return send_file(file_path, as_attachment=True, download_name=filename)
+        
     except Exception as e:
         return jsonify({
             "status": "error",
