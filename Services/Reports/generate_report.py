@@ -5,19 +5,33 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 from jinja2 import Environment, FileSystemLoader, select_autoescape
-try:
-    from weasyprint import HTML as WeasyHTML
-    WEASYPRINT = True
-    print("WeasyPrint loaded successfully")
-except ImportError as e:
-    print(f"WeasyPrint not available: {e}")
+
+# Don't import WeasyPrint at module level - do it when needed
+WEASYPRINT = None
+
+def get_pdf_generator():
+    """Get available PDF generator, checking at runtime"""
+    global WEASYPRINT
+    if WEASYPRINT is not None:
+        return WEASYPRINT
+    
     try:
-        import pdfkit
-        WEASYPRINT = False
-        print("Using pdfkit as fallback")
-    except ImportError as e2:
-        print(f"pdfkit also not available: {e2}")
-        WEASYPRINT = None
+        from weasyprint import HTML as WeasyHTML
+        WEASYPRINT = 'weasyprint'
+        print("WeasyPrint loaded successfully")
+        return WEASYPRINT
+    except ImportError as e:
+        print(f"WeasyPrint not available: {e}")
+        try:
+            import pdfkit
+            WEASYPRINT = 'pdfkit'
+            print("Using pdfkit as fallback")
+            return WEASYPRINT
+        except ImportError as e2:
+            print(f"pdfkit also not available: {e2}")
+            WEASYPRINT = None
+            return WEASYPRINT
+
 from .data_processor import get_streeteasy_data, get_comparison_tables, get_ytd_ppsf_data, get_weekly_trends, calculate_general_metrics, preprocess_df, get_inventory_data
 
 # Add the Services directory to the path so we can import modules
@@ -172,7 +186,9 @@ def generate_report(report_name, address_filters=None):
     # Step 7: Convert HTML to PDF with error handling
     pdf_path = os.path.join(OUTPUT_DIR, f"{report_name}-{datetime.now().strftime('%Y%m%d-%H%M%S')}.pdf")
     
-    if WEASYPRINT is None:
+    pdf_generator = get_pdf_generator()
+    
+    if pdf_generator is None:
         print("ERROR: No PDF generation libraries available")
         print("Please install WeasyPrint: pip install weasyprint")
         print("Or install wkhtmltopdf for pdfkit")
@@ -180,7 +196,8 @@ def generate_report(report_name, address_filters=None):
         return html_path
     
     try:
-        if WEASYPRINT:
+        if pdf_generator == 'weasyprint':
+            from weasyprint import HTML as WeasyHTML
             print("Using WeasyPrint for PDF conversion...")
             
             # Test: Generate inventory page standalone to check for issues
@@ -212,7 +229,7 @@ def generate_report(report_name, address_filters=None):
             
             # Now try the full report
             WeasyHTML(string=full_html, base_url=OUTPUT_DIR).write_pdf(pdf_path)
-        else:
+        else:  # pdfkit
             print("Using pdfkit for PDF conversion...")
             # Check if wkhtmltopdf is available
             try:
@@ -273,13 +290,15 @@ def generate_report(report_name, address_filters=None):
                         chart_table_html)
             
             fallback_path = os.path.join(OUTPUT_DIR, f"{report_name}-fallback-{datetime.now().strftime('%Y%m%d-%H%M%S')}.pdf")
-            if WEASYPRINT:
+            if pdf_generator == 'weasyprint':
+                from weasyprint import HTML as WeasyHTML
                 WeasyHTML(string=basic_html, base_url=OUTPUT_DIR).write_pdf(fallback_path)
             else:
                 # Write basic HTML to file first
                 basic_html_path = os.path.join(OUTPUT_DIR, f'{report_name}_basic.html')
                 with open(basic_html_path, 'w') as f:
                     f.write(basic_html)
+                import pdfkit
                 pdfkit.from_file(basic_html_path, fallback_path)
             
             print(f"Fallback PDF generated: {fallback_path}")
