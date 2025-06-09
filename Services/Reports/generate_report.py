@@ -78,7 +78,7 @@ def generate_report(report_name, address_filters=None):
         'ytd_ppsf': get_ytd_ppsf_data(df, address_filters),  # Pass through address filters
         'weekly_trends': get_weekly_trends(df),
         'general_metrics': calculate_general_metrics(df),
-        'inventory_data': get_inventory_data()  # Add inventory data
+        'inventory_data': get_inventory_data()  # Default to 30 units with compact layout
     }
 
     # Step 4: Generate chart images (YTD PPSF and Weekly Trends)
@@ -104,38 +104,167 @@ def generate_report(report_name, address_filters=None):
         **data['weekly_trends']
     )
     
-    # # Render inventory page (5th page)
-    # inventory_html = env.get_template('inventory_report.html').render(
-    #     **data['inventory_data'],
-    #     report_title='Inventory Report',
-    #     date=datetime.now().strftime('%B %d, %Y')
-    # )
+    # Render inventory page (5th page) with error handling
+    inventory_html = ""
+    try:
+        print(f"Inventory data loaded: {data['inventory_data']['total_count']} units")
+        print(f"Inventory data keys: {data['inventory_data'].keys()}")
+        
+        inventory_html = env.get_template('inventory_report.html').render(
+            **data['inventory_data'],
+            report_title='Inventory Report',
+            date=datetime.now().strftime('%B %d, %Y')
+        )
+        print("Inventory HTML rendered successfully")
+        print(f"Inventory HTML length: {len(inventory_html)} characters")
+        
+    except Exception as e:
+        print(f"Error rendering inventory HTML: {e}")
+        import traceback
+        traceback.print_exc()
+        # Create a simple fallback inventory page
+        inventory_html = f"""
+        <div style="text-align: center; padding: 50px;">
+            <h1>Inventory Report</h1>
+            <p>Error loading inventory data: {str(e)}</p>
+            <p>Total units available: {data['inventory_data'].get('total_count', 'Unknown')}</p>
+        </div>
+        """
 
-    # print('data')
+    
+    inventory_html = f"""
+        <div style="text-align: center; padding: 50px;">
+           
+        </div>
+        """
 
-    # Step 6: Concatenate HTML with inventory as 5th page
-    full_html = (intro_html + 
-                '<div style="page-break-after: always;"></div>' + 
-                comparison_html + 
-                '<div style="page-break-after: always;"></div>' + 
-                ytd_ppsf_html + 
-                '<div style="page-break-after: always;"></div>' + 
-                chart_table_html 
-               )
-     # '<div style="page-break-after: always;"></div>' + 
-                # inventory_html
+    # Step 6: Concatenate HTML - try without inventory first to test
+    try:
+        # First test without inventory
+        basic_html = (intro_html + 
+                    '<div style="page-break-after: always;"></div>' + 
+                    comparison_html + 
+                    '<div style="page-break-after: always;"></div>' + 
+                    ytd_ppsf_html + 
+                    '<div style="page-break-after: always;"></div>' + 
+                    chart_table_html)
+        
+        print("Basic HTML concatenation successful")
+        
+        # Now add inventory
+        full_html = (basic_html + 
+                    '<div style="page-break-after: always;"></div>' + 
+                    inventory_html)
+        
+        print("Full HTML with inventory concatenation successful")
+        print(f"Full HTML length: {len(full_html)} characters")
+        
+    except Exception as e:
+        print(f"Error in HTML concatenation: {e}")
+        # Fall back to basic HTML without inventory
+        full_html = basic_html
 
     html_path = os.path.join(OUTPUT_DIR, f'{report_name}_debug.html')
     with open(html_path, 'w') as f:
         f.write(full_html)
+    print(f"Debug HTML saved to: {html_path}")
 
-    # Step 7: Convert HTML to PDF
+    # Step 7: Convert HTML to PDF with error handling
     pdf_path = os.path.join(OUTPUT_DIR, f"{report_name}-{datetime.now().strftime('%Y%m%d-%H%M%S')}.pdf")
-    if WEASYPRINT:
-        WeasyHTML(string=full_html, base_url=OUTPUT_DIR).write_pdf(pdf_path)
-    else:
-        pdfkit.from_file(html_path, pdf_path)
-    print(f"PDF generated successfully: {pdf_path}")
+    try:
+        if WEASYPRINT:
+            print("Using WeasyPrint for PDF conversion...")
+            
+            # Test: Generate inventory page standalone to check for issues
+            try:
+                print("Testing inventory page standalone...")
+                inventory_test_path = os.path.join(OUTPUT_DIR, f"inventory_test_{datetime.now().strftime('%Y%m%d-%H%M%S')}.pdf")
+                WeasyHTML(string=inventory_html, base_url=OUTPUT_DIR).write_pdf(inventory_test_path)
+                inventory_size = os.path.getsize(inventory_test_path)
+                print(f"Standalone inventory PDF created: {inventory_size} bytes")
+            except Exception as inv_error:
+                print(f"Standalone inventory PDF failed: {inv_error}")
+                
+            # Test: Generate basic report without inventory
+            try:
+                print("Testing basic report without inventory...")
+                basic_test_html = (intro_html + 
+                                '<div style="page-break-after: always;"></div>' + 
+                                comparison_html + 
+                                '<div style="page-break-after: always;"></div>' + 
+                                ytd_ppsf_html + 
+                                '<div style="page-break-after: always;"></div>' + 
+                                chart_table_html)
+                basic_test_path = os.path.join(OUTPUT_DIR, f"basic_test_{datetime.now().strftime('%Y%m%d-%H%M%S')}.pdf")
+                WeasyHTML(string=basic_test_html, base_url=OUTPUT_DIR).write_pdf(basic_test_path)
+                basic_size = os.path.getsize(basic_test_path)
+                print(f"Basic report PDF created: {basic_size} bytes")
+            except Exception as basic_error:
+                print(f"Basic report PDF failed: {basic_error}")
+            
+            # Now try the full report
+            WeasyHTML(string=full_html, base_url=OUTPUT_DIR).write_pdf(pdf_path)
+        else:
+            print("Using pdfkit for PDF conversion...")
+            pdfkit.from_file(html_path, pdf_path)
+        print(f"PDF generated successfully: {pdf_path}")
+        
+        # Check if PDF was actually created and has content
+        if os.path.exists(pdf_path):
+            file_size = os.path.getsize(pdf_path)
+            print(f"PDF file size: {file_size} bytes")
+            if file_size < 10000:  # Less than 10KB indicates a problem for a 5-page report
+                print("WARNING: PDF file size is very small for a 5-page report with inventory")
+                
+                # Try generating without inventory as emergency fallback
+                print("Generating fallback PDF without inventory due to small file size...")
+                fallback_html = (intro_html + 
+                            '<div style="page-break-after: always;"></div>' + 
+                            comparison_html + 
+                            '<div style="page-break-after: always;"></div>' + 
+                            ytd_ppsf_html + 
+                            '<div style="page-break-after: always;"></div>' + 
+                            chart_table_html)
+                
+                fallback_path = os.path.join(OUTPUT_DIR, f"{report_name}-no-inventory-{datetime.now().strftime('%Y%m%d-%H%M%S')}.pdf")
+                WeasyHTML(string=fallback_html, base_url=OUTPUT_DIR).write_pdf(fallback_path)
+                fallback_size = os.path.getsize(fallback_path)
+                print(f"Fallback PDF without inventory: {fallback_size} bytes")
+        else:
+            print("ERROR: PDF file was not created")
+            
+    except Exception as e:
+        print(f"Error generating PDF: {e}")
+        import traceback
+        traceback.print_exc()
+        
+        # Try to generate a basic PDF without inventory as fallback
+        try:
+            print("Attempting fallback PDF generation without inventory...")
+            basic_html = (intro_html + 
+                        '<div style="page-break-after: always;"></div>' + 
+                        comparison_html + 
+                        '<div style="page-break-after: always;"></div>' + 
+                        ytd_ppsf_html + 
+                        '<div style="page-break-after: always;"></div>' + 
+                        chart_table_html)
+            
+            fallback_path = os.path.join(OUTPUT_DIR, f"{report_name}-fallback-{datetime.now().strftime('%Y%m%d-%H%M%S')}.pdf")
+            if WEASYPRINT:
+                WeasyHTML(string=basic_html, base_url=OUTPUT_DIR).write_pdf(fallback_path)
+            else:
+                # Write basic HTML to file first
+                basic_html_path = os.path.join(OUTPUT_DIR, f'{report_name}_basic.html')
+                with open(basic_html_path, 'w') as f:
+                    f.write(basic_html)
+                pdfkit.from_file(basic_html_path, fallback_path)
+            
+            print(f"Fallback PDF generated: {fallback_path}")
+            pdf_path = fallback_path
+            
+        except Exception as fallback_error:
+            print(f"Fallback PDF generation also failed: {fallback_error}")
+            return None
 
     # Step 8: Upload to Dropbox
     final_path = pdf_path

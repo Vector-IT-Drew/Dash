@@ -870,8 +870,12 @@ def get_template_data(template_name, processed_data, **kwargs):
     
     return result_data
 
-def get_inventory_data():
-    """Fetch client data for inventory report - units with future move-out dates"""
+def get_inventory_data(limit_units=30):
+    """Fetch client data for inventory report - units with future move-out dates
+    
+    Args:
+        limit_units: Optional integer to limit number of units returned (default 30)
+    """
     try:
         db_result = get_db_connection()
         
@@ -931,6 +935,11 @@ def get_inventory_data():
                 
                 if future_moveouts.empty:
                     return {'units': [], 'total_count': 0}
+                
+                # Limit units for testing if specified
+                if limit_units is not None and len(future_moveouts) > limit_units:
+                    print(f"DEBUG: Limiting inventory units to {limit_units}")
+                    future_moveouts = future_moveouts.head(limit_units)
                 
                 # Format the data for display
                 formatted_units = []
@@ -1006,6 +1015,11 @@ def get_inventory_data():
                 
                 # Sort by move_out date (soonest first)
                 formatted_units.sort(key=lambda x: x['days_until_vacant'])
+                
+                # Debug: Print first few units
+                print("DEBUG: Sample inventory data:")
+                for i, unit in enumerate(formatted_units[:3]):
+                    print(f"  Unit {i+1}: {unit['address']} {unit['unit']} - {unit['beds']}BR, {unit['move_out']} ({unit['days_until_vacant']}d)")
                 
                 return {
                     'units': formatted_units,
