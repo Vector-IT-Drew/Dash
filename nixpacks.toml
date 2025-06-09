@@ -1,0 +1,14 @@
+[phases.setup]
+nixPkgs = [
+    "python311",
+    "pango",
+    "cairo", 
+    "gdk-pixbuf",
+    "glib",
+    "gobject-introspection",
+    "libffi",
+    "pkg-config"
+]
+
+[start]
+cmd = "gunicorn app:app" 

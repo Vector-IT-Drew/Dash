@@ -197,38 +197,57 @@ def generate_report(report_name, address_filters=None):
     
     try:
         if pdf_generator == 'weasyprint':
-            from weasyprint import HTML as WeasyHTML
-            print("Using WeasyPrint for PDF conversion...")
-            
-            # Test: Generate inventory page standalone to check for issues
             try:
-                print("Testing inventory page standalone...")
-                inventory_test_path = os.path.join(OUTPUT_DIR, f"inventory_test_{datetime.now().strftime('%Y%m%d-%H%M%S')}.pdf")
-                WeasyHTML(string=inventory_html, base_url=OUTPUT_DIR).write_pdf(inventory_test_path)
-                inventory_size = os.path.getsize(inventory_test_path)
-                print(f"Standalone inventory PDF created: {inventory_size} bytes")
-            except Exception as inv_error:
-                print(f"Standalone inventory PDF failed: {inv_error}")
+                from weasyprint import HTML as WeasyHTML
+                print("Using WeasyPrint for PDF conversion...")
                 
-            # Test: Generate basic report without inventory
-            try:
-                print("Testing basic report without inventory...")
-                basic_test_html = (intro_html + 
-                                '<div style="page-break-after: always;"></div>' + 
-                                comparison_html + 
-                                '<div style="page-break-after: always;"></div>' + 
-                                ytd_ppsf_html + 
-                                '<div style="page-break-after: always;"></div>' + 
-                                chart_table_html)
-                basic_test_path = os.path.join(OUTPUT_DIR, f"basic_test_{datetime.now().strftime('%Y%m%d-%H%M%S')}.pdf")
-                WeasyHTML(string=basic_test_html, base_url=OUTPUT_DIR).write_pdf(basic_test_path)
-                basic_size = os.path.getsize(basic_test_path)
-                print(f"Basic report PDF created: {basic_size} bytes")
-            except Exception as basic_error:
-                print(f"Basic report PDF failed: {basic_error}")
-            
-            # Now try the full report
-            WeasyHTML(string=full_html, base_url=OUTPUT_DIR).write_pdf(pdf_path)
+                # Test: Generate inventory page standalone to check for issues
+                try:
+                    print("Testing inventory page standalone...")
+                    inventory_test_path = os.path.join(OUTPUT_DIR, f"inventory_test_{datetime.now().strftime('%Y%m%d-%H%M%S')}.pdf")
+                    WeasyHTML(string=inventory_html, base_url=OUTPUT_DIR).write_pdf(inventory_test_path)
+                    inventory_size = os.path.getsize(inventory_test_path)
+                    print(f"Standalone inventory PDF created: {inventory_size} bytes")
+                except Exception as inv_error:
+                    print(f"Standalone inventory PDF failed: {inv_error}")
+                    
+                # Test: Generate basic report without inventory
+                try:
+                    print("Testing basic report without inventory...")
+                    basic_test_html = (intro_html + 
+                                    '<div style="page-break-after: always;"></div>' + 
+                                    comparison_html + 
+                                    '<div style="page-break-after: always;"></div>' + 
+                                    ytd_ppsf_html + 
+                                    '<div style="page-break-after: always;"></div>' + 
+                                    chart_table_html)
+                    basic_test_path = os.path.join(OUTPUT_DIR, f"basic_test_{datetime.now().strftime('%Y%m%d-%H%M%S')}.pdf")
+                    WeasyHTML(string=basic_test_html, base_url=OUTPUT_DIR).write_pdf(basic_test_path)
+                    basic_size = os.path.getsize(basic_test_path)
+                    print(f"Basic report PDF created: {basic_size} bytes")
+                except Exception as basic_error:
+                    print(f"Basic report PDF failed: {basic_error}")
+                
+                # Now try the full report
+                WeasyHTML(string=full_html, base_url=OUTPUT_DIR).write_pdf(pdf_path)
+                
+            except Exception as weasy_error:
+                print(f"WeasyPrint failed due to system dependencies: {weasy_error}")
+                print("Falling back to pdfkit...")
+                # Fall back to pdfkit
+                try:
+                    import pdfkit
+                    pdfkit.from_file(html_path, pdf_path)
+                except OSError as e:
+                    if "wkhtmltopdf" in str(e):
+                        print("ERROR: wkhtmltopdf not found and WeasyPrint system deps missing")
+                        print("Returning HTML file instead")
+                        return html_path
+                    else:
+                        raise e
+                except ImportError:
+                    print("No PDF generators available. Returning HTML file")
+                    return html_path
         else:  # pdfkit
             print("Using pdfkit for PDF conversion...")
             # Check if wkhtmltopdf is available
@@ -291,8 +310,21 @@ def generate_report(report_name, address_filters=None):
             
             fallback_path = os.path.join(OUTPUT_DIR, f"{report_name}-fallback-{datetime.now().strftime('%Y%m%d-%H%M%S')}.pdf")
             if pdf_generator == 'weasyprint':
-                from weasyprint import HTML as WeasyHTML
-                WeasyHTML(string=basic_html, base_url=OUTPUT_DIR).write_pdf(fallback_path)
+                try:
+                    from weasyprint import HTML as WeasyHTML
+                    WeasyHTML(string=basic_html, base_url=OUTPUT_DIR).write_pdf(fallback_path)
+                except Exception as weasy_fallback_error:
+                    print(f"WeasyPrint fallback also failed: {weasy_fallback_error}")
+                    print("Trying pdfkit for fallback...")
+                    try:
+                        import pdfkit
+                        basic_html_path = os.path.join(OUTPUT_DIR, f'{report_name}_basic.html')
+                        with open(basic_html_path, 'w') as f:
+                            f.write(basic_html)
+                        pdfkit.from_file(basic_html_path, fallback_path)
+                    except:
+                        print("All PDF generation failed. Returning HTML file")
+                        return html_path
             else:
                 # Write basic HTML to file first
                 basic_html_path = os.path.join(OUTPUT_DIR, f'{report_name}_basic.html')
