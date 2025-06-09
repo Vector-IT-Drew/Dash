@@ -1,4 +1,4 @@
-/* PDF-compatible styles - no viewport units, no sticky, no box-shadow */
+/* PDF Report Styles - Professional & Consistent Design */
 @page { 
     size: A4 landscape; 
     margin: 0; 
@@ -7,280 +7,445 @@
 
 * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 body { 
-    font-family: 'Segoe UI', Arial, sans-serif; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
     margin: 0; 
     padding: 0; 
     background: white;
     color: #1e293b;
     width: 100%;
     height: 100%;
+    line-height: 1.4;
 }
 
-/* Full-page containers */
+/* =================================
+   PAGE CONTAINERS
+   ================================= */
 .pdf-page {
-    width: 297mm; /* A4 landscape width */
-    height: 210mm; /* A4 landscape height */
+    width: 297mm;
+    height: 210mm;
     margin: 0;
-    padding: 15px;
+    padding: 20mm;
     background: white;
     overflow: hidden;
     page-break-inside: avoid;
+    page-break-after: always;
+    position: relative;
 }
 
+/* Intro Page - Center Everything */
 .pdf-page.intro {
-    display: table-cell;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     text-align: center;
-    vertical-align: middle;
-    padding: 60px;
+    padding: 40mm;
 }
 
+/* Table Page - Structured Grid */
 .pdf-page.tables {
     display: flex;
     flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
 }
 
+/* Chart Page - Chart + Table Layout */
 .pdf-page.chart {
     display: flex;
     flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
 }
 
-/* Typography */
+/* Inventory Page - Organized List */
+.pdf-page.inventory {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+/* =================================
+   TYPOGRAPHY
+   ================================= */
 h1 { 
     color: #1e293b; 
-    font-size: 2.8em; 
-    margin: 0 0 0.3em 0;
+    font-size: 3.2em; 
     font-weight: 700;
     line-height: 1.1;
+    margin-bottom: 0.4em;
+    text-align: center;
 }
 
 h2 {
     color: #1e293b;
-    font-size: 1.6em;
-    margin: 0 0 0.3em 0;
-    font-weight: 400;
+    font-size: 1.8em;
+    font-weight: 600;
     text-align: center;
+    margin-bottom: 0.5em;
+}
+
+h3 {
+    color: #1e293b;
+    font-size: 1.3em;
+    font-weight: 600;
+    margin-bottom: 0.3em;
 }
 
 .subtitle {
     color: #64748b;
-    font-size: 1.1em;
-    margin-bottom: 1.5em;
+    font-size: 1.2em;
+    font-weight: 400;
     text-align: center;
+    margin-bottom: 2em;
+    line-height: 1.3;
 }
 
 .date {
     color: #94a3b8;
     font-size: 1.1em;
-    margin-top: 3em;
+    margin-top: 2em;
     padding-top: 1.5em;
     border-top: 2px solid #e2e8f0;
+    text-align: center;
 }
 
 .page-title {
     text-align: center;
-    font-size: 18px;
-    font-weight: bold;
+    font-size: 22px;
+    font-weight: 700;
     color: #1e293b;
-    margin-bottom: 15px;
-}
-
-/* Grid layouts */
-.grid-2x2 {
-    display: table;
+    margin-bottom: 8mm;
+    padding-bottom: 3mm;
+    border-bottom: 3px solid #e2e8f0;
     width: 100%;
-    height: calc(100% - 100px);
-    border-spacing: 20px;
 }
 
-.grid-row {
-    display: table-row;
-    height: 50%;
+/* =================================
+   GRID LAYOUTS
+   ================================= */
+.grid-2x2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 6mm;
+    width: 100%;
+    height: calc(100% - 25mm);
+    margin-top: 3mm;
 }
 
 .grid-cell {
-    display: table-cell;
-    width: 50%;
-    vertical-align: top;
+    position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
-/* Table cards */
-.table-card {
-    background: #fff;
-    border: 1px solid #e2e8f0;
+/* Chart + Table Combined Layout */
+.chart-table-container {
+    width: 100%;
+    height: calc(100% - 15mm);
+    display: flex;
+    flex-direction: column;
+    gap: 4mm;
+}
+
+.chart-section {
+    height: 75%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fafafa;
     border-radius: 8px;
-    padding: 12px 10px 8px 10px;
-    height: 100%;
+    padding: 3mm;
+    border: 1px solid #e2e8f0;
+}
+
+.table-section {
+    height: 25%;
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
 }
 
+/* =================================
+   CARDS & CONTAINERS
+   ================================= */
+.table-card {
+    background: #fff;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 4mm;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
 .table-title {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 700;
     color: #1e293b;
-    margin-bottom: 8px;
-    text-align: left;
+    margin-bottom: 3mm;
+    text-align: center;
+    padding-bottom: 2mm;
+    border-bottom: 2px solid #e2e8f0;
 }
 
 .table-wrapper {
-    height: calc(100% - 30px);
-    overflow: auto;
+    flex: 1;
+    overflow: hidden;
+    background: #fafafa;
+    border-radius: 8px;
+    padding: 2mm;
 }
 
-/* Tables */
+/* =================================
+   TABLES
+   ================================= */
 table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 9px;
+    font-size: 10px;
     table-layout: auto;
+    background: white;
+    border-radius: 6px;
+    overflow: hidden;
 }
 
 th, td {
     border: 1px solid #cbd5e1;
-    padding: 3px 4px;
+    padding: 4px 6px;
     text-align: center;
-    font-size: 9px;
-    word-wrap: break-word;
+    font-size: 10px;
     vertical-align: middle;
+    word-wrap: break-word;
 }
 
 th {
-    background: #1e293b;
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
     color: #fff;
-    font-size: 10px;
-    font-weight: 600;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    padding: 6px;
 }
 
 .variance-col {
-    background: #fff7e6;
-    color: #1e293b;
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    color: #92400e;
+    font-weight: 600;
 }
 
-tr:nth-child(even) { background: #f8fafc; }
-tr:nth-child(odd) { background: #fff; }
+tr:nth-child(even) { 
+    background: #f8fafc; 
+}
 
-td:first-child, th:first-child { 
-    text-align: left; 
-    font-weight: bold;
+tr:nth-child(odd) { 
+    background: #fff; 
+}
+
+tr:hover {
     background: #f1f5f9;
 }
 
+td:first-child, th:first-child { 
+    text-align: left; 
+    font-weight: 700;
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    color: #1e293b;
+}
+
 th:first-child {
-    background: #0f172a;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #fff;
 }
 
-/* Chart layouts */
-.chart-grid {
-    display: table;
-    width: 100%;
-    height: 100%;
-    border-spacing: 20px;
+/* Table Size Variants */
+.table-wide th, .table-wide td { 
+    font-size: 9px; 
+    padding: 3px 4px; 
 }
 
-.chart-main {
-    display: table-cell;
-    width: 75%;
-    text-align: center;
-    vertical-align: middle;
+.table-narrow th, .table-narrow td {
+    font-size: 11px;
+    padding: 5px 7px;
 }
 
-.chart-info {
-    display: table-cell;
-    width: 25%;
-    vertical-align: top;
+.table-medium th, .table-medium td {
+    font-size: 10px;
+    padding: 4px 6px;
 }
 
+/* =================================
+   CHARTS & IMAGES
+   ================================= */
 .chart-img {
     max-width: 100%;
+    max-height: 100%;
     width: auto;
     height: auto;
-}
-
-/* Chart & Table combo layout */
-.chart-table-grid {
-    display: table;
-    width: 100%;
-    height: 100%;
-}
-
-.chart-section {
-    display: table-row;
-    height: 70%;
-}
-
-.chart-section-cell {
-    display: table-cell;
-    text-align: center;
-    vertical-align: middle;
-    padding-bottom: 10px;
-}
-
-.table-section {
-    display: table-row;
-    height: 30%;
-}
-
-.table-section-cell {
-    display: table-cell;
-    vertical-align: top;
-    overflow: auto;
-}
-
-/* Metric cards */
-.metric-card {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
     border-radius: 8px;
-    padding: 15px;
-    margin-bottom: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* =================================
+   METRIC CARDS
+   ================================= */
+.metric-card {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border: 2px solid #cbd5e1;
+    border-radius: 12px;
+    padding: 4mm;
+    margin-bottom: 3mm;
     text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
 .metric-title {
-    font-size: 0.9em;
+    font-size: 11px;
     color: #64748b;
-    margin-bottom: 6px;
-    font-weight: 500;
+    margin-bottom: 2mm;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
 .metric-value {
-    font-size: 1.2em;
-    font-weight: 700;
+    font-size: 20px;
+    font-weight: 800;
     color: #1e293b;
-    margin-bottom: 4px;
+    margin-bottom: 1mm;
     line-height: 1;
 }
 
 .metric-change {
-    font-size: 0.8em;
-    color: #94a3b8;
-    font-weight: 400;
-}
-
-/* Responsive table sizing */
-.table-wide th, .table-wide td { 
-    font-size: 8px; 
-    padding: 2px 1px; 
-}
-
-.table-narrow th, .table-narrow td {
     font-size: 10px;
-    padding: 4px 3px;
+    color: #94a3b8;
+    font-weight: 500;
 }
 
-/* Utility classes */
+/* =================================
+   INVENTORY SPECIFIC
+   ================================= */
+.inventory-container {
+    width: 100%;
+    height: calc(100% - 15mm);
+    display: flex;
+    flex-direction: column;
+    gap: 3mm;
+}
+
+.inventory-summary {
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    border: 2px solid #cbd5e1;
+    border-radius: 12px;
+    padding: 4mm;
+    text-align: center;
+    margin-bottom: 3mm;
+}
+
+.inventory-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80mm, 1fr));
+    gap: 3mm;
+    overflow: hidden;
+}
+
+.inventory-card {
+    background: #fff;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 3mm;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.unit-info {
+    font-size: 11px;
+    margin-bottom: 1mm;
+}
+
+.unit-address {
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.unit-details {
+    color: #64748b;
+    font-size: 10px;
+}
+
+.unit-status {
+    font-size: 10px;
+    padding: 1mm 2mm;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: 600;
+    margin-top: 2mm;
+}
+
+.status-available {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-occupied {
+    background: #fef2f2;
+    color: #991b1b;
+}
+
+.status-pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+/* =================================
+   UTILITY CLASSES
+   ================================= */
 .text-center { text-align: center; }
 .text-left { text-align: left; }
 .text-right { text-align: right; }
 
-.mb-10 { margin-bottom: 10px; }
-.mb-15 { margin-bottom: 15px; }
-.mb-20 { margin-bottom: 20px; }
+.font-bold { font-weight: 700; }
+.font-semibold { font-weight: 600; }
+.font-medium { font-weight: 500; }
 
-.p-10 { padding: 10px; }
-.p-15 { padding: 15px; }
-.p-20 { padding: 20px; }
+.mb-2 { margin-bottom: 2mm; }
+.mb-3 { margin-bottom: 3mm; }
+.mb-4 { margin-bottom: 4mm; }
+.mb-5 { margin-bottom: 5mm; }
+
+.mt-2 { margin-top: 2mm; }
+.mt-3 { margin-top: 3mm; }
+.mt-4 { margin-top: 4mm; }
+
+.p-2 { padding: 2mm; }
+.p-3 { padding: 3mm; }
+.p-4 { padding: 4mm; }
+
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+
+/* =================================
+   RESPONSIVE ADJUSTMENTS
+   ================================= */
+@media print {
+    .pdf-page {
+        page-break-inside: avoid;
+        page-break-after: always;
+    }
+    
+    body {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}

@@ -405,9 +405,18 @@ queries = {
         WHERE 1=1
     """,
     'get_reports': """
-        SELECT 
-           *
-        FROM reports 
+        SELECT r1.*
+        FROM reports r1
+        INNER JOIN (
+            SELECT name, created_at
+            FROM (
+                SELECT name, created_at,
+                       ROW_NUMBER() OVER (PARTITION BY name ORDER BY created_at DESC) as rn
+                FROM reports
+            ) ranked
+            WHERE rn <= 10
+        ) r2 ON r1.name = r2.name AND r1.created_at = r2.created_at
+        ORDER BY r1.name, r1.created_at DESC
     """,
 
 }
