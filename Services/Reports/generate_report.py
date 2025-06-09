@@ -10,25 +10,30 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 WEASYPRINT = None
 
 def get_pdf_generator():
-    """Get available PDF generator, checking at runtime"""
+    """Get available PDF generator, checking at runtime - prioritize pdfkit"""
     global WEASYPRINT
     if WEASYPRINT is not None:
         return WEASYPRINT
     
+    # Try pdfkit first since we have wkhtmltopdf dependencies
     try:
-        from weasyprint import HTML as WeasyHTML
-        WEASYPRINT = 'weasyprint'
-        print("WeasyPrint loaded successfully")
+        import pdfkit
+        # Test if wkhtmltopdf is available
+        config = pdfkit.configuration()
+        WEASYPRINT = 'pdfkit'
+        print("pdfkit loaded successfully with wkhtmltopdf")
         return WEASYPRINT
-    except ImportError as e:
-        print(f"WeasyPrint not available: {e}")
+    except (ImportError, OSError) as e:
+        print(f"pdfkit not available: {e}")
+        
+        # Fallback to WeasyPrint if pdfkit fails
         try:
-            import pdfkit
-            WEASYPRINT = 'pdfkit'
-            print("Using pdfkit as fallback")
+            from weasyprint import HTML as WeasyHTML
+            WEASYPRINT = 'weasyprint'
+            print("Using WeasyPrint as fallback")
             return WEASYPRINT
         except ImportError as e2:
-            print(f"pdfkit also not available: {e2}")
+            print(f"WeasyPrint also not available: {e2}")
             WEASYPRINT = None
             return WEASYPRINT
 
@@ -250,10 +255,39 @@ def generate_report(report_name, address_filters=None):
                     return html_path
         else:  # pdfkit
             print("Using pdfkit for PDF conversion...")
-            # Check if wkhtmltopdf is available
             try:
                 import pdfkit
-                pdfkit.from_file(html_path, pdf_path)
+                
+                # Configure pdfkit options for better PDF quality
+                options = {
+                    'page-size': 'A4',
+                    'margin-top': '0.75in',
+                    'margin-right': '0.75in',
+                    'margin-bottom': '0.75in',
+                    'margin-left': '0.75in',
+                    'encoding': "UTF-8",
+                    'no-outline': None,
+                    'enable-local-file-access': None,
+                    'print-media-type': None
+                }
+                
+                # Use xvfb-run on Linux for headless operation if available
+                config = None
+                try:
+                    import subprocess
+                    result = subprocess.run(['which', 'xvfb-run'], capture_output=True)
+                    if result.returncode == 0:
+                        # xvfb-run is available, configure pdfkit to use it
+                        config = pdfkit.configuration(wkhtmltopdf='xvfb-run -a wkhtmltopdf')
+                        print("Using xvfb-run for headless PDF generation")
+                except:
+                    pass  # Use default configuration
+                
+                if config:
+                    pdfkit.from_file(html_path, pdf_path, options=options, configuration=config)
+                else:
+                    pdfkit.from_file(html_path, pdf_path, options=options)
+                    
             except OSError as e:
                 if "wkhtmltopdf" in str(e):
                     print("ERROR: wkhtmltopdf not found. Please install it:")
