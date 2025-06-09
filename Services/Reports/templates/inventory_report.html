@@ -115,7 +115,7 @@
         
         <!-- DEBUG INFO -->
         <div class="debug-info">
-            DEBUG: Total Count = {{ total_count|default:"NO_COUNT" }} | Units Length = {{ units|length|default:"NO_UNITS" }} | Has Units = {% if units %}YES{% else %}NO{% endif %}
+            DEBUG: Total Count = {{ total_count|default('NO_COUNT') }} | Units Length = {{ units|length|default('NO_UNITS') }} | Has Units = {% if units %}YES{% else %}NO{% endif %}
         </div>
         
         <table>
@@ -134,67 +134,30 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- HARDCODED TEST DATA -->
-                <tr>
-                    <td>TEST: 123 Main Street</td>
-                    <td>4A</td>
-                    <td>2</td>
-                    <td>1.5</td>
-                    <td>1,200</td>
-                    <td><span class="status-occupied">Occupied</span></td>
-                    <td>$4,500</td>
-                    <td>$4,200</td>
-                    <td>07/31/25</td>
-                    <td class="urgent">25d</td>
-                </tr>
-                <tr>
-                    <td>TEST: 456 Broadway</td>
-                    <td>2B</td>
-                    <td>1</td>
-                    <td>1.0</td>
-                    <td>850</td>
-                    <td><span class="status-vacant">Vacant</span></td>
-                    <td>$3,200</td>
-                    <td>$3,200</td>
-                    <td>08/15/25</td>
-                    <td class="soon">45d</td>
-                </tr>
-                <tr>
-                    <td>TEST: 789 Park Ave</td>
-                    <td>12F</td>
-                    <td>3</td>
-                    <td>2.0</td>
-                    <td>1,800</td>
-                    <td><span class="status-occupied">Occupied</span></td>
-                    <td>$6,800</td>
-                    <td>$6,500</td>
-                    <td>09/30/25</td>
-                    <td class="normal">120d</td>
-                </tr>
                 
                 <!-- REAL DATA IF AVAILABLE -->
                 {% for unit in units %}
                 <tr>
-                    <td>{{ unit.address|default:"NO_ADDRESS" }}</td>
-                    <td>{{ unit.unit|default:"NO_UNIT" }}</td>
-                    <td>{{ unit.beds|default:"?" }}</td>
-                    <td>{{ unit.baths|default:"?" }}</td>
-                    <td>{{ unit.sqft|default:"?" }}</td>
+                    <td>{{ unit.address|default('NO_ADDRESS') }}</td>
+                    <td>{{ unit.unit|default('NO_UNIT') }}</td>
+                    <td>{{ unit.beds|default('?') }}</td>
+                    <td>{{ unit.baths|default('?') }}</td>
+                    <td>{{ unit.sqft|default('?') }}</td>
                     <td>
                         {% if unit.unit_status == 'Occupied' %}
                         <span class="status-occupied">{{ unit.unit_status }}</span>
                         {% else %}
-                        <span class="status-vacant">{{ unit.unit_status|default:"Unknown" }}</span>
+                        <span class="status-vacant">{{ unit.unit_status|default('Unknown') }}</span>
                         {% endif %}
                     </td>
-                    <td>{{ unit.gross|default:"-" }}</td>
-                    <td>{{ unit.actual_rent|default:"-" }}</td>
-                    <td>{{ unit.move_out|default:"-" }}</td>
+                    <td>{{ unit.gross|default('-') }}</td>
+                    <td>{{ unit.actual_rent|default('-') }}</td>
+                    <td>{{ unit.move_out|default('-') }}</td>
                     <td class="{% if unit.days_until_vacant <= 30 %}urgent{% elif unit.days_until_vacant <= 60 %}soon{% else %}normal{% endif %}">
-                        {{ unit.days_until_vacant|default:"?" }}d
+                        {{ unit.days_until_vacant|default('?') }}d
                     </td>
                 </tr>
-                {% empty %}
+                {% else %}
                 <tr>
                     <td colspan="10" style="text-align: center; color: red; font-weight: bold;">
                         DEBUG: NO UNITS FOUND IN LOOP

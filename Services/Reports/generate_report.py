@@ -131,12 +131,7 @@ def generate_report(report_name, address_filters=None):
         </div>
         """
 
-    
-    inventory_html = f"""
-        <div style="text-align: center; padding: 50px;">
-           
-        </div>
-        """
+
 
     # Step 6: Concatenate HTML - try without inventory first to test
     try:

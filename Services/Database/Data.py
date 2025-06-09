@@ -408,7 +408,6 @@ queries = {
         SELECT 
            *
         FROM reports 
-       
     """,
 
 }
@@ -457,12 +456,13 @@ def run_query_system(connection, credentials, query_id, target_type=None, target
         if filters is None:
             filters = {}
 
-        # Apply data filters from credentials
-        data_filters = credentials.get("data_filters", [])
-        for column, value in data_filters:
-            if value and value not in ["Any", "", "undefined", "-", "0", " "] and column is not None and 'Any' not in value:
-                query += f" AND subquery.{column} = %s"
-                params.append(value)
+        # Apply data filters from credentials    -     DOnt add credential filters for soem queries
+        if query_id not in ['get_reports']:
+            data_filters = credentials.get("data_filters", [])
+            for column, value in data_filters:
+                if value and value not in ["Any", "", "undefined", "-", "0", " "] and column is not None and 'Any' not in value:
+                    query += f" AND subquery.{column} = %s"
+                    params.append(value)
 
         # Apply additional filters from request
         if filters:
