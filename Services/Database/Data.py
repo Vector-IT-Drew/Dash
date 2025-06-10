@@ -481,6 +481,7 @@ def run_query_system(connection, credentials, query_id, target_type=None, target
                             # 4/1/25 Onwards: Lease start > 4/1/25 OR Current deals move out is populated
                             query += """
                                 AND (subquery.start_date > '2025-04-01')
+                                AND subquery.deal_status = 'Closed'
                             """
                         elif value.lower() == 'renewal horizon':
                             # Renewal Horizon: Expiry within next 120 days or the past, for the current deal
