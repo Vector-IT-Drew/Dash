@@ -399,7 +399,6 @@ queries = {
     'get_streeteasy_data': """
     select * from (
         SELECT * FROM streeteasy_units
-        ORDER BY RAND()
         ) subquery
         WHERE 1=1
     """,

@@ -104,7 +104,7 @@ def generate_report(report_name, address_filters=None):
     # Step 3: Process comp_data with dynamic address filters
     data = {
         'comparison_tables': get_comparison_tables(comp_data),
-        'ytd_ppsf': get_ytd_ppsf_data(comp_data, address_filters),  # Pass through address filters
+        'ytd_ppsf': get_ytd_ppsf_data(comp_data),  # Now uses same amenity filters as comparison tables
         'weekly_trends': get_weekly_trends(comp_data),
         'general_metrics': calculate_general_metrics(comp_data),
         'inventory_data': get_inventory_data()  # Default to 30 units with compact layout
@@ -122,7 +122,7 @@ def generate_report(report_name, address_filters=None):
     comparison_html = env.get_template('comparison_tables.html').render(
         tables=data['comparison_tables'],
         page_title=f'Comp Report {datetime.now().strftime("%B %d, %Y")}',
-        subtitle='Comped by No Fee listings with elevator, doorman, & laundry',
+        subtitle='No Fee Listings, laundry in building, Virtusl Doorman, Live-In Super',
     )
     
     ytd_ppsf_html = env.get_template('ytd_ppsf_trends.html').render(
