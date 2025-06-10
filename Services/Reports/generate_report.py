@@ -122,7 +122,7 @@ def generate_report(report_name, address_filters=None):
     comparison_html = env.get_template('comparison_tables.html').render(
         tables=data['comparison_tables'],
         page_title=f'Comp Report {datetime.now().strftime("%B %d, %Y")}',
-        subtitle='No Fee Listings, laundry in building, Virtusl Doorman, Live-In Super',
+        subtitle='No Fee Listings, Laundry in Building, Virtual Doorman, Live-In Super',
     )
     
     ytd_ppsf_html = env.get_template('ytd_ppsf_trends.html').render(

@@ -261,7 +261,7 @@ def create_price_chart(rent_df, bedroom_filter=[0, 1, 2, 3], title="Weekly Rent 
     
     # Create matplotlib figure
     plt.style.use('default')
-    fig, ax = plt.subplots(figsize=(10, 6))
+    fig, ax = plt.subplots(figsize=(20, 6))  # Increased width to 20 for 100% page width
     
     # Color palette for different bedroom counts
     colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b']
@@ -499,7 +499,7 @@ def get_weekly_trends(comp_data, title="Weekly Rent Price Trends", bedroom_filte
     
     # --- Generate clean line chart ---
     plt.style.use('default')
-    fig, ax = plt.subplots(figsize=(16, 6))  # Reduced height to fit better with table
+    fig, ax = plt.subplots(figsize=(20, 6))  # Increased width to 20 for 100% page width
     
     # Color palette - clean blues like in the image
     colors = ['#7FB3D3', '#5B9BD5', '#4472C4', '#2F528F']
@@ -602,55 +602,10 @@ def get_ytd_ppsf_data(comp_data, custom_filters=None):
     last_year = this_year - 1
     months = [month_abbr[m] for m in range(1, datetime.now().month+1)]
     
-    # Process historical rent data to get historical PPSF
-    historical_df = process_streeteasy_rent_history(comp_data)
-    if historical_df.empty:
-        return {'charts': [], 'months': months}
-    
-    # Reset index to make date a column
-    if 'date' not in historical_df.columns:
-        historical_df = historical_df.reset_index()
-    
-    # Add year/month columns to historical data
-    historical_df['year'] = historical_df['date'].dt.year
-    historical_df['month'] = historical_df['date'].dt.month
-    
-    # Convert historical rent data to PPSF data
-    ppsf_records = []
-    for idx, row in historical_df.iterrows():
-        date = row['date']
-        year = row['year']
-        month = row['month']
-        
-        for bed_col in historical_df.columns:
-            if isinstance(bed_col, (int, float)) and bed_col in [0, 1, 2, 3, 4]:  # bedroom columns
-                price = row[bed_col]
-                if pd.notnull(price) and price > 0:
-                    # Use average sqft by bedroom type from current listings
-                    bed_data = comp_data[comp_data['bedrooms'] == bed_col]
-                    if not bed_data.empty:
-                        avg_sqft = bed_data['size_sqft'].mean()
-                        if pd.notnull(avg_sqft) and avg_sqft > 0:
-                            ppsf = price / avg_sqft
-                            ppsf_records.append({
-                                'date': date,
-                                'year': year,
-                                'month': month,
-                                'bedrooms': bed_col,
-                                'price': price,
-                                'sqft': avg_sqft,
-                                'ppsf': ppsf
-                            })
-    
-    if not ppsf_records:
-        return {'charts': [], 'months': months}
-    
-    ppsf_df = pd.DataFrame(ppsf_records)
-    
     # Create default amenities-based filters if none provided (same as comparison tables)
     if custom_filters is None:
         def has_outdoor_no_laundry_unit(amenities_str):
-            """Has balcony or terrace, but NOT laundry_in_unit"""
+            """Has balcony or terrace, but NOT washer_dryer"""
             if pd.isna(amenities_str):
                 return False
             amenities_str = str(amenities_str).lower()
@@ -659,7 +614,7 @@ def get_ytd_ppsf_data(comp_data, custom_filters=None):
             return has_outdoor and not has_laundry_unit
         
         def has_laundry_unit_no_outdoor(amenities_str):
-            """Has laundry_in_unit, but NOT balcony or terrace"""
+            """Has washer_dryer, but NOT balcony or terrace"""
             if pd.isna(amenities_str):
                 return False
             amenities_str = str(amenities_str).lower()
@@ -668,7 +623,7 @@ def get_ytd_ppsf_data(comp_data, custom_filters=None):
             return has_laundry_unit and not has_outdoor
         
         def has_both_outdoor_and_laundry_unit(amenities_str):
-            """Has both (balcony or terrace) AND laundry_in_unit"""
+            """Has both (balcony or terrace) AND washer_dryer"""
             if pd.isna(amenities_str):
                 return False
             amenities_str = str(amenities_str).lower()
@@ -705,7 +660,7 @@ def get_ytd_ppsf_data(comp_data, custom_filters=None):
             'months': months
         }
         
-        # Apply the filter to get filtered dataset
+        # Apply the filter to get filtered dataset FIRST
         try:
             filtered_comp_data = filter_def['filter_func'](comp_data)
             print(f"YTD PPSF DEBUG: {filter_def['title']} filtered to {len(filtered_comp_data)} rows")
@@ -715,18 +670,57 @@ def get_ytd_ppsf_data(comp_data, custom_filters=None):
                 charts_data.append(chart_info)
                 continue
             
-            # For PPSF calculation, we need to filter the ppsf_df based on units that match our amenities filter
-            # Since ppsf_df doesn't have amenities info, we'll approximate by using all data for now
-            # In a real implementation, you might want to track unit IDs through the historical processing
-            filtered_ppsf_df = ppsf_df.copy()
+            # NOW process historical rent data for this specific filtered dataset
+            historical_df = process_streeteasy_rent_history(filtered_comp_data)
+            if historical_df.empty:
+                chart_info['chart_path'] = None
+                charts_data.append(chart_info)
+                continue
+            
+            # Reset index to make date a column
+            if 'date' not in historical_df.columns:
+                historical_df = historical_df.reset_index()
+            
+            # Add year/month columns to historical data
+            historical_df['year'] = historical_df['date'].dt.year
+            historical_df['month'] = historical_df['date'].dt.month
+            
+            # Convert historical rent data to PPSF data for this specific filter
+            ppsf_records = []
+            for idx, row in historical_df.iterrows():
+                date = row['date']
+                year = row['year']
+                month = row['month']
+                
+                for bed_col in historical_df.columns:
+                    if isinstance(bed_col, (int, float)) and bed_col in [0, 1, 2, 3, 4]:  # bedroom columns
+                        price = row[bed_col]
+                        if pd.notnull(price) and price > 0:
+                            # Use average sqft by bedroom type from current filtered listings
+                            bed_data = filtered_comp_data[filtered_comp_data['bedrooms'] == bed_col]
+                            if not bed_data.empty:
+                                avg_sqft = bed_data['size_sqft'].mean()
+                                if pd.notnull(avg_sqft) and avg_sqft > 0:
+                                    ppsf = price / avg_sqft
+                                    ppsf_records.append({
+                                        'date': date,
+                                        'year': year,
+                                        'month': month,
+                                        'bedrooms': bed_col,
+                                        'price': price,
+                                        'sqft': avg_sqft,
+                                        'ppsf': ppsf
+                                    })
+            
+            if not ppsf_records:
+                chart_info['chart_path'] = None
+                charts_data.append(chart_info)
+                continue
+            
+            ppsf_df = pd.DataFrame(ppsf_records)
             
         except Exception as e:
-            print(f"Error applying filter '{filter_def['title']}': {e}")
-            chart_info['chart_path'] = None
-            charts_data.append(chart_info)
-            continue
-        
-        if filtered_ppsf_df.empty:
+            print(f"Error processing filter '{filter_def['title']}': {e}")
             chart_info['chart_path'] = None
             charts_data.append(chart_info)
             continue
@@ -741,12 +735,12 @@ def get_ytd_ppsf_data(comp_data, custom_filters=None):
         
         for month in range(1, datetime.now().month + 1):
             # Current year - properly average all PPSF values for the month
-            current_data = filtered_ppsf_df[(filtered_ppsf_df['year'] == this_year) & (filtered_ppsf_df['month'] == month)]
+            current_data = ppsf_df[(ppsf_df['year'] == this_year) & (ppsf_df['month'] == month)]
             current_ppsf = current_data['ppsf'].mean()
             current_year_data.append(current_ppsf if pd.notnull(current_ppsf) else np.nan)
             
             # Prior year - properly average all PPSF values for the month  
-            prior_data = filtered_ppsf_df[(filtered_ppsf_df['year'] == last_year) & (filtered_ppsf_df['month'] == month)]
+            prior_data = ppsf_df[(ppsf_df['year'] == last_year) & (ppsf_df['month'] == month)]
             prior_ppsf = prior_data['ppsf'].mean()
             prior_year_data.append(prior_ppsf if pd.notnull(prior_ppsf) else np.nan)
         
