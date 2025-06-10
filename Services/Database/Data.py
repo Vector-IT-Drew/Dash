@@ -400,7 +400,6 @@ queries = {
     select * from (
         SELECT * FROM streeteasy_units
         ORDER BY RAND()
-        LIMIT 2000
         ) subquery
         WHERE 1=1
     """,

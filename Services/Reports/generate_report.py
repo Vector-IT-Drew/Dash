@@ -37,7 +37,7 @@ def get_pdf_generator():
             WEASYPRINT = None
             return WEASYPRINT
 
-from .data_processor import get_streeteasy_data, get_comparison_tables, get_ytd_ppsf_data, get_weekly_trends, calculate_general_metrics, preprocess_df, get_inventory_data
+from .data_processor import get_streeteasy_data, create_comp_data, get_comparison_tables, get_ytd_ppsf_data, get_weekly_trends, calculate_general_metrics, preprocess_df, get_inventory_data
 
 # Add the Services directory to the path so we can import modules
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -94,16 +94,19 @@ def generate_report(report_name, address_filters=None):
     except Exception as e:
         print(f"Failed to connect to database: {e}")
 
-    # Step 2: Load and preprocess data ONCE
+    # Step 2: Load StreetEasy data and create comp_data
     df = get_streeteasy_data()
-    df = preprocess_df(df)
+    comp_data = create_comp_data(df)  # Filter to no fee + required amenities
+    comp_data = preprocess_df(comp_data)  # Preprocess the filtered data
+
     
-    # Step 3: Process data with dynamic address filters
+    
+    # Step 3: Process comp_data with dynamic address filters
     data = {
-        'comparison_tables': get_comparison_tables(df),
-        'ytd_ppsf': get_ytd_ppsf_data(df, address_filters),  # Pass through address filters
-        'weekly_trends': get_weekly_trends(df),
-        'general_metrics': calculate_general_metrics(df),
+        'comparison_tables': get_comparison_tables(comp_data),
+        'ytd_ppsf': get_ytd_ppsf_data(comp_data, address_filters),  # Pass through address filters
+        'weekly_trends': get_weekly_trends(comp_data),
+        'general_metrics': calculate_general_metrics(comp_data),
         'inventory_data': get_inventory_data()  # Default to 30 units with compact layout
     }
 

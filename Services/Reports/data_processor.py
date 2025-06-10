@@ -51,37 +51,80 @@ def get_streeteasy_data():
         print(f"Error fetching StreetEasy data: {e}")
         return pd.DataFrame()
 
-def calculate_general_metrics(df):
-    """Calculate general metrics from StreetEasy data"""
-    total_listings = len(df)
-    avg_rent = df['rent'].mean() if 'rent' in df.columns else 0
-    avg_days_on_market = df['days_on_market'].mean() if 'days_on_market' in df.columns else 0
+def create_comp_data(df):
+    """Filter StreetEasy data to create comp data with specific criteria"""
+    if df.empty:
+        print("COMP DEBUG: Input DataFrame is empty")
+        return df
+    
+    print(f"COMP DEBUG: Starting with {len(df)} rows")
+    print(f"COMP DEBUG: Columns available: {list(df.columns)}")
+    
+    # Start with the full dataset
+    comp_data = df.copy()
+    
+    # Filter 1: is_no_fee = 1
+    if 'is_no_fee' in comp_data.columns:
+        before_count = len(comp_data)
+        comp_data = comp_data[comp_data['is_no_fee'] == 1]
+        print(f"COMP DEBUG: After no_fee filter: {len(comp_data)} rows (removed {before_count - len(comp_data)})")
+    else:
+        print("COMP DEBUG: Warning - 'is_no_fee' column not found")
+    
+    # Filter 2: amenities includes required amenities
+    if 'building_amenities' in comp_data.columns:
+        before_count = len(comp_data)
+        
+        # Convert amenities to string and check for required amenities
+        def has_required_amenities(amenities_str):
+            if pd.isna(amenities_str):
+                return False
+            amenities_str = str(amenities_str).lower()
+            return (
+                'laundry' in amenities_str and
+                'virtual_doorman' in amenities_str and
+                'live_in_super' in amenities_str
+            )
+        
+        comp_data = comp_data[comp_data['amenities'].apply(has_required_amenities)]
+        print(f"COMP DEBUG: After amenities filter: {len(comp_data)} rows (removed {before_count - len(comp_data)})")
+    else:
+        print("COMP DEBUG: Warning - 'amenities' column not found")
+    
+    print(f"COMP DEBUG: Final comp_data: {len(comp_data)} rows")
+    return comp_data
+
+def calculate_general_metrics(comp_data):
+    """Calculate general metrics from comp data"""
+    total_listings = len(comp_data)
+    avg_rent = comp_data['rent'].mean() if 'rent' in comp_data.columns else 0
+    avg_days_on_market = comp_data['days_on_market'].mean() if 'days_on_market' in comp_data.columns else 0
     
     return {
         'total_listings': f"{total_listings:,}",
         'avg_rent': f"${avg_rent:,.0f}",
         'avg_days_on_market': f"{avg_days_on_market:.0f}",
-        'summary_text': f"Analysis of {total_listings:,} rental listings shows an average rent of ${avg_rent:,.0f} with properties spending an average of {avg_days_on_market:.0f} days on the market."
+        'summary_text': f"Analysis of {total_listings:,} comp rental listings (no fee, laundry, doorman, super) shows an average rent of ${avg_rent:,.0f} with properties spending an average of {avg_days_on_market:.0f} days on the market."
     }
 
-def process_streeteasy_rent_history(df):
-    """Process StreetEasy data to extract rent history trends"""
-    if df.empty:
-        print("RENT DEBUG: Input DataFrame is empty")
+def process_streeteasy_rent_history(comp_data):
+    """Process comp data to extract rent history trends"""
+    if comp_data.empty:
+        print("RENT DEBUG: Input comp_data DataFrame is empty")
         return pd.DataFrame()
     
-    print(f"RENT DEBUG: Processing {len(df)} rows")
-    print(f"RENT DEBUG: Columns available: {list(df.columns)}")
+    print(f"RENT DEBUG: Processing {len(comp_data)} comp data rows")
+    print(f"RENT DEBUG: Columns available: {list(comp_data.columns)}")
     
     # Check if price_history column exists (not rent_history)
-    if 'price_history' not in df.columns:
+    if 'price_history' not in comp_data.columns:
         print("RENT DEBUG: No 'price_history' column found")
         return pd.DataFrame()
     
     records = []
     processed_count = 0
     
-    for idx, row in df.iterrows():
+    for idx, row in comp_data.iterrows():
         try:
             bedrooms = row.get('bedrooms', 0)
             if pd.isna(bedrooms):
@@ -286,7 +329,15 @@ def create_price_chart(rent_df, bedroom_filter=[0, 1, 2, 3], title="Weekly Rent 
         plt.close(fig)
         return f"<div>Chart error: {str(e)}</div>"
 
-def get_comparison_tables(df, filters=None, filter_titles=None):
+def get_comparison_tables(comp_data, custom_filters=None):
+    """
+    Generate comparison tables with dynamic filtering
+    
+    Args:
+        comp_data: Base filtered dataset 
+        custom_filters: List of filter definitions, each with 'title' and 'filter_func'
+                       If None, creates default amenities-based filters
+    """
     def generate_table_rows(df):
         grouped = df.groupby('bedrooms')
         table_rows = []
@@ -308,6 +359,7 @@ def get_comparison_tables(df, filters=None, filter_titles=None):
             table_rows.append(row)
         table_rows = sorted(table_rows, key=lambda x: (x['Market'] if isinstance(x['Market'], int) else 99))
         return table_rows
+
     def add_variance_columns(filtered_rows, market_rows):
         market_map = {row['Market']: row for row in market_rows}
         for row in filtered_rows:
@@ -327,36 +379,96 @@ def get_comparison_tables(df, filters=None, filter_titles=None):
             row['Avg SqFt Var'] = pct(to_num(row['Avg SqFt']), to_num(m['Avg SqFt']))
             row['Avg PSf Var'] = pct(to_num(row['Avg PSf']), to_num(m['Avg PSf']))
         return filtered_rows
-    # Market table (no filter, no variance)
-    market_rows = generate_table_rows(df)
+
+    # Create default amenities-based filters if none provided
+    if custom_filters is None:
+        def has_outdoor_no_laundry_unit(amenities_str):
+            """Has balcony or terrace, but NOT laundry_in_unit"""
+            if pd.isna(amenities_str):
+                return False
+            amenities_str = str(amenities_str).lower()
+            has_outdoor = 'balcony' in amenities_str or 'terrace' in amenities_str
+            has_laundry_unit = 'laundry_in_unit' in amenities_str
+            return has_outdoor and not has_laundry_unit
+        
+        def has_laundry_unit_no_outdoor(amenities_str):
+            """Has laundry_in_unit, but NOT balcony or terrace"""
+            if pd.isna(amenities_str):
+                return False
+            amenities_str = str(amenities_str).lower()
+            has_outdoor = 'balcony' in amenities_str or 'terrace' in amenities_str
+            has_laundry_unit = 'laundry_in_unit' in amenities_str
+            return has_laundry_unit and not has_outdoor
+        
+        def has_both_outdoor_and_laundry_unit(amenities_str):
+            """Has both (balcony or terrace) AND laundry_in_unit"""
+            if pd.isna(amenities_str):
+                return False
+            amenities_str = str(amenities_str).lower()
+            has_outdoor = 'balcony' in amenities_str or 'terrace' in amenities_str
+            has_laundry_unit = 'laundry_in_unit' in amenities_str
+            return has_outdoor and has_laundry_unit
+        
+        custom_filters = [
+            {
+                'title': 'Comp Data (No Fee + Building Amenities)', 
+                'filter_func': lambda df: df  # No additional filtering - use comp_data as is
+            },
+            {
+                'title': 'Outdoor Space w/o Laundry in Unit',
+                'filter_func': lambda df: df[df['amenities'].apply(has_outdoor_no_laundry_unit)] if 'amenities' in df.columns else df.iloc[0:0]
+            },
+            {
+                'title': 'Laundry in Unit w/o Outdoor Space', 
+                'filter_func': lambda df: df[df['amenities'].apply(has_laundry_unit_no_outdoor)] if 'amenities' in df.columns else df.iloc[0:0]
+            },
+            {
+                'title': 'Outdoor Space + Laundry in Unit',
+                'filter_func': lambda df: df[df['amenities'].apply(has_both_outdoor_and_laundry_unit)] if 'amenities' in df.columns else df.iloc[0:0]
+            }
+        ]
+
+    # Generate the first table (baseline - usually comp_data with no additional filtering)
+    baseline_filter = custom_filters[0]
+    baseline_data = baseline_filter['filter_func'](comp_data)
+    market_rows = generate_table_rows(baseline_data)
+    
     tables = [{
-        'title': 'Market Data',
+        'title': baseline_filter['title'],
         'columns': ['Market', 'Avg Price', 'Avg SqFt', 'Avg PSf', 'Count'],
         'rows': market_rows
     }]
-    # Subset tables (with variance)
-    if filters is None:
-        filters = [{} for _ in range(3)]
-    if filter_titles is None:
-        filter_titles = [f'Filter {i+1}' for i in range(3)]
-    for i, f in enumerate(filters):
-        subset = df.copy()
-        for k, v in f.items():
-            subset = subset[subset[k] == v]
-        rows = generate_table_rows(subset)
-        rows = add_variance_columns(rows, market_rows)
-        tables.append({
-            'title': filter_titles[i],
-            'columns': ['Market', 'Avg Price', 'Avg SqFt', 'Avg PSf', 'Count', 'Price Variance', 'Avg SqFt Var', 'Avg PSf Var'],
-            'rows': rows
-        })
+    
+    # Generate remaining tables with variance columns
+    for filter_def in custom_filters[1:]:
+        try:
+            filtered_data = filter_def['filter_func'](comp_data)
+            print(f"COMP DEBUG: {filter_def['title']} filtered to {len(filtered_data)} rows")
+            
+            rows = generate_table_rows(filtered_data)
+            rows = add_variance_columns(rows, market_rows)
+            
+            tables.append({
+                'title': filter_def['title'],
+                'columns': ['Market', 'Avg Price', 'Avg SqFt', 'Avg PSf', 'Count', 'Price Variance', 'Avg SqFt Var', 'Avg PSf Var'],
+                'rows': rows
+            })
+        except Exception as e:
+            print(f"Error processing filter '{filter_def['title']}': {e}")
+            # Add empty table on error
+            tables.append({
+                'title': f"{filter_def['title']} (Error)",
+                'columns': ['Market', 'Avg Price', 'Avg SqFt', 'Avg PSf', 'Count', 'Price Variance', 'Avg SqFt Var', 'Avg PSf Var'],
+                'rows': []
+            })
+    
     return tables
 
-def get_weekly_trends(df, title="Weekly Rent Price Trends", bedroom_filter=None):
+def get_weekly_trends(comp_data, title="Weekly Rent Price Trends", bedroom_filter=None):
     if bedroom_filter is None:
         bedroom_filter = [0, 1, 2, 3]
         
-    rent_df = process_streeteasy_rent_history(df)
+    rent_df = process_streeteasy_rent_history(comp_data)
     if 'date' not in rent_df.columns:
         rent_df = rent_df.reset_index()
     rent_df = rent_df.sort_values('date')
@@ -477,11 +589,12 @@ def get_weekly_trends(df, title="Weekly Rent Price Trends", bedroom_filter=None)
         'bedroom_filter': available_bedrooms
     }
 
-def get_ytd_ppsf_data(df, address_filters=None):
+def get_ytd_ppsf_data(comp_data, address_filters=None):
     """
-    Generate YTD PPSF data for 4 charts using historical price data
+    Generate YTD PPSF data for 4 charts using historical price data from comp_data
     
     Args:
+        comp_data: Filtered StreetEasy data (no fee + required amenities)
         address_filters: List of dicts with 'name' and 'filter' keys
                         Example: [
                             {'name': 'Full Market Data', 'filter': {}},
@@ -496,7 +609,7 @@ def get_ytd_ppsf_data(df, address_filters=None):
     months = [month_abbr[m] for m in range(1, datetime.now().month+1)]
     
     # Process historical rent data to get historical PPSF
-    historical_df = process_streeteasy_rent_history(df)
+    historical_df = process_streeteasy_rent_history(comp_data)
     if historical_df.empty:
         return {'charts': [], 'months': months}
     
@@ -520,7 +633,7 @@ def get_ytd_ppsf_data(df, address_filters=None):
                 price = row[bed_col]
                 if pd.notnull(price) and price > 0:
                     # Use average sqft by bedroom type from current listings
-                    bed_data = df[df['bedrooms'] == bed_col]
+                    bed_data = comp_data[comp_data['bedrooms'] == bed_col]
                     if not bed_data.empty:
                         avg_sqft = bed_data['size_sqft'].mean()
                         if pd.notnull(avg_sqft) and avg_sqft > 0:
@@ -791,40 +904,43 @@ def generate_ppsf_chart_with_labels(chart_data, months, title, current_year, pri
     # Return relative path for WeasyPrint
     return f'ppsf_chart_{safe_title}.png'
 
-def preprocess_df(df):
-    df = df.copy()
+def preprocess_df(comp_data):
+    comp_data = comp_data.copy()
     # Convert columns to numeric
     for col in ['listed_price', 'size_sqft', 'bedrooms', 'net_rent']:
-        if col in df.columns:
-            df[col] = pd.to_numeric(df[col], errors='coerce')
+        if col in comp_data.columns:
+            comp_data[col] = pd.to_numeric(comp_data[col], errors='coerce')
     # Only use rows with valid, positive price and sqft and bedrooms
-    if 'listed_price' in df.columns and 'size_sqft' in df.columns:
-        df = df[(df['listed_price'] > 0) & (df['size_sqft'] > 0)]
-    if 'bedrooms' in df.columns:
-        df = df[df['bedrooms'].notnull()]
+    if 'listed_price' in comp_data.columns and 'size_sqft' in comp_data.columns:
+        comp_data = comp_data[(comp_data['listed_price'] > 0) & (comp_data['size_sqft'] > 0)]
+    if 'bedrooms' in comp_data.columns:
+        comp_data = comp_data[comp_data['bedrooms'].notnull()]
     # Calculate PPSF and NPSF
-    if 'listed_price' in df.columns and 'size_sqft' in df.columns:
-        df['ppsf'] = df['listed_price'] / df['size_sqft']
-    if 'net_rent' in df.columns and 'size_sqft' in df.columns:
-        df['npsf'] = df['net_rent'] / df['size_sqft']
+    if 'listed_price' in comp_data.columns and 'size_sqft' in comp_data.columns:
+        comp_data['ppsf'] = comp_data['listed_price'] / comp_data['size_sqft']
+    if 'net_rent' in comp_data.columns and 'size_sqft' in comp_data.columns:
+        comp_data['npsf'] = comp_data['net_rent'] / comp_data['size_sqft']
     else:
-        df['npsf'] = np.nan
+        comp_data['npsf'] = np.nan
     # Add year/month for YTD
-    if 'date_listed' in df.columns:
-        df['year'] = pd.to_datetime(df['date_listed'], errors='coerce').dt.year
-        df['month'] = pd.to_datetime(df['date_listed'], errors='coerce').dt.month
+    if 'date_listed' in comp_data.columns:
+        comp_data['year'] = pd.to_datetime(comp_data['date_listed'], errors='coerce').dt.year
+        comp_data['month'] = pd.to_datetime(comp_data['date_listed'], errors='coerce').dt.month
     else:
-        df['year'] = datetime.now().year
-        df['month'] = datetime.now().month
-    return df
+        comp_data['year'] = datetime.now().year
+        comp_data['month'] = datetime.now().month
+    return comp_data
 
 def process_all_data(df):
-    df = preprocess_df(df)
+    # Create comp data first
+    comp_data = create_comp_data(df)
+    comp_data = preprocess_df(comp_data)
+    
     return {
-        'comparison_tables': get_comparison_tables(df),
-        'ytd_ppsf': get_ytd_ppsf_data(df),
-        'weekly_trends': get_weekly_trends(df),
-        'general_metrics': calculate_general_metrics(df),
+        'comparison_tables': get_comparison_tables(comp_data),
+        'ytd_ppsf': get_ytd_ppsf_data(comp_data),
+        'weekly_trends': get_weekly_trends(comp_data),
+        'general_metrics': calculate_general_metrics(comp_data),
     }
 
 def get_template_data(template_name, processed_data, **kwargs):
