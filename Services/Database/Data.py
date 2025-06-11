@@ -621,6 +621,27 @@ def run_query_system(connection, credentials, query_id, target_type=None, target
         cursor = connection.cursor(dictionary=True)
         cursor.execute(query, params)
         data = cursor.fetchall()
+        
+        # Process data to handle bytes objects that can't be JSON serialized
+        processed_data = []
+        for row in data:
+            processed_row = {}
+            for key, value in row.items():
+                if isinstance(value, bytes):
+                    # Convert bytes to string
+                    try:
+                        processed_row[key] = value.decode('utf-8')
+                    except UnicodeDecodeError:
+                        # If it can't be decoded as UTF-8, convert to base64 string
+                        import base64
+                        processed_row[key] = base64.b64encode(value).decode('ascii')
+                elif hasattr(value, 'isoformat'):
+                    # Convert datetime objects to ISO format strings
+                    processed_row[key] = value.isoformat()
+                else:
+                    processed_row[key] = value
+            processed_data.append(processed_row)
+        
         # Get column info from the cursor description after fetching data
         col_types = {}
         readable_col_types = {}
@@ -634,8 +655,8 @@ def run_query_system(connection, credentials, query_id, target_type=None, target
             if has_request_context():
                 return jsonify({
                     "status": "success", 
-                    "count": len(data), 
-                    "data": data,
+                    "count": len(processed_data), 
+                    "data": processed_data,
                     "col_types": readable_col_types,
                     "raw_col_types": col_types  # Keep original for debugging
                 })
@@ -643,8 +664,8 @@ def run_query_system(connection, credentials, query_id, target_type=None, target
                 # Return raw dict when called outside Flask context
                 return {
                     "status": "success", 
-                    "count": len(data), 
-                    "data": data,
+                    "count": len(processed_data), 
+                    "data": processed_data,
                     "col_types": readable_col_types,
                     "raw_col_types": col_types
                 }
@@ -652,8 +673,8 @@ def run_query_system(connection, credentials, query_id, target_type=None, target
             # Fallback: return raw dict
             return {
                 "status": "success", 
-                "count": len(data), 
-                "data": data,
+                "count": len(processed_data), 
+                "data": processed_data,
                 "col_types": readable_col_types,
                 "raw_col_types": col_types
             }
