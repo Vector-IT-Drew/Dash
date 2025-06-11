@@ -464,7 +464,7 @@ def run_query_system(connection, credentials, query_id, target_type=None, target
             filters = {}
 
         # Apply data filters from credentials    -     DOnt add credential filters for soem queries
-        if query_id not in ['get_reports']:
+        if query_id not in ['get_reports', 'get_streeteasy_data']:
             data_filters = credentials.get("data_filters", [])
             for column, value in data_filters:
                 if value and value not in ["Any", "", "undefined", "-", "0", " "] and column is not None and 'Any' not in value:
