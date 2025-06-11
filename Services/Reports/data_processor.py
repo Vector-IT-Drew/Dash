@@ -12,6 +12,55 @@ from Services.Database.Data import run_query_system
 from calendar import month_abbr
 import os
 
+def parse_historical_data(historical_str):
+    """Parse concatenated historical data string back into list of dictionaries"""
+    if not historical_str or historical_str == '':
+        return []
+    
+    try:
+        records = []
+        entries = historical_str.split(';;')
+        for entry in entries:
+            parts = entry.split('|')
+            if len(parts) >= 8:  # Ensure we have all expected fields
+                record = {
+                    'date': parts[0] if parts[0] else None,
+                    'listed_price': float(parts[1]) if parts[1] and parts[1] != '' else None,
+                    'views_count': int(parts[2]) if parts[2] and parts[2] != '' else None,
+                    'leads_count': int(parts[3]) if parts[3] and parts[3] != '' else None,
+                    'saves_count': int(parts[4]) if parts[4] and parts[4] != '' else None,
+                    'shares_count': int(parts[5]) if parts[5] and parts[5] != '' else None,
+                    'days_on_market': int(parts[6]) if parts[6] and parts[6] != '' else None,
+                    'status': parts[7] if parts[7] else None
+                }
+                records.append(record)
+        return records
+    except Exception as e:
+        print(f"Error parsing historical data: {e}")
+        return []
+
+def parse_time_series_data(ts_str):
+    """Parse concatenated time series data string (date|value) back into list of dictionaries"""
+    if not ts_str or ts_str == '':
+        return []
+    
+    try:
+        records = []
+        entries = ts_str.split(';;')
+        for entry in entries:
+            parts = entry.split('|')
+            if len(parts) >= 2:
+                record = {
+                    'date': parts[0] if parts[0] else None,
+                    'value': float(parts[1]) if parts[1] and parts[1] != '' else None
+                }
+                if record['date'] and record['value'] is not None:
+                    records.append(record)
+        return records
+    except Exception as e:
+        print(f"Error parsing time series data: {e}")
+        return []
+
 def get_streeteasy_data():
     """Fetch StreetEasy data from database"""
     try:
@@ -71,11 +120,11 @@ def create_comp_data(df):
     else:
         print("COMP DEBUG: Warning - 'is_no_fee' column not found")
     
-    # Filter 2: amenities includes required amenities
+    # Filter 2: building_amenities includes required amenities
     if 'building_amenities' in comp_data.columns:
         before_count = len(comp_data)
         
-        # Convert amenities to string and check for required amenities
+        # Convert building_amenities to string and check for required amenities
         def has_required_amenities(amenities_str):
             if pd.isna(amenities_str):
                 return False
@@ -86,10 +135,10 @@ def create_comp_data(df):
                 'live_in_super' in amenities_str
             )
         
-        comp_data = comp_data[comp_data['amenities'].apply(has_required_amenities)]
-        print(f"COMP DEBUG: After amenities filter: {len(comp_data)} rows (removed {before_count - len(comp_data)})")
+        comp_data = comp_data[comp_data['building_amenities'].apply(has_required_amenities)]
+        print(f"COMP DEBUG: After building_amenities filter: {len(comp_data)} rows (removed {before_count - len(comp_data)})")
     else:
-        print("COMP DEBUG: Warning - 'amenities' column not found")
+        print("COMP DEBUG: Warning - 'building_amenities' column not found")
     
     print(f"COMP DEBUG: Final comp_data: {len(comp_data)} rows")
     return comp_data
@@ -97,8 +146,24 @@ def create_comp_data(df):
 def calculate_general_metrics(comp_data):
     """Calculate general metrics from comp data"""
     total_listings = len(comp_data)
-    avg_rent = comp_data['rent'].mean() if 'rent' in comp_data.columns else 0
-    avg_days_on_market = comp_data['days_on_market'].mean() if 'days_on_market' in comp_data.columns else 0
+    
+    # Handle the new column naming from grouped query
+    rent_col = None
+    if 'current_listed_price' in comp_data.columns:
+        rent_col = 'current_listed_price'
+    elif 'listed_price' in comp_data.columns:
+        rent_col = 'listed_price'
+    elif 'rent' in comp_data.columns:
+        rent_col = 'rent'
+    
+    dom_col = None
+    if 'current_days_on_market' in comp_data.columns:
+        dom_col = 'current_days_on_market'
+    elif 'days_on_market' in comp_data.columns:
+        dom_col = 'days_on_market'
+    
+    avg_rent = comp_data[rent_col].mean() if rent_col and rent_col in comp_data.columns else 0
+    avg_days_on_market = comp_data[dom_col].mean() if dom_col and dom_col in comp_data.columns else 0
     
     return {
         'total_listings': f"{total_listings:,}",
@@ -343,7 +408,9 @@ def get_comparison_tables(comp_data, custom_filters=None):
         table_rows = []
         for bedrooms, group in grouped:
             try:
-                avg_price = group['listed_price'].mean()
+                # Handle both old and new column names
+                price_col = 'current_listed_price' if 'current_listed_price' in group.columns else 'listed_price'
+                avg_price = group[price_col].mean()
                 avg_sqft = group['size_sqft'].mean()
                 avg_ppsf = group['ppsf'].mean()
                 count = len(group)
@@ -383,7 +450,7 @@ def get_comparison_tables(comp_data, custom_filters=None):
     # Create default amenities-based filters if none provided
     if custom_filters is None:
         def has_outdoor_no_laundry_unit(amenities_str):
-            """Has balcony or terrace, but NOT laundry_in_unit"""
+            """Has balcony or terrace, but NOT washer_dryer"""
             if pd.isna(amenities_str):
                 return False
             amenities_str = str(amenities_str).lower()
@@ -392,7 +459,7 @@ def get_comparison_tables(comp_data, custom_filters=None):
             return has_outdoor and not has_laundry_unit
         
         def has_laundry_unit_no_outdoor(amenities_str):
-            """Has laundry_in_unit, but NOT balcony or terrace"""
+            """Has washer_dryer, but NOT balcony or terrace"""
             if pd.isna(amenities_str):
                 return False
             amenities_str = str(amenities_str).lower()
@@ -401,13 +468,16 @@ def get_comparison_tables(comp_data, custom_filters=None):
             return has_laundry_unit and not has_outdoor
         
         def has_both_outdoor_and_laundry_unit(amenities_str):
-            """Has both (balcony or terrace) AND laundry_in_unit"""
+            """Has both (balcony or terrace) AND washer_dryer"""
             if pd.isna(amenities_str):
                 return False
             amenities_str = str(amenities_str).lower()
             has_outdoor = 'balcony' in amenities_str or 'terrace' in amenities_str
             has_laundry_unit = 'washer_dryer' in amenities_str
             return has_outdoor and has_laundry_unit
+        
+        # Determine which amenities column to use
+        amenities_col = 'amenities' if 'amenities' in comp_data.columns else 'building_amenities'
         
         custom_filters = [
             {
@@ -416,15 +486,15 @@ def get_comparison_tables(comp_data, custom_filters=None):
             },
             {
                 'title': 'Outdoor Space w/o Laundry in Unit',
-                'filter_func': lambda df: df[df['amenities'].apply(has_outdoor_no_laundry_unit)] if 'amenities' in df.columns else df.iloc[0:0]
+                'filter_func': lambda df: df[df[amenities_col].apply(has_outdoor_no_laundry_unit)] if amenities_col in df.columns else df.iloc[0:0]
             },
             {
                 'title': 'Laundry in Unit w/o Outdoor Space', 
-                'filter_func': lambda df: df[df['amenities'].apply(has_laundry_unit_no_outdoor)] if 'amenities' in df.columns else df.iloc[0:0]
+                'filter_func': lambda df: df[df[amenities_col].apply(has_laundry_unit_no_outdoor)] if amenities_col in df.columns else df.iloc[0:0]
             },
             {
                 'title': 'Outdoor Space + Laundry in Unit',
-                'filter_func': lambda df: df[df['amenities'].apply(has_both_outdoor_and_laundry_unit)] if 'amenities' in df.columns else df.iloc[0:0]
+                'filter_func': lambda df: df[df[amenities_col].apply(has_both_outdoor_and_laundry_unit)] if amenities_col in df.columns else df.iloc[0:0]
             }
         ]
 
@@ -631,6 +701,9 @@ def get_ytd_ppsf_data(comp_data, custom_filters=None):
             has_laundry_unit = 'washer_dryer' in amenities_str
             return has_outdoor and has_laundry_unit
         
+        # Determine which amenities column to use
+        amenities_col = 'amenities' if 'amenities' in comp_data.columns else 'building_amenities'
+        
         custom_filters = [
             {
                 'title': 'Comp Data (No Fee + Building Amenities)', 
@@ -638,15 +711,15 @@ def get_ytd_ppsf_data(comp_data, custom_filters=None):
             },
             {
                 'title': 'Outdoor Space w/o Laundry in Unit',
-                'filter_func': lambda df: df[df['amenities'].apply(has_outdoor_no_laundry_unit)] if 'amenities' in df.columns else df.iloc[0:0]
+                'filter_func': lambda df: df[df[amenities_col].apply(has_outdoor_no_laundry_unit)] if amenities_col in df.columns else df.iloc[0:0]
             },
             {
                 'title': 'Laundry in Unit w/o Outdoor Space', 
-                'filter_func': lambda df: df[df['amenities'].apply(has_laundry_unit_no_outdoor)] if 'amenities' in df.columns else df.iloc[0:0]
+                'filter_func': lambda df: df[df[amenities_col].apply(has_laundry_unit_no_outdoor)] if amenities_col in df.columns else df.iloc[0:0]
             },
             {
                 'title': 'Outdoor Space + Laundry in Unit',
-                'filter_func': lambda df: df[df['amenities'].apply(has_both_outdoor_and_laundry_unit)] if 'amenities' in df.columns else df.iloc[0:0]
+                'filter_func': lambda df: df[df[amenities_col].apply(has_both_outdoor_and_laundry_unit)] if amenities_col in df.columns else df.iloc[0:0]
             }
         ]
 
@@ -940,29 +1013,60 @@ def generate_ppsf_chart_with_labels(chart_data, months, title, current_year, pri
 
 def preprocess_df(comp_data):
     comp_data = comp_data.copy()
+    
+    # Map new column names from grouped query to expected names for compatibility
+    column_mapping = {
+        'current_listed_price': 'listed_price',
+        'current_days_on_market': 'days_on_market',
+        'current_status': 'status'
+    }
+    
+    # Rename columns if they exist
+    for old_col, new_col in column_mapping.items():
+        if old_col in comp_data.columns:
+            comp_data[new_col] = comp_data[old_col]
+    
     # Convert columns to numeric
-    for col in ['listed_price', 'size_sqft', 'bedrooms', 'net_rent']:
+    for col in ['listed_price', 'size_sqft', 'bedrooms', 'net_rent', 'current_listed_price']:
         if col in comp_data.columns:
             comp_data[col] = pd.to_numeric(comp_data[col], errors='coerce')
+    
     # Only use rows with valid, positive price and sqft and bedrooms
-    if 'listed_price' in comp_data.columns and 'size_sqft' in comp_data.columns:
-        comp_data = comp_data[(comp_data['listed_price'] > 0) & (comp_data['size_sqft'] > 0)]
+    price_col = 'current_listed_price' if 'current_listed_price' in comp_data.columns else 'listed_price'
+    if price_col in comp_data.columns and 'size_sqft' in comp_data.columns:
+        comp_data = comp_data[(comp_data[price_col] > 0) & (comp_data['size_sqft'] > 0)]
+    
     if 'bedrooms' in comp_data.columns:
         comp_data = comp_data[comp_data['bedrooms'].notnull()]
+    
     # Calculate PPSF and NPSF
-    if 'listed_price' in comp_data.columns and 'size_sqft' in comp_data.columns:
-        comp_data['ppsf'] = comp_data['listed_price'] / comp_data['size_sqft']
+    if price_col in comp_data.columns and 'size_sqft' in comp_data.columns:
+        comp_data['ppsf'] = comp_data[price_col] / comp_data['size_sqft']
+        # Also create a 'listed_price' column if it doesn't exist for backward compatibility
+        if 'listed_price' not in comp_data.columns:
+            comp_data['listed_price'] = comp_data[price_col]
+    
     if 'net_rent' in comp_data.columns and 'size_sqft' in comp_data.columns:
         comp_data['npsf'] = comp_data['net_rent'] / comp_data['size_sqft']
     else:
         comp_data['npsf'] = np.nan
-    # Add year/month for YTD
-    if 'date_listed' in comp_data.columns:
-        comp_data['year'] = pd.to_datetime(comp_data['date_listed'], errors='coerce').dt.year
-        comp_data['month'] = pd.to_datetime(comp_data['date_listed'], errors='coerce').dt.month
+    
+    # Add year/month for YTD - check multiple possible date columns
+    date_col = None
+    if 'listed_at' in comp_data.columns:
+        date_col = 'listed_at'
+    elif 'date_listed' in comp_data.columns:
+        date_col = 'date_listed'
+    elif 'last_run_date' in comp_data.columns:
+        date_col = 'last_run_date'
+    
+    if date_col:
+        comp_data['year'] = pd.to_datetime(comp_data[date_col], errors='coerce').dt.year
+        comp_data['month'] = pd.to_datetime(comp_data[date_col], errors='coerce').dt.month
     else:
         comp_data['year'] = datetime.now().year
         comp_data['month'] = datetime.now().month
+    
     return comp_data
 
 def process_all_data(df):

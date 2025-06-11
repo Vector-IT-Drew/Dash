@@ -397,10 +397,70 @@ queries = {
         WHERE subquery.unit_id = %s
     """,
     'get_streeteasy_data': """
-    select * from (
-        SELECT * FROM streeteasy_units
-        ) subquery
-        WHERE 1=1
+    SELECT 
+        address,
+        unit,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(unit_id, '') ORDER BY created_at DESC), ',', 1) as unit_id,
+        -- Most recent values for basic fields
+        MAX(created_at) as last_run_date,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(listed_price, '') ORDER BY created_at DESC), ',', 1) as current_listed_price,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(bedrooms, '') ORDER BY created_at DESC), ',', 1) as bedrooms,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(bathrooms, '') ORDER BY created_at DESC), ',', 1) as bathrooms,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(size_sqft, '') ORDER BY created_at DESC), ',', 1) as size_sqft,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(status, '') ORDER BY created_at DESC), ',', 1) as current_status,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(is_no_fee, '') ORDER BY created_at DESC), ',', 1) as is_no_fee,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(days_on_market, '') ORDER BY created_at DESC), ',', 1) as current_days_on_market,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(amenities, '') ORDER BY created_at DESC), ',', 1) as amenities,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(building_amenities, '') ORDER BY created_at DESC), ',', 1) as building_amenities,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(description, '') ORDER BY created_at DESC), ',', 1) as description,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(net_rent, '') ORDER BY created_at DESC), ',', 1) as net_rent,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(free_months, '') ORDER BY created_at DESC), ',', 1) as free_months,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(lease_term, '') ORDER BY created_at DESC), ',', 1) as lease_term,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(building, '') ORDER BY created_at DESC), ',', 1) as building,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(listed_at, '') ORDER BY created_at DESC), ',', 1) as listed_at,
+        
+        -- Price history - most recent price_history JSON field (contains historical prices)
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(price_history, '[]') ORDER BY created_at DESC), ',', 1) as price_history,
+        
+        -- Historical data as concatenated strings (safer than JSON aggregation)
+        GROUP_CONCAT(CONCAT_WS('|', 
+            IFNULL(created_at, ''), 
+            IFNULL(listed_price, ''), 
+            IFNULL(views_count, ''), 
+            IFNULL(leads_count, ''), 
+            IFNULL(saves_count, ''), 
+            IFNULL(shares_count, ''), 
+            IFNULL(days_on_market, ''), 
+            IFNULL(status, '')
+        ) ORDER BY created_at SEPARATOR ';;') as historical_data,
+        
+        -- Individual history concatenated strings
+        GROUP_CONCAT(CONCAT_WS('|', IFNULL(created_at, ''), IFNULL(views_count, '')) ORDER BY created_at SEPARATOR ';;') as views_history,
+        GROUP_CONCAT(CONCAT_WS('|', IFNULL(created_at, ''), IFNULL(leads_count, '')) ORDER BY created_at SEPARATOR ';;') as leads_history,
+        GROUP_CONCAT(CONCAT_WS('|', IFNULL(created_at, ''), IFNULL(saves_count, '')) ORDER BY created_at SEPARATOR ';;') as saves_history,
+        GROUP_CONCAT(CONCAT_WS('|', IFNULL(created_at, ''), IFNULL(shares_count, '')) ORDER BY created_at SEPARATOR ';;') as shares_history,
+        GROUP_CONCAT(CONCAT_WS('|', IFNULL(created_at, ''), IFNULL(days_on_market, '')) ORDER BY created_at SEPARATOR ';;') as dom_history,
+        GROUP_CONCAT(CONCAT_WS('|', IFNULL(created_at, ''), IFNULL(listed_price, '')) ORDER BY created_at SEPARATOR ';;') as listed_price_history,
+        
+        -- Summary statistics
+        COUNT(*) as total_records,
+        MIN(created_at) as first_seen_date,
+        MAX(IFNULL(views_count, 0)) as max_views,
+        MAX(IFNULL(leads_count, 0)) as max_leads,
+        MAX(IFNULL(saves_count, 0)) as max_saves,
+        MAX(IFNULL(shares_count, 0)) as max_shares,
+        AVG(IFNULL(views_count, 0)) as avg_views,
+        AVG(IFNULL(leads_count, 0)) as avg_leads,
+        AVG(IFNULL(saves_count, 0)) as avg_saves,
+        AVG(IFNULL(shares_count, 0)) as avg_shares
+        
+    FROM streeteasy_units
+    WHERE address IS NOT NULL 
+        AND unit IS NOT NULL
+        AND address != ''
+        AND unit != ''
+    GROUP BY address, unit
+    ORDER BY MAX(created_at) DESC
     """,
     'get_reports': """
         SELECT r1.*
