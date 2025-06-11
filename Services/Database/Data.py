@@ -397,6 +397,7 @@ queries = {
         WHERE subquery.unit_id = %s
     """,
     'get_streeteasy_data': """
+    select * from (
     SELECT 
         address,
         unit,
@@ -422,37 +423,80 @@ queries = {
         -- Price history - most recent price_history JSON field (contains historical prices)
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(price_history, '[]') ORDER BY created_at DESC), ',', 1) as price_history,
         
-        -- Historical data as concatenated strings (safer than JSON aggregation)
-        GROUP_CONCAT(CONCAT_WS('|', 
-            IFNULL(created_at, ''), 
-            IFNULL(listed_price, ''), 
-            IFNULL(views_count, ''), 
-            IFNULL(leads_count, ''), 
-            IFNULL(saves_count, ''), 
-            IFNULL(shares_count, ''), 
-            IFNULL(days_on_market, ''), 
-            IFNULL(status, '')
-        ) ORDER BY created_at SEPARATOR ';;') as historical_data,
+        -- Historical data as JSON arrays (with proper NULL handling)
+        JSON_ARRAYAGG(
+            CASE 
+                WHEN created_at IS NOT NULL THEN
+                    JSON_OBJECT(
+                        'date', created_at,
+                        'listed_price', IFNULL(listed_price, NULL),
+                        'views_count', IFNULL(views_count, NULL),
+                        'leads_count', IFNULL(leads_count, NULL),
+                        'saves_count', IFNULL(saves_count, NULL),
+                        'shares_count', IFNULL(shares_count, NULL),
+                        'days_on_market', IFNULL(days_on_market, NULL),
+                        'status', IFNULL(status, NULL)
+                    )
+                ELSE NULL
+            END
+        ) as historical_data,
         
-        -- Individual history concatenated strings
-        GROUP_CONCAT(CONCAT_WS('|', IFNULL(created_at, ''), IFNULL(views_count, '')) ORDER BY created_at SEPARATOR ';;') as views_history,
-        GROUP_CONCAT(CONCAT_WS('|', IFNULL(created_at, ''), IFNULL(leads_count, '')) ORDER BY created_at SEPARATOR ';;') as leads_history,
-        GROUP_CONCAT(CONCAT_WS('|', IFNULL(created_at, ''), IFNULL(saves_count, '')) ORDER BY created_at SEPARATOR ';;') as saves_history,
-        GROUP_CONCAT(CONCAT_WS('|', IFNULL(created_at, ''), IFNULL(shares_count, '')) ORDER BY created_at SEPARATOR ';;') as shares_history,
-        GROUP_CONCAT(CONCAT_WS('|', IFNULL(created_at, ''), IFNULL(days_on_market, '')) ORDER BY created_at SEPARATOR ';;') as dom_history,
-        GROUP_CONCAT(CONCAT_WS('|', IFNULL(created_at, ''), IFNULL(listed_price, '')) ORDER BY created_at SEPARATOR ';;') as listed_price_history,
+        -- Views history
+        JSON_ARRAYAGG(
+            CASE 
+                WHEN created_at IS NOT NULL AND views_count IS NOT NULL THEN
+                    JSON_OBJECT('date', created_at, 'views', views_count)
+                ELSE NULL
+            END
+        ) as views_history,
         
-        -- Summary statistics
-        COUNT(*) as total_records,
-        MIN(created_at) as first_seen_date,
-        MAX(IFNULL(views_count, 0)) as max_views,
-        MAX(IFNULL(leads_count, 0)) as max_leads,
-        MAX(IFNULL(saves_count, 0)) as max_saves,
-        MAX(IFNULL(shares_count, 0)) as max_shares,
-        AVG(IFNULL(views_count, 0)) as avg_views,
-        AVG(IFNULL(leads_count, 0)) as avg_leads,
-        AVG(IFNULL(saves_count, 0)) as avg_saves,
-        AVG(IFNULL(shares_count, 0)) as avg_shares
+        -- Leads history  
+        JSON_ARRAYAGG(
+            CASE 
+                WHEN created_at IS NOT NULL AND leads_count IS NOT NULL THEN
+                    JSON_OBJECT('date', created_at, 'leads', leads_count)
+                ELSE NULL
+            END
+        ) as leads_history,
+        
+        -- Saves history
+        JSON_ARRAYAGG(
+            CASE 
+                WHEN created_at IS NOT NULL AND saves_count IS NOT NULL THEN
+                    JSON_OBJECT('date', created_at, 'saves', saves_count)
+                ELSE NULL
+            END
+        ) as saves_history,
+        
+        -- Shares history
+        JSON_ARRAYAGG(
+            CASE 
+                WHEN created_at IS NOT NULL AND shares_count IS NOT NULL THEN
+                    JSON_OBJECT('date', created_at, 'shares', shares_count)
+                ELSE NULL
+            END
+        ) as shares_history,
+        
+        -- Days on Market history
+        JSON_ARRAYAGG(
+            CASE 
+                WHEN created_at IS NOT NULL AND days_on_market IS NOT NULL THEN
+                    JSON_OBJECT('date', created_at, 'dom', days_on_market)
+                ELSE NULL
+            END
+        ) as dom_history,
+        
+        -- Listed Price history
+        JSON_ARRAYAGG(
+            CASE 
+                WHEN created_at IS NOT NULL AND listed_price IS NOT NULL THEN
+                    JSON_OBJECT('date', created_at, 'price', listed_price)
+                ELSE NULL
+            END
+        ) as listed_price_history,
+        
+        -- Basic count
+        COUNT(*) as total_records
         
     FROM streeteasy_units
     WHERE address IS NOT NULL 
@@ -461,6 +505,8 @@ queries = {
         AND unit != ''
     GROUP BY address, unit
     ORDER BY MAX(created_at) DESC
+    ) subquery
+    WHERE 1=1
     """,
     'get_reports': """
         SELECT r1.*

@@ -12,55 +12,6 @@ from Services.Database.Data import run_query_system
 from calendar import month_abbr
 import os
 
-def parse_historical_data(historical_str):
-    """Parse concatenated historical data string back into list of dictionaries"""
-    if not historical_str or historical_str == '':
-        return []
-    
-    try:
-        records = []
-        entries = historical_str.split(';;')
-        for entry in entries:
-            parts = entry.split('|')
-            if len(parts) >= 8:  # Ensure we have all expected fields
-                record = {
-                    'date': parts[0] if parts[0] else None,
-                    'listed_price': float(parts[1]) if parts[1] and parts[1] != '' else None,
-                    'views_count': int(parts[2]) if parts[2] and parts[2] != '' else None,
-                    'leads_count': int(parts[3]) if parts[3] and parts[3] != '' else None,
-                    'saves_count': int(parts[4]) if parts[4] and parts[4] != '' else None,
-                    'shares_count': int(parts[5]) if parts[5] and parts[5] != '' else None,
-                    'days_on_market': int(parts[6]) if parts[6] and parts[6] != '' else None,
-                    'status': parts[7] if parts[7] else None
-                }
-                records.append(record)
-        return records
-    except Exception as e:
-        print(f"Error parsing historical data: {e}")
-        return []
-
-def parse_time_series_data(ts_str):
-    """Parse concatenated time series data string (date|value) back into list of dictionaries"""
-    if not ts_str or ts_str == '':
-        return []
-    
-    try:
-        records = []
-        entries = ts_str.split(';;')
-        for entry in entries:
-            parts = entry.split('|')
-            if len(parts) >= 2:
-                record = {
-                    'date': parts[0] if parts[0] else None,
-                    'value': float(parts[1]) if parts[1] and parts[1] != '' else None
-                }
-                if record['date'] and record['value'] is not None:
-                    records.append(record)
-        return records
-    except Exception as e:
-        print(f"Error parsing time series data: {e}")
-        return []
-
 def get_streeteasy_data():
     """Fetch StreetEasy data from database"""
     try:
