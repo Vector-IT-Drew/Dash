@@ -401,6 +401,7 @@ queries = {
     SELECT 
         address,
         unit,
+        source,
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(unit_id, '') ORDER BY created_at DESC), ',', 1) as unit_id,
         -- Most recent values for basic fields
         MAX(created_at) as last_run_date,
