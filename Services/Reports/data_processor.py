@@ -98,23 +98,12 @@ def calculate_general_metrics(comp_data):
     """Calculate general metrics from comp data"""
     total_listings = len(comp_data)
     
-    # Handle the new column naming from grouped query
-    rent_col = None
-    if 'current_listed_price' in comp_data.columns:
-        rent_col = 'current_listed_price'
-    elif 'listed_price' in comp_data.columns:
-        rent_col = 'listed_price'
-    elif 'rent' in comp_data.columns:
-        rent_col = 'rent'
+    # Handle the new column naming from flat query structure
+    rent_col = 'listed_price'  # Now we have the direct column name
+    dom_col = 'days_on_market'  # Now we have the direct column name
     
-    dom_col = None
-    if 'current_days_on_market' in comp_data.columns:
-        dom_col = 'current_days_on_market'
-    elif 'days_on_market' in comp_data.columns:
-        dom_col = 'days_on_market'
-    
-    avg_rent = comp_data[rent_col].mean() if rent_col and rent_col in comp_data.columns else 0
-    avg_days_on_market = comp_data[dom_col].mean() if dom_col and dom_col in comp_data.columns else 0
+    avg_rent = comp_data[rent_col].mean() if rent_col in comp_data.columns else 0
+    avg_days_on_market = comp_data[dom_col].mean() if dom_col in comp_data.columns else 0
     
     return {
         'total_listings': f"{total_listings:,}",
@@ -132,134 +121,67 @@ def process_streeteasy_rent_history(comp_data):
     print(f"RENT DEBUG: Processing {len(comp_data)} comp data rows")
     print(f"RENT DEBUG: Columns available: {list(comp_data.columns)}")
     
-    # Check if price_history column exists (not rent_history)
-    if 'price_history' not in comp_data.columns:
-        print("RENT DEBUG: No 'price_history' column found")
+    # Check required columns for flat structure
+    if not all(col in comp_data.columns for col in ['listed_price', 'created_at', 'bedrooms']):
+        print("RENT DEBUG: Missing required columns: listed_price, created_at, or bedrooms")
         return pd.DataFrame()
     
-    records = []
-    processed_count = 0
+    # Convert created_at to datetime if it's not already
+    comp_data = comp_data.copy()
+    comp_data['created_at'] = pd.to_datetime(comp_data['created_at'])
     
-    for idx, row in comp_data.iterrows():
-        try:
-            bedrooms = row.get('bedrooms', 0)
-            if pd.isna(bedrooms):
-                continue
-                
-            bedrooms = int(bedrooms)
-            history = row.get('price_history', '[]')  # Changed from rent_history to price_history
-            
-            if isinstance(history, str):
-                try:
-                    history = json.loads(history)
-                except json.JSONDecodeError:
-                    continue
-                
-            if not isinstance(history, list) or not history:
-                continue
-                
-            processed_count += 1
-            if processed_count <= 5:  # Debug first 5 rows
-                print(f"RENT DEBUG: Row {idx} - bedrooms: {bedrooms}, history length: {len(history)}")
-                
-            # Sort by date
-            history = sorted(history, key=lambda x: x.get('date'))
-            
-            for i, entry in enumerate(history):
-                try:
-                    price = float(entry.get('price', 0))
-                    if price <= 0:
-                        continue
-                        
-                    start_date = pd.to_datetime(entry.get('date')).date()
-                    
-                    # Determine end date
-                    if i + 1 < len(history):
-                        end_date = pd.to_datetime(history[i + 1].get('date')).date() - timedelta(days=1)
-                    else:
-                        end_date = datetime.now().date()
-                    
-                    records.append({
-                        'unit_id': row.get('unit_id'),
-                        'bedrooms': bedrooms,
-                        'start_date': start_date,
-                        'end_date': end_date,
-                        'price': price
-                    })
-                except Exception as e:
-                    if processed_count <= 5:
-                        print(f"RENT DEBUG: Error processing entry {i} for row {idx}: {e}")
-                    continue
-        except Exception as e:
-            if processed_count <= 5:
-                print(f"RENT DEBUG: Error processing row {idx}: {e}")
-            continue
+    # Filter out invalid data
+    valid_data = comp_data[
+        (comp_data['listed_price'].notna()) & 
+        (comp_data['listed_price'] > 0) &
+        (comp_data['bedrooms'].notna()) &
+        (comp_data['created_at'].notna())
+    ].copy()
     
-    print(f"RENT DEBUG: Processed {processed_count} rows with valid history")
-    print(f"RENT DEBUG: Created {len(records)} price records")
-    
-    if not records:
-        print("RENT DEBUG: No records created, returning empty DataFrame")
+    if valid_data.empty:
+        print("RENT DEBUG: No valid data after filtering")
         return pd.DataFrame()
     
-    # Convert to DataFrame
-    price_df = pd.DataFrame(records)
-    print(f"RENT DEBUG: Price DataFrame shape: {price_df.shape}")
-    print(f"RENT DEBUG: Unique bedrooms: {sorted(price_df['bedrooms'].unique())}")
+    print(f"RENT DEBUG: Valid data: {len(valid_data)} rows")
+    print(f"RENT DEBUG: Unique bedrooms: {sorted(valid_data['bedrooms'].unique())}")
+    print(f"RENT DEBUG: Date range: {valid_data['created_at'].min()} to {valid_data['created_at'].max()}")
     
     # Create date range (last 14 months)
     end_date = datetime.now().date()
     start_date = end_date - timedelta(days=425)  # ~14 months
     date_range = pd.date_range(start_date, end_date, freq='D')
-    print(f"RENT DEBUG: Date range: {start_date} to {end_date}, {len(date_range)} days")
+    print(f"RENT DEBUG: Target date range: {start_date} to {end_date}, {len(date_range)} days")
     
-    # Aggregate by date
-    daily_totals = defaultdict(lambda: defaultdict(float))
-    daily_counts = defaultdict(lambda: defaultdict(int))
+    # Filter data to date range and convert to date for grouping
+    valid_data['date'] = valid_data['created_at'].dt.date
+    valid_data = valid_data[
+        (valid_data['date'] >= start_date) & 
+        (valid_data['date'] <= end_date)
+    ]
     
-    for _, row in price_df.iterrows():
-        period_dates = pd.date_range(
-            max(row['start_date'], start_date),
-            min(row['end_date'], end_date),
-            freq='D'
-        )
-        
-        bedrooms = row['bedrooms']
-        price = row['price']
-        
-        for date in period_dates:
-            date_key = date.date()
-            daily_totals[date_key][bedrooms] += price
-            daily_counts[date_key][bedrooms] += 1
+    if valid_data.empty:
+        print("RENT DEBUG: No data in target date range")
+        return pd.DataFrame()
     
-    # Build result DataFrame
-    all_bedrooms = sorted(set(price_df['bedrooms']))
-    print(f"RENT DEBUG: All bedrooms found: {all_bedrooms}")
-    result_records = []
+    # Group by date and bedroom, taking average price for each day/bedroom combination
+    daily_averages = valid_data.groupby(['date', 'bedrooms'])['listed_price'].mean().reset_index()
     
-    for date in date_range:
-        date_key = date.date()
-        record = {'date': date}
-        
-        for bedrooms in all_bedrooms:
-            total = daily_totals[date_key][bedrooms]
-            count = daily_counts[date_key][bedrooms]
-            avg_price = total / count if count > 0 else np.nan
-            record[bedrooms] = avg_price
-            
-        result_records.append(record)
+    print(f"RENT DEBUG: Daily averages: {len(daily_averages)} records")
     
-    result_df = pd.DataFrame(result_records)
-    result_df['date'] = pd.to_datetime(result_df['date'])
-    result_df = result_df.set_index('date').sort_index()
+    # Pivot to get bedrooms as columns
+    pivot_data = daily_averages.pivot(index='date', columns='bedrooms', values='listed_price')
     
-    # Forward fill NaN values
-    result_df = result_df.ffill()
+    # Reindex to include all dates in range and forward fill missing values
+    pivot_data = pivot_data.reindex(pd.date_range(start_date, end_date, freq='D').date)
+    pivot_data = pivot_data.ffill()
     
-    print(f"RENT DEBUG: Final result DataFrame shape: {result_df.shape}")
-    print(f"RENT DEBUG: Final columns: {list(result_df.columns)}")
+    # Convert index back to datetime
+    pivot_data.index = pd.to_datetime(pivot_data.index)
     
-    return result_df
+    print(f"RENT DEBUG: Final pivot data shape: {pivot_data.shape}")
+    print(f"RENT DEBUG: Final columns: {list(pivot_data.columns)}")
+    
+    return pivot_data
 
 def create_price_chart(rent_df, bedroom_filter=[0, 1, 2, 3], title="Weekly Rent Price Trends"):
     """Create a matplotlib chart for price trends by bedroom count"""

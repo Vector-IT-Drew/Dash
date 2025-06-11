@@ -402,44 +402,45 @@ queries = {
         address,
         unit,
         -- Static fields - just get most recent value since they don't change
-        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(source, '') ORDER BY created_at DESC), ',', 1) as source,
-        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(unit_id, '') ORDER BY created_at DESC), ',', 1) as unit_id,
-        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(id, '') ORDER BY created_at DESC), ',', 1) as streeteasy_id,
-        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(bedrooms, '') ORDER BY created_at DESC), ',', 1) as bedrooms,
-        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(bathrooms, '') ORDER BY created_at DESC), ',', 1) as bathrooms,
-        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(size_sqft, '') ORDER BY created_at DESC), ',', 1) as size_sqft,
-        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(is_no_fee, '') ORDER BY created_at DESC), ',', 1) as is_no_fee,
-        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(amenities, '') ORDER BY created_at DESC), ',', 1) as amenities,
-        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(building_amenities, '') ORDER BY created_at DESC), ',', 1) as building_amenities,
-        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(description, '') ORDER BY created_at DESC), ',', 1) as description,
-        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(net_rent, '') ORDER BY created_at DESC), ',', 1) as net_rent,
-        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(free_months, '') ORDER BY created_at DESC), ',', 1) as free_months,
-        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(lease_term, '') ORDER BY created_at DESC), ',', 1) as lease_term,
-        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(building, '') ORDER BY created_at DESC), ',', 1) as building,
-        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(calc_dom, '') ORDER BY created_at DESC), ',', 1) as calc_dom,
-        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(is_vector, '') ORDER BY created_at DESC), ',', 1) as is_vector,
-        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(ctr, '') ORDER BY created_at DESC), ',', 1) as ctr,
-        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(areaName, '') ORDER BY created_at DESC), ',', 1) as areaName,
-        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(longitude, '') ORDER BY created_at DESC), ',', 1) as longitude,
-        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(latitude, '') ORDER BY created_at DESC), ',', 1) as latitude,
-        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(total_featured_impressions, '') ORDER BY created_at DESC), ',', 1) as total_featured_impressions,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(source, '') ORDER BY run_date DESC), ',', 1) as source,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(unit_id, '') ORDER BY run_date DESC), ',', 1) as unit_id,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(id, '') ORDER BY run_date DESC), ',', 1) as streeteasy_id,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(created_at, '') ORDER BY run_date DESC), ',', 1) as created_at,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(bedrooms, '') ORDER BY run_date DESC), ',', 1) as bedrooms,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(bathrooms, '') ORDER BY run_date DESC), ',', 1) as bathrooms,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(size_sqft, '') ORDER BY run_date DESC), ',', 1) as size_sqft,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(is_no_fee, '') ORDER BY run_date DESC), ',', 1) as is_no_fee,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(amenities, '') ORDER BY run_date DESC), ',', 1) as amenities,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(building_amenities, '') ORDER BY run_date DESC), ',', 1) as building_amenities,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(description, '') ORDER BY run_date DESC), ',', 1) as description,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(net_rent, '') ORDER BY run_date DESC), ',', 1) as net_rent,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(free_months, '') ORDER BY run_date DESC), ',', 1) as free_months,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(lease_term, '') ORDER BY run_date DESC), ',', 1) as lease_term,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(building, '') ORDER BY run_date DESC), ',', 1) as building,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(calc_dom, '') ORDER BY run_date DESC), ',', 1) as calc_dom,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(is_vector, '') ORDER BY run_date DESC), ',', 1) as is_vector,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(ctr, '') ORDER BY run_date DESC), ',', 1) as ctr,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(areaName, '') ORDER BY run_date DESC), ',', 1) as areaName,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(longitude, '') ORDER BY run_date DESC), ',', 1) as longitude,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(latitude, '') ORDER BY run_date DESC), ',', 1) as latitude,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(total_featured_impressions, '') ORDER BY run_date DESC), ',', 1) as total_featured_impressions,
         
         -- Current values for fields that change over time
-        MAX(created_at) as last_run_date,
-        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(listed_price, '') ORDER BY created_at DESC), ',', 1) as current_listed_price,
-        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(status, '') ORDER BY created_at DESC), ',', 1) as current_status,
-        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(days_on_market, '') ORDER BY created_at DESC), ',', 1) as current_days_on_market,
-        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(listed_at, '') ORDER BY created_at DESC), ',', 1) as listed_at,
+        MAX(run_date) as last_run_date,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(listed_price, '') ORDER BY run_date DESC), ',', 1) as current_listed_price,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(status, '') ORDER BY run_date DESC), ',', 1) as current_status,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(days_on_market, '') ORDER BY run_date DESC), ',', 1) as current_days_on_market,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(listed_at, '') ORDER BY run_date DESC), ',', 1) as listed_at,
         
         -- Price history - most recent price_history JSON field (contains historical prices)
-        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(price_history, '[]') ORDER BY created_at DESC), ',', 1) as price_history,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(price_history, '[]') ORDER BY run_date DESC), ',', 1) as price_history,
         
         -- Historical data ONLY for fields that actually change over time
         JSON_ARRAYAGG(
             CASE 
-                WHEN created_at IS NOT NULL THEN
+                WHEN run_date IS NOT NULL THEN
                     JSON_OBJECT(
-                        'date', created_at,
+                        'date', run_date,
                         'listed_price', IFNULL(listed_price, NULL),
                         'views_count', IFNULL(views_count, NULL),
                         'leads_count', IFNULL(leads_count, NULL),
@@ -455,48 +456,48 @@ queries = {
         -- Individual time series for metrics that change
         JSON_ARRAYAGG(
             CASE 
-                WHEN created_at IS NOT NULL AND views_count IS NOT NULL THEN
-                    JSON_OBJECT('date', created_at, 'views', views_count)
+                WHEN run_date IS NOT NULL AND views_count IS NOT NULL THEN
+                    JSON_OBJECT('date', run_date, 'views', views_count)
                 ELSE NULL
             END
         ) as views_history,
         
         JSON_ARRAYAGG(
             CASE 
-                WHEN created_at IS NOT NULL AND leads_count IS NOT NULL THEN
-                    JSON_OBJECT('date', created_at, 'leads', leads_count)
+                WHEN run_date IS NOT NULL AND leads_count IS NOT NULL THEN
+                    JSON_OBJECT('date', run_date, 'leads', leads_count)
                 ELSE NULL
             END
         ) as leads_history,
         
         JSON_ARRAYAGG(
             CASE 
-                WHEN created_at IS NOT NULL AND saves_count IS NOT NULL THEN
-                    JSON_OBJECT('date', created_at, 'saves', saves_count)
+                WHEN run_date IS NOT NULL AND saves_count IS NOT NULL THEN
+                    JSON_OBJECT('date', run_date, 'saves', saves_count)
                 ELSE NULL
             END
         ) as saves_history,
         
         JSON_ARRAYAGG(
             CASE 
-                WHEN created_at IS NOT NULL AND shares_count IS NOT NULL THEN
-                    JSON_OBJECT('date', created_at, 'shares', shares_count)
+                WHEN run_date IS NOT NULL AND shares_count IS NOT NULL THEN
+                    JSON_OBJECT('date', run_date, 'shares', shares_count)
                 ELSE NULL
             END
         ) as shares_history,
         
         JSON_ARRAYAGG(
             CASE 
-                WHEN created_at IS NOT NULL AND days_on_market IS NOT NULL THEN
-                    JSON_OBJECT('date', created_at, 'dom', days_on_market)
+                WHEN run_date IS NOT NULL AND days_on_market IS NOT NULL THEN
+                    JSON_OBJECT('date', run_date, 'dom', days_on_market)
                 ELSE NULL
             END
         ) as dom_history,
         
         JSON_ARRAYAGG(
             CASE 
-                WHEN created_at IS NOT NULL AND listed_price IS NOT NULL THEN
-                    JSON_OBJECT('date', created_at, 'price', listed_price)
+                WHEN run_date IS NOT NULL AND listed_price IS NOT NULL THEN
+                    JSON_OBJECT('date', run_date, 'price', listed_price)
                 ELSE NULL
             END
         ) as listed_price_history,
@@ -510,7 +511,7 @@ queries = {
         AND address != ''
         AND unit != ''
     GROUP BY address, unit
-    ORDER BY MAX(created_at) DESC
+    ORDER BY MAX(run_date) DESC
     ) subquery
     WHERE 1=1
     """,
