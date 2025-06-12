@@ -423,7 +423,8 @@ queries = {
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(latitude, '') ORDER BY run_date DESC), ',', 1) as latitude,
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(featured_days_count, '') ORDER BY run_date DESC), ',', 1) as featured_days_count,
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(listed_price, '') ORDER BY run_date DESC), ',', 1) as current_listed_price,
-
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(status, '') ORDER BY run_date DESC), ',', 1) as current_status,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(days_on_market, '') ORDER BY run_date DESC), ',', 1) as current_days_on_market,
 
                 -- Include full JSON data for listing_traffics
         GROUP_CONCAT(IFNULL(listing_traffics, '') ORDER BY run_date DESC) as listing_traffics,
@@ -573,6 +574,16 @@ def run_query_system(connection, credentials, query_id, target_type=None, target
                             query += """
                                 AND subquery.deal_status = 'Active Deal'
                             """
+                    elif column in ['current_listed_price', 'sqft', 'gross', 'actual_rent']:
+                        # Handle numeric values with direct comparison
+                        try:
+                            numeric_value = float(value)
+                            query += f" AND subquery.{column} > %s"
+                            params.append(numeric_value)
+                        except (ValueError, TypeError):
+                            # If conversion fails, treat as string with LIKE
+                            query += f" AND LOWER(subquery.{column}) LIKE LOWER(%s)"
+                            params.append(f"%{value}%")
                     else:
                         query += f" AND LOWER(subquery.{column}) LIKE LOWER(%s)"
                         params.append(f"%{value}%")
