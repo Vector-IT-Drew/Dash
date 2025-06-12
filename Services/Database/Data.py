@@ -417,7 +417,6 @@ queries = {
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(free_months, '') ORDER BY run_date DESC), ',', 1) as free_months,
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(lease_term, '') ORDER BY run_date DESC), ',', 1) as lease_term,
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(building, '') ORDER BY run_date DESC), ',', 1) as building,
-        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(calc_dom, '') ORDER BY run_date DESC), ',', 1) as calc_dom,
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(is_vector, '') ORDER BY run_date DESC), ',', 1) as is_vector,
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(ctr, '') ORDER BY run_date DESC), ',', 1) as ctr,
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(areaName, '') ORDER BY run_date DESC), ',', 1) as areaName,
@@ -435,7 +434,7 @@ queries = {
         -- Price history - most recent price_history JSON field (contains historical prices)
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(price_history, '[]') ORDER BY run_date DESC), ',', 1) as price_history,
         
-        -- Historical data ONLY for fields that actually change over time
+        -- Historical data for all fields that change over time
         JSON_ARRAYAGG(
             CASE 
                 WHEN run_date IS NOT NULL THEN
@@ -452,55 +451,6 @@ queries = {
                 ELSE NULL
             END
         ) as historical_data,
-        
-        -- Individual time series for metrics that change
-        JSON_ARRAYAGG(
-            CASE 
-                WHEN run_date IS NOT NULL AND views_count IS NOT NULL THEN
-                    JSON_OBJECT('date', run_date, 'views', views_count)
-                ELSE NULL
-            END
-        ) as views_history,
-        
-        JSON_ARRAYAGG(
-            CASE 
-                WHEN run_date IS NOT NULL AND leads_count IS NOT NULL THEN
-                    JSON_OBJECT('date', run_date, 'leads', leads_count)
-                ELSE NULL
-            END
-        ) as leads_history,
-        
-        JSON_ARRAYAGG(
-            CASE 
-                WHEN run_date IS NOT NULL AND saves_count IS NOT NULL THEN
-                    JSON_OBJECT('date', run_date, 'saves', saves_count)
-                ELSE NULL
-            END
-        ) as saves_history,
-        
-        JSON_ARRAYAGG(
-            CASE 
-                WHEN run_date IS NOT NULL AND shares_count IS NOT NULL THEN
-                    JSON_OBJECT('date', run_date, 'shares', shares_count)
-                ELSE NULL
-            END
-        ) as shares_history,
-        
-        JSON_ARRAYAGG(
-            CASE 
-                WHEN run_date IS NOT NULL AND days_on_market IS NOT NULL THEN
-                    JSON_OBJECT('date', run_date, 'dom', days_on_market)
-                ELSE NULL
-            END
-        ) as dom_history,
-        
-        JSON_ARRAYAGG(
-            CASE 
-                WHEN run_date IS NOT NULL AND listed_price IS NOT NULL THEN
-                    JSON_OBJECT('date', run_date, 'price', listed_price)
-                ELSE NULL
-            END
-        ) as listed_price_history,
         
         -- Basic count
         COUNT(*) as total_records

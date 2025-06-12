@@ -136,7 +136,7 @@ def scrape_streeteasy():
         page = 1
         has_next = True
         agent_ids = []  # Track IDs for this agent
-        time.sleep(np.random.randint(1,4))
+        time.sleep(np.random.randint(6,12))
         
         while has_next:
             payload = {
@@ -180,7 +180,7 @@ def scrape_streeteasy():
                 
                 has_next = page_info['has_next_page']
                 page += 1
-                time.sleep(np.random.choice([15, 16,19,17]))
+                time.sleep(np.random.choice([15, 16,19,25]))
                 
             except (KeyError, requests.exceptions.JSONDecodeError) as e:
                 print(f"❌ Page {page}: Error processing data")
@@ -304,7 +304,7 @@ def scrape_streeteasy():
             print(f"❌ Batch {i+1}/{len(grouped_ids)}: Error processing data")
             continue
             
-        time.sleep(np.random.choice([15, 16,19,17]))
+        time.sleep(np.random.choice([15, 16,19,25]))
         
     print("\n" + "━" * 50)
     print(f"💾 Final dataset: {len(final_df)} listings")
