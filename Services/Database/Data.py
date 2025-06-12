@@ -423,7 +423,7 @@ queries = {
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(latitude, '') ORDER BY run_date DESC), ',', 1) as latitude,
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(featured_days_count, '') ORDER BY run_date DESC), ',', 1) as featured_days_count,
         -- Include full JSON data for listing_traffics
-        JSON_UNQUOTE(JSON_EXTRACT(GROUP_CONCAT(listing_traffics ORDER BY run_date DESC), '$[0]')) as listing_traffics,
+        GROUP_CONCAT(IFNULL(listing_traffics, '') ORDER BY run_date DESC) as listing_traffics,
         
         -- Current values for fields that change over time
         MAX(run_date) as last_run_date,
