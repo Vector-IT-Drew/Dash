@@ -418,11 +418,11 @@ queries = {
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(lease_term, '') ORDER BY run_date DESC), ',', 1) as lease_term,
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(building, '') ORDER BY run_date DESC), ',', 1) as building,
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(is_vector, '') ORDER BY run_date DESC), ',', 1) as is_vector,
-        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(ctr, '') ORDER BY run_date DESC), ',', 1) as ctr,
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(areaName, '') ORDER BY run_date DESC), ',', 1) as areaName,
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(longitude, '') ORDER BY run_date DESC), ',', 1) as longitude,
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(latitude, '') ORDER BY run_date DESC), ',', 1) as latitude,
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(total_featured_impressions, '') ORDER BY run_date DESC), ',', 1) as total_featured_impressions,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(featured_days_count, '') ORDER BY run_date DESC), ',', 1) as featured_days_count,
         
         -- Current values for fields that change over time
         MAX(run_date) as last_run_date,
@@ -446,7 +446,12 @@ queries = {
                         'saves_count', IFNULL(saves_count, NULL),
                         'shares_count', IFNULL(shares_count, NULL),
                         'days_on_market', IFNULL(days_on_market, NULL),
-                        'status', IFNULL(status, NULL)
+                        'status', IFNULL(status, NULL),
+                        'total_search_impressions', IFNULL(total_search_impressions, NULL),
+                        'total_impressions', IFNULL(total_impressions, NULL),
+                        'total_featured_impressions', IFNULL(total_featured_impressions, NULL),
+                        'total_featured_views', IFNULL(total_featured_views, NULL)
+                        
                     )
                 ELSE NULL
             END
