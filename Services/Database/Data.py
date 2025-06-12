@@ -422,14 +422,8 @@ queries = {
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(longitude, '') ORDER BY run_date DESC), ',', 1) as longitude,
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(latitude, '') ORDER BY run_date DESC), ',', 1) as latitude,
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(featured_days_count, '') ORDER BY run_date DESC), ',', 1) as featured_days_count,
-        -- Get the most recent listing_traffics JSON for each address/unit
-        (
-            SELECT se2.listing_traffics
-            FROM streeteasy_units se2
-            WHERE se2.address = se1.address AND se2.unit = se1.unit
-            ORDER BY se2.run_date DESC
-            LIMIT 1
-        ) as listing_traffics,
+        -- listing_traffics: just get the most recent as string
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(listing_traffics, '') ORDER BY run_date DESC), ',', 1) as listing_traffics,
         -- Current values for fields that change over time
         MAX(run_date) as last_run_date,
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(listed_price, '') ORDER BY run_date DESC), ',', 1) as current_listed_price,
@@ -460,7 +454,7 @@ queries = {
         ) as historical_data,
         -- Basic count
         COUNT(*) as total_records
-    FROM streeteasy_units se1
+    FROM streeteasy_units
     WHERE address IS NOT NULL 
         AND unit IS NOT NULL
         AND address != ''
