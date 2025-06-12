@@ -422,19 +422,22 @@ queries = {
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(longitude, '') ORDER BY run_date DESC), ',', 1) as longitude,
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(latitude, '') ORDER BY run_date DESC), ',', 1) as latitude,
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(featured_days_count, '') ORDER BY run_date DESC), ',', 1) as featured_days_count,
-        -- Include full JSON data for listing_traffics
-        GROUP_CONCAT(IFNULL(listing_traffics, '') ORDER BY run_date DESC) as listing_traffics,
-        
+        -- Get the most recent listing_traffics JSON for each address/unit
+        (
+            SELECT se2.listing_traffics
+            FROM streeteasy_units se2
+            WHERE se2.address = se1.address AND se2.unit = se1.unit
+            ORDER BY se2.run_date DESC
+            LIMIT 1
+        ) as listing_traffics,
         -- Current values for fields that change over time
         MAX(run_date) as last_run_date,
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(listed_price, '') ORDER BY run_date DESC), ',', 1) as current_listed_price,
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(status, '') ORDER BY run_date DESC), ',', 1) as current_status,
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(days_on_market, '') ORDER BY run_date DESC), ',', 1) as current_days_on_market,
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(listed_at, '') ORDER BY run_date DESC), ',', 1) as listed_at,
-        
         -- Price history - most recent price_history JSON field (contains historical prices)
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(price_history, '[]') ORDER BY run_date DESC), ',', 1) as price_history,
-        
         -- Historical data for all fields that change over time
         JSON_ARRAYAGG(
             CASE 
@@ -451,16 +454,13 @@ queries = {
                         'total_search_impressions', IFNULL(total_search_impressions, NULL),
                         'total_impressions', IFNULL(total_impressions, NULL),
                         'total_featured_impressions', IFNULL(total_featured_impressions, NULL)
-                        
                     )
                 ELSE NULL
             END
         ) as historical_data,
-        
         -- Basic count
         COUNT(*) as total_records
-        
-    FROM streeteasy_units
+    FROM streeteasy_units se1
     WHERE address IS NOT NULL 
         AND unit IS NOT NULL
         AND address != ''
@@ -575,6 +575,7 @@ def run_query_system(connection, credentials, query_id, target_type=None, target
 
         # Execute the main query
         cursor = connection.cursor(dictionary=True)
+        cursor.execute('SET SESSION group_concat_max_len = 1000000;')
         cursor.execute(query, params)
         data = cursor.fetchall()
         
