@@ -422,6 +422,7 @@ queries = {
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(longitude, '') ORDER BY run_date DESC), ',', 1) as longitude,
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(latitude, '') ORDER BY run_date DESC), ',', 1) as latitude,
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(featured_days_count, '') ORDER BY run_date DESC), ',', 1) as featured_days_count,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(listed_price, '') ORDER BY run_date DESC), ',', 1) as current_listed_price,
 
 
                 -- Include full JSON data for listing_traffics
