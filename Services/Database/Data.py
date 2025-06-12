@@ -397,7 +397,7 @@ queries = {
         WHERE subquery.unit_id = %s
     """,
     'get_streeteasy_data': """
-    select * from (
+     select * from (
     SELECT 
         address,
         unit,
@@ -575,7 +575,6 @@ def run_query_system(connection, credentials, query_id, target_type=None, target
 
         # Execute the main query
         cursor = connection.cursor(dictionary=True)
-        cursor.execute('SET SESSION group_concat_max_len = 10000000;')
         cursor.execute(query, params)
         data = cursor.fetchall()
         
