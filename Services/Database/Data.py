@@ -427,6 +427,7 @@ queries = {
                 -- Include full JSON data for listing_traffics
         GROUP_CONCAT(IFNULL(listing_traffics, '') ORDER BY run_date DESC) as listing_traffics,
         GROUP_CONCAT(IFNULL(agents, '') ORDER BY run_date DESC) as agents,
+        GROUP_CONCAT(IFNULL(price_history, '') ORDER BY run_date DESC) as price_history,
         
         -- Current values for fields that change over time
         MAX(run_date) as last_run_date,
@@ -436,7 +437,6 @@ queries = {
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(listed_at, '') ORDER BY run_date DESC), ',', 1) as listed_at,
         
         -- Price history - most recent price_history JSON field (contains historical prices)
-        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(price_history, '[]') ORDER BY run_date DESC), ',', 1) as price_history,
         
         -- Historical data for all fields that change over time
         JSON_ARRAYAGG(
