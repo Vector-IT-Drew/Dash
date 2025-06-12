@@ -421,8 +421,8 @@ queries = {
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(areaName, '') ORDER BY run_date DESC), ',', 1) as areaName,
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(longitude, '') ORDER BY run_date DESC), ',', 1) as longitude,
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(latitude, '') ORDER BY run_date DESC), ',', 1) as latitude,
-        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(total_featured_impressions, '') ORDER BY run_date DESC), ',', 1) as total_featured_impressions,
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(featured_days_count, '') ORDER BY run_date DESC), ',', 1) as featured_days_count,
+        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(listing_traffics, '[]') ORDER BY run_date DESC), ',', 1) as listing_traffics,
         
         -- Current values for fields that change over time
         MAX(run_date) as last_run_date,
@@ -449,8 +449,7 @@ queries = {
                         'status', IFNULL(status, NULL),
                         'total_search_impressions', IFNULL(total_search_impressions, NULL),
                         'total_impressions', IFNULL(total_impressions, NULL),
-                        'total_featured_impressions', IFNULL(total_featured_impressions, NULL),
-                        'total_featured_views', IFNULL(total_featured_views, NULL)
+                        'total_featured_impressions', IFNULL(total_featured_impressions, NULL)
                         
                     )
                 ELSE NULL
