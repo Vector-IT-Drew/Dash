@@ -262,6 +262,7 @@ queries = {
                 d1.gross,
                 d2.gross AS previous_gross,
                 d1.actual_rent,
+                d1.voucher_program,
                 d2.actual_rent AS previous_actual_rent,
                 d2.deal_status AS previous_deal_status,
                 d2.move_out AS previous_move_out,
@@ -363,6 +364,7 @@ queries = {
                 d.concession,
                 d.deal_status,
                 d.tenant_ids,
+                d.voucher_program,
                 (
                     SELECT JSON_ARRAYAGG(
                         JSON_OBJECT(
