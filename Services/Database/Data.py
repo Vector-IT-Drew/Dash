@@ -412,8 +412,7 @@ queries = {
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(bathrooms, '') ORDER BY run_date DESC), ',', 1) as bathrooms,
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(size_sqft, '') ORDER BY run_date DESC), ',', 1) as size_sqft,
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(is_no_fee, '') ORDER BY run_date DESC), ',', 1) as is_no_fee,
-        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(amenities, '') ORDER BY run_date DESC), ',', 1) as amenities,
-        SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(building_amenities, '') ORDER BY run_date DESC), ',', 1) as building_amenities,
+        
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(description, '') ORDER BY run_date DESC), ',', 1) as description,
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(net_rent, '') ORDER BY run_date DESC), ',', 1) as net_rent,
         SUBSTRING_INDEX(GROUP_CONCAT(IFNULL(free_months, '') ORDER BY run_date DESC), ',', 1) as free_months,
@@ -429,6 +428,11 @@ queries = {
         GROUP_CONCAT(IFNULL(listing_traffics, '') ORDER BY run_date DESC) as listing_traffics,
         GROUP_CONCAT(IFNULL(agents, '') ORDER BY run_date DESC) as agents,
         GROUP_CONCAT(IFNULL(price_history, '') ORDER BY run_date DESC) as price_history,
+
+        GROUP_CONCAT(IFNULL(amenities, '') ORDER BY run_date DESC) as amenities,
+        GROUP_CONCAT(IFNULL(building_amenities, '') ORDER BY run_date DESC) as building_amenities,
+
+        
         
         -- Current values for fields that change over time
         MAX(run_date) as last_run_date,

@@ -36,24 +36,27 @@
         }
 
         .pdf-page.intro {
-            display: table-cell;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
-            vertical-align: middle;
-            padding: 60px;
+            height: 100%;
+            padding: 60px 0;
         }
 
-        h1 { 
-            color: #1e293b; 
-            font-size: 2.8em; 
-            margin: 0 0 0.3em 0;
+        h1 {
+            color: #1e293b;
+            font-size: 2.8em;
+            margin: 0 0 0.5em 0;
             font-weight: 700;
             line-height: 1.1;
         }
 
         .subtitle {
             color: #64748b;
-            font-size: 1.1em;
-            margin-bottom: 1.5em;
+            font-size: 1.2em;
+            margin-bottom: 2em;
             text-align: center;
         }
 
@@ -70,14 +73,14 @@
     <div class="pdf-page intro">
         <h1>NYC Rental Market Comp Report</h1>
         <div class="subtitle">Comprehensive Market Analysis</div>
-        <div class="date">Generated on June 10, 2025</div>
+        <div class="date">Generated on June 13, 2025</div>
     </div>
 </body>
 </html> <div style="page-break-after: always;"></div><!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Comp Report June 10, 2025</title>
+    <title>Comp Report June 13, 2025</title>
     <style>
         @page { 
             size: A4 landscape; 
@@ -145,6 +148,8 @@
             display: table-cell;
             width: 50%;
             vertical-align: top;
+            text-align: center;
+            padding-bottom: 18px;
         }
 
         .table-card {
@@ -154,6 +159,10 @@
             padding: 12px 10px 8px 10px;
             height: 100%;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         .table-title {
@@ -161,12 +170,15 @@
             font-weight: 700;
             color: #1e293b;
             margin-bottom: 8px;
-            text-align: left;
+            text-align: center;
         }
 
         .table-wrapper {
             height: 60mm;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         table {
@@ -213,7 +225,7 @@
 </head>
 <body>
     <div class="pdf-page tables">
-        <h2>Comp Report June 10, 2025</h2>
+        <h2>Comp Report June 13, 2025</h2>
         <div class="subtitle">No Fee Listings, Laundry in Building, Virtual Doorman, Live-In Super</div>
         <div class="grid-2x2">
             <div class="grid-row">
@@ -243,13 +255,13 @@
                                         
                                             <td>0</td>
                                         
-                                            <td>$4,111</td>
+                                            <td>$3,817</td>
                                         
-                                            <td>468</td>
+                                            <td>517</td>
                                         
-                                            <td>$8.81</td>
+                                            <td>$7.66</td>
                                         
-                                            <td>22</td>
+                                            <td>770</td>
                                         
                                     </tr>
                                     
@@ -257,13 +269,13 @@
                                         
                                             <td>1</td>
                                         
-                                            <td>$4,833</td>
+                                            <td>$4,799</td>
                                         
-                                            <td>677</td>
+                                            <td>713</td>
                                         
-                                            <td>$7.23</td>
+                                            <td>$6.87</td>
                                         
-                                            <td>62</td>
+                                            <td>1852</td>
                                         
                                     </tr>
                                     
@@ -271,13 +283,13 @@
                                         
                                             <td>2</td>
                                         
-                                            <td>$4,716</td>
+                                            <td>$7,093</td>
                                         
-                                            <td>851</td>
+                                            <td>1,072</td>
                                         
-                                            <td>$5.59</td>
+                                            <td>$6.37</td>
                                         
-                                            <td>45</td>
+                                            <td>1212</td>
                                         
                                     </tr>
                                     
@@ -285,13 +297,27 @@
                                         
                                             <td>3</td>
                                         
-                                            <td>$4,099</td>
+                                            <td>$11,124</td>
                                         
-                                            <td>851</td>
+                                            <td>1,571</td>
                                         
-                                            <td>$4.82</td>
+                                            <td>$6.32</td>
                                         
-                                            <td>1</td>
+                                            <td>512</td>
+                                        
+                                    </tr>
+                                    
+                                    <tr>
+                                        
+                                            <td>4</td>
+                                        
+                                            <td>$18,510</td>
+                                        
+                                            <td>2,428</td>
+                                        
+                                            <td>$6.88</td>
+                                        
+                                            <td>148</td>
                                         
                                     </tr>
                                     
@@ -332,19 +358,19 @@
                                         
                                             <td>0</td>
                                         
-                                            <td>$4,760</td>
+                                            <td>$4,013</td>
                                         
-                                            <td>529</td>
+                                            <td>485</td>
                                         
-                                            <td>$9.02</td>
+                                            <td>$8.34</td>
                                         
-                                            <td>9</td>
+                                            <td>86</td>
                                         
-                                            <td class="variance-col">+15.79%</td>
+                                            <td class="variance-col">+5.13%</td>
                                         
-                                            <td class="variance-col">+13.03%</td>
+                                            <td class="variance-col">-6.19%</td>
                                         
-                                            <td class="variance-col">+2.38%</td>
+                                            <td class="variance-col">+8.88%</td>
                                         
                                     </tr>
                                     
@@ -352,19 +378,19 @@
                                         
                                             <td>1</td>
                                         
-                                            <td>$5,598</td>
+                                            <td>$4,558</td>
                                         
-                                            <td>710</td>
+                                            <td>706</td>
                                         
-                                            <td>$7.95</td>
+                                            <td>$6.57</td>
                                         
-                                            <td>17</td>
+                                            <td>279</td>
                                         
-                                            <td class="variance-col">+15.83%</td>
+                                            <td class="variance-col">-5.02%</td>
                                         
-                                            <td class="variance-col">+4.87%</td>
+                                            <td class="variance-col">-0.98%</td>
                                         
-                                            <td class="variance-col">+9.96%</td>
+                                            <td class="variance-col">-4.37%</td>
                                         
                                     </tr>
                                     
@@ -372,19 +398,19 @@
                                         
                                             <td>2</td>
                                         
-                                            <td>$4,028</td>
+                                            <td>$6,721</td>
                                         
-                                            <td>776</td>
+                                            <td>1,057</td>
                                         
-                                            <td>$5.23</td>
+                                            <td>$6.22</td>
                                         
-                                            <td>7</td>
+                                            <td>185</td>
                                         
-                                            <td class="variance-col">-14.59%</td>
+                                            <td class="variance-col">-5.24%</td>
                                         
-                                            <td class="variance-col">-8.81%</td>
+                                            <td class="variance-col">-1.40%</td>
                                         
-                                            <td class="variance-col">-6.44%</td>
+                                            <td class="variance-col">-2.35%</td>
                                         
                                     </tr>
                                     
@@ -392,19 +418,39 @@
                                         
                                             <td>3</td>
                                         
-                                            <td>$4,099</td>
+                                            <td>$10,908</td>
                                         
-                                            <td>851</td>
+                                            <td>1,594</td>
                                         
-                                            <td>$4.82</td>
+                                            <td>$6.08</td>
                                         
-                                            <td>1</td>
+                                            <td>82</td>
                                         
-                                            <td class="variance-col">+0.00%</td>
+                                            <td class="variance-col">-1.94%</td>
                                         
-                                            <td class="variance-col">+0.00%</td>
+                                            <td class="variance-col">+1.46%</td>
                                         
-                                            <td class="variance-col">+0.00%</td>
+                                            <td class="variance-col">-3.80%</td>
+                                        
+                                    </tr>
+                                    
+                                    <tr>
+                                        
+                                            <td>4</td>
+                                        
+                                            <td>$25,193</td>
+                                        
+                                            <td>3,103</td>
+                                        
+                                            <td>$7.68</td>
+                                        
+                                            <td>29</td>
+                                        
+                                            <td class="variance-col">+36.10%</td>
+                                        
+                                            <td class="variance-col">+27.80%</td>
+                                        
+                                            <td class="variance-col">+11.63%</td>
                                         
                                     </tr>
                                     
@@ -445,61 +491,21 @@
                                     
                                     <tr>
                                         
-                                            <td>0</td>
+                                            <td>2</td>
                                         
-                                            <td>$3,362</td>
+                                            <td>$3,150</td>
                                         
-                                            <td>427</td>
+                                            <td>800</td>
                                         
-                                            <td>$7.95</td>
-                                        
-                                            <td>4</td>
-                                        
-                                            <td class="variance-col">-18.22%</td>
-                                        
-                                            <td class="variance-col">-8.76%</td>
-                                        
-                                            <td class="variance-col">-9.76%</td>
-                                        
-                                    </tr>
-                                    
-                                    <tr>
+                                            <td>$3.94</td>
                                         
                                             <td>1</td>
                                         
-                                            <td>$4,089</td>
+                                            <td class="variance-col">-55.59%</td>
                                         
-                                            <td>616</td>
+                                            <td class="variance-col">-25.37%</td>
                                         
-                                            <td>$6.79</td>
-                                        
-                                            <td>17</td>
-                                        
-                                            <td class="variance-col">-15.39%</td>
-                                        
-                                            <td class="variance-col">-9.01%</td>
-                                        
-                                            <td class="variance-col">-6.09%</td>
-                                        
-                                    </tr>
-                                    
-                                    <tr>
-                                        
-                                            <td>2</td>
-                                        
-                                            <td>$4,260</td>
-                                        
-                                            <td>858</td>
-                                        
-                                            <td>$5.08</td>
-                                        
-                                            <td>22</td>
-                                        
-                                            <td class="variance-col">-9.67%</td>
-                                        
-                                            <td class="variance-col">+0.82%</td>
-                                        
-                                            <td class="variance-col">-9.12%</td>
+                                            <td class="variance-col">-38.15%</td>
                                         
                                     </tr>
                                     
@@ -535,66 +541,6 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    
-                                    <tr>
-                                        
-                                            <td>0</td>
-                                        
-                                            <td>$2,400</td>
-                                        
-                                            <td>401</td>
-                                        
-                                            <td>$5.99</td>
-                                        
-                                            <td>1</td>
-                                        
-                                            <td class="variance-col">-41.62%</td>
-                                        
-                                            <td class="variance-col">-14.32%</td>
-                                        
-                                            <td class="variance-col">-32.01%</td>
-                                        
-                                    </tr>
-                                    
-                                    <tr>
-                                        
-                                            <td>1</td>
-                                        
-                                            <td>$4,513</td>
-                                        
-                                            <td>701</td>
-                                        
-                                            <td>$6.65</td>
-                                        
-                                            <td>8</td>
-                                        
-                                            <td class="variance-col">-6.62%</td>
-                                        
-                                            <td class="variance-col">+3.55%</td>
-                                        
-                                            <td class="variance-col">-8.02%</td>
-                                        
-                                    </tr>
-                                    
-                                    <tr>
-                                        
-                                            <td>2</td>
-                                        
-                                            <td>$5,900</td>
-                                        
-                                            <td>877</td>
-                                        
-                                            <td>$6.76</td>
-                                        
-                                            <td>4</td>
-                                        
-                                            <td class="variance-col">+25.11%</td>
-                                        
-                                            <td class="variance-col">+3.06%</td>
-                                        
-                                            <td class="variance-col">+20.93%</td>
-                                        
-                                    </tr>
                                     
                                 </tbody>
                             </table>
@@ -669,10 +615,14 @@
             background: #ffffff;
             border: 1.5px solid #e2e8f0;
             border-radius: 8px;
-            padding: 10px;
+            padding: 10px 0 0 0;
             width: 100%;
             height: 75mm;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
         }
 
         .quadrant-title {
@@ -689,20 +639,24 @@
         }
 
         .chart-section {
-            height: 32mm;
+            height: 38mm;
             width: 100%;
             margin-bottom: 8px;
             text-align: center;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 0;
         }
 
         .chart-section img {
-            width: 100%;
-            height: 32mm;
+            width: 99%;
+            height: 95%;
+            max-width: 105%;
+            max-height: 100%;
             object-fit: contain;
             display: block;
+            margin: 0 auto;
         }
 
         .table-section {
@@ -830,17 +784,17 @@
                                         <td>Current Year</td>
                                         <td>2025</td>
                                         
-                                        <td>$6.68</td>
+                                        <td>$10.77</td>
                                         
-                                        <td>$6.70</td>
+                                        <td>$8.52</td>
                                         
-                                        <td>$6.74</td>
+                                        <td>$7.64</td>
                                         
-                                        <td>$6.79</td>
+                                        <td>$8.23</td>
                                         
-                                        <td>$6.96</td>
+                                        <td>$6.59</td>
                                         
-                                        <td>$6.96</td>
+                                        <td>$6.12</td>
                                         
                                     </tr>
                                     
@@ -854,11 +808,11 @@
                                         
                                         <td>-</td>
                                         
-                                        <td>$6.87</td>
+                                        <td>$34.65</td>
                                         
-                                        <td>$6.41</td>
+                                        <td>$16.68</td>
                                         
-                                        <td>$6.66</td>
+                                        <td>$14.10</td>
                                         
                                     </tr>
                                     
@@ -872,11 +826,11 @@
                                         
                                         <td>-</td>
                                         
-                                        <td>-1.2%</td>
+                                        <td>-76.2%</td>
                                         
-                                        <td>+8.6%</td>
+                                        <td>-60.5%</td>
                                         
-                                        <td>+4.5%</td>
+                                        <td>-56.6%</td>
                                         
                                     </tr>
                                     
@@ -928,17 +882,17 @@
                                         <td>Current Year</td>
                                         <td>2025</td>
                                         
-                                        <td>$6.79</td>
+                                        <td>$5.52</td>
                                         
-                                        <td>$6.82</td>
+                                        <td>$7.63</td>
                                         
-                                        <td>$6.83</td>
+                                        <td>$6.65</td>
                                         
-                                        <td>$6.79</td>
+                                        <td>$7.38</td>
                                         
-                                        <td>$6.87</td>
+                                        <td>$6.92</td>
                                         
-                                        <td>$6.89</td>
+                                        <td>$7.08</td>
                                         
                                     </tr>
                                     
@@ -952,11 +906,11 @@
                                         
                                         <td>-</td>
                                         
-                                        <td>$6.68</td>
+                                        <td>$4.66</td>
                                         
-                                        <td>$6.25</td>
+                                        <td>$4.66</td>
                                         
-                                        <td>$6.48</td>
+                                        <td>$4.66</td>
                                         
                                     </tr>
                                     
@@ -970,11 +924,11 @@
                                         
                                         <td>-</td>
                                         
-                                        <td>+1.7%</td>
+                                        <td>+58.3%</td>
                                         
-                                        <td>+9.9%</td>
+                                        <td>+48.6%</td>
                                         
-                                        <td>+6.3%</td>
+                                        <td>+51.8%</td>
                                         
                                     </tr>
                                     
@@ -1028,17 +982,17 @@
                                         <td>Current Year</td>
                                         <td>2025</td>
                                         
-                                        <td>$7.22</td>
+                                        <td>-</td>
                                         
-                                        <td>$7.23</td>
+                                        <td>-</td>
                                         
-                                        <td>$7.28</td>
+                                        <td>-</td>
                                         
-                                        <td>$7.40</td>
+                                        <td>-</td>
                                         
-                                        <td>$7.49</td>
+                                        <td>-</td>
                                         
-                                        <td>$7.31</td>
+                                        <td>$3.94</td>
                                         
                                     </tr>
                                     
@@ -1052,11 +1006,11 @@
                                         
                                         <td>-</td>
                                         
-                                        <td>$7.32</td>
+                                        <td>-</td>
                                         
-                                        <td>$7.54</td>
+                                        <td>-</td>
                                         
-                                        <td>$7.94</td>
+                                        <td>-</td>
                                         
                                     </tr>
                                     
@@ -1070,11 +1024,11 @@
                                         
                                         <td>-</td>
                                         
-                                        <td>+1.2%</td>
+                                        <td>-</td>
                                         
-                                        <td>-0.7%</td>
+                                        <td>-</td>
                                         
-                                        <td>-7.9%</td>
+                                        <td>-</td>
                                         
                                     </tr>
                                     
@@ -1094,90 +1048,13 @@
                         
                         
                         <div class="chart-section">
-                            <img src="ppsf_chart_Outdoor_Space_plus_Laundry_in_Unit_4.png" alt="Outdoor Space + Laundry in Unit Chart">
+                            <div class="no-data">Chart not available</div>
                         </div>
                         
                         
                         <div class="table-section">
                             
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Category</th>
-                                        <th>Year</th>
-                                        
-                                        <th>Jan</th>
-                                        
-                                        <th>Feb</th>
-                                        
-                                        <th>Mar</th>
-                                        
-                                        <th>Apr</th>
-                                        
-                                        <th>May</th>
-                                        
-                                        <th>Jun</th>
-                                        
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    
-                                    <tr>
-                                        <td>Current Year</td>
-                                        <td>2025</td>
-                                        
-                                        <td>$6.67</td>
-                                        
-                                        <td>$6.68</td>
-                                        
-                                        <td>$6.64</td>
-                                        
-                                        <td>$6.58</td>
-                                        
-                                        <td>$6.53</td>
-                                        
-                                        <td>$6.43</td>
-                                        
-                                    </tr>
-                                    
-                                    <tr>
-                                        <td>Prior Year</td>
-                                        <td>2024</td>
-                                        
-                                        <td>-</td>
-                                        
-                                        <td>-</td>
-                                        
-                                        <td>-</td>
-                                        
-                                        <td>$8.40</td>
-                                        
-                                        <td>$8.40</td>
-                                        
-                                        <td>$7.56</td>
-                                        
-                                    </tr>
-                                    
-                                    <tr class="variance-row">
-                                        <td>Variance</td>
-                                        <td>Variance</td>
-                                        
-                                        <td>-</td>
-                                        
-                                        <td>-</td>
-                                        
-                                        <td>-</td>
-                                        
-                                        <td>-21.7%</td>
-                                        
-                                        <td>-22.3%</td>
-                                        
-                                        <td>-15.1%</td>
-                                        
-                                    </tr>
-                                    
-                                </tbody>
-                            </table>
+                            <div class="no-data">No data available</div>
                             
                         </div>
                     </div>
@@ -1261,7 +1138,7 @@
         .table-section-cell {
             display: table-cell;
             vertical-align: top;
-            overflow: auto;
+            overflow: visible;
         }
 
         .chart-img {
@@ -1275,23 +1152,24 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 9px;
-            table-layout: auto;
+            font-size: 8.5px;
+            table-layout: fixed;
         }
 
         th, td {
             border: 1px solid #cbd5e1;
-            padding: 3px 4px;
+            padding: 2px 2px;
             text-align: center;
-            font-size: 9px;
+            font-size: 8.5px;
             word-wrap: break-word;
             vertical-align: middle;
+            overflow: hidden;
         }
 
         th {
             background: #1e293b;
             color: #fff;
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 600;
         }
 
@@ -1302,6 +1180,7 @@
             text-align: left; 
             font-weight: bold;
             background: #f1f5f9;
+            width: 60px;
         }
 
         th:first-child {
@@ -1317,6 +1196,32 @@
             font-size: 10px;
             padding: 4px 3px;
         }
+
+        .wow-pos-strong { background: #dcfce7; color: #166534; font-weight: 700; }
+        .wow-pos { background: #f0fdf4; color: #166534; }
+        .wow-neg-strong { background: #fee2e2; color: #991b1b; font-weight: 700; }
+        .wow-neg { background: #fef2f2; color: #991b1b; }
+        .wow-neutral { background: #f1f5f9; color: #64748b; }
+        .wow-na { background: #f8fafc; color: #b0b0b0; }
+        .avg-wow { background: #e0e7ff; color: #3730a3; font-weight: 700; }
+        .trend-legend {
+            margin: 8px 0 16px 0;
+            text-align: center;
+            font-size: 10px;
+        }
+        .trend-legend span {
+            display: inline-block;
+            min-width: 60px;
+            padding: 2px 8px;
+            margin: 0 4px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+        .trend-legend .wow-pos-strong { background: #dcfce7; color: #166534; }
+        .trend-legend .wow-pos { background: #f0fdf4; color: #166534; }
+        .trend-legend .wow-neg-strong { background: #fee2e2; color: #991b1b; }
+        .trend-legend .wow-neg { background: #fef2f2; color: #991b1b; }
+        .trend-legend .wow-neutral { background: #f1f5f9; color: #64748b; }
     </style>
 </head>
 <body>
@@ -1328,170 +1233,361 @@
                     <img class="chart-img" src="weekly_trends_chart.png" alt="Weekly Rent Price Trends">
                 </div>
             </div>
+            <div class="trend-legend">
+                <span class="wow-pos-strong">Strong ↑</span>
+                <span class="wow-pos">Mild ↑</span>
+                <span class="wow-neutral">Flat</span>
+                <span class="wow-neg">Mild ↓</span>
+                <span class="wow-neg-strong">Strong ↓</span>
+            </div>
             <div class="table-section">
                 <div class="table-section-cell">
-                    <table class="table-wide">
+                    <table class="data-table">
                         <thead>
                             <tr>
                                 
-                                    <th>Bed</th>
+                                <th>Bed</th>
                                 
-                                    <th>Mar-30</th>
+                                <th>Mar-30</th>
                                 
-                                    <th>Apr-06</th>
+                                <th>Apr-06</th>
                                 
-                                    <th>Apr-13</th>
+                                <th>Apr-13</th>
                                 
-                                    <th>Apr-20</th>
+                                <th>Apr-20</th>
                                 
-                                    <th>Apr-27</th>
+                                <th>Apr-27</th>
                                 
-                                    <th>May-04</th>
+                                <th>May-04</th>
                                 
-                                    <th>May-11</th>
+                                <th>May-11</th>
                                 
-                                    <th>May-18</th>
+                                <th>May-18</th>
                                 
-                                    <th>May-25</th>
+                                <th>May-25</th>
                                 
-                                    <th>Jun-01</th>
+                                <th>Jun-01</th>
                                 
-                                    <th>Jun-08</th>
+                                <th>Jun-08</th>
                                 
-                                    <th>Jun-15</th>
+                                <th>Jun-15</th>
                                 
-                                    <th>WoW</th>
+                                <th>Avg WoW</th>
                                 
                             </tr>
                         </thead>
                         <tbody>
                             
                             <tr>
+                                <td>Studio</td>
                                 
-                                    <td>Studio</td>
                                 
-                                    <td>$3,927</td>
                                 
-                                    <td>$3,920</td>
+                                <td class="wow-na">
+                                    -
+                                </td>
                                 
-                                    <td>$3,939</td>
                                 
-                                    <td>$3,977</td>
                                 
-                                    <td>$4,000</td>
+                                <td class="wow-neg-strong">
+                                    -3.39%
+                                </td>
                                 
-                                    <td>$4,014</td>
                                 
-                                    <td>$4,012</td>
                                 
-                                    <td>$4,051</td>
+                                <td class="wow-neg">
+                                    -0.24%
+                                </td>
                                 
-                                    <td>$4,163</td>
                                 
-                                    <td>$4,178</td>
                                 
-                                    <td>$4,179</td>
+                                <td class="wow-neg">
+                                    -1.38%
+                                </td>
                                 
-                                    <td>$4,179</td>
                                 
-                                    <td>+0.00%</td>
                                 
+                                <td class="wow-neg">
+                                    -1.62%
+                                </td>
+                                
+                                
+                                
+                                <td class="wow-neg-strong">
+                                    -3.73%
+                                </td>
+                                
+                                
+                                
+                                <td class="wow-pos-strong">
+                                    2.02%
+                                </td>
+                                
+                                
+                                
+                                <td class="wow-pos">
+                                    0.73%
+                                </td>
+                                
+                                
+                                
+                                <td class="wow-neg-strong">
+                                    -3.67%
+                                </td>
+                                
+                                
+                                
+                                <td class="wow-neg-strong">
+                                    -4.65%
+                                </td>
+                                
+                                
+                                
+                                <td class="wow-pos-strong">
+                                    7.40%
+                                </td>
+                                
+                                
+                                
+                                <td class="wow-pos-strong">
+                                    2.17%
+                                </td>
+                                
+                                <td class="avg-wow">-0.58%</td>
                             </tr>
                             
                             <tr>
+                                <td>1 Bed</td>
                                 
-                                    <td>1 Bed</td>
                                 
-                                    <td>$4,799</td>
                                 
-                                    <td>$4,792</td>
+                                <td class="wow-na">
+                                    -
+                                </td>
                                 
-                                    <td>$4,803</td>
                                 
-                                    <td>$4,829</td>
                                 
-                                    <td>$4,894</td>
+                                <td class="wow-pos-strong">
+                                    2.19%
+                                </td>
                                 
-                                    <td>$4,933</td>
                                 
-                                    <td>$4,982</td>
                                 
-                                    <td>$5,111</td>
+                                <td class="wow-pos-strong">
+                                    9.31%
+                                </td>
                                 
-                                    <td>$5,183</td>
                                 
-                                    <td>$5,297</td>
                                 
-                                    <td>$5,303</td>
+                                <td class="wow-pos-strong">
+                                    7.11%
+                                </td>
                                 
-                                    <td>$5,303</td>
                                 
-                                    <td>+0.00%</td>
                                 
+                                <td class="wow-neg-strong">
+                                    -9.27%
+                                </td>
+                                
+                                
+                                
+                                <td class="wow-pos-strong">
+                                    4.48%
+                                </td>
+                                
+                                
+                                
+                                <td class="wow-pos-strong">
+                                    16.33%
+                                </td>
+                                
+                                
+                                
+                                <td class="wow-neg-strong">
+                                    -15.17%
+                                </td>
+                                
+                                
+                                
+                                <td class="wow-neg-strong">
+                                    -6.59%
+                                </td>
+                                
+                                
+                                
+                                <td class="wow-pos">
+                                    1.59%
+                                </td>
+                                
+                                
+                                
+                                <td class="wow-neg">
+                                    -0.16%
+                                </td>
+                                
+                                
+                                
+                                <td class="wow-pos-strong">
+                                    3.02%
+                                </td>
+                                
+                                <td class="avg-wow">1.17%</td>
                             </tr>
                             
                             <tr>
+                                <td>2 Bed</td>
                                 
-                                    <td>2 Bed</td>
                                 
-                                    <td>$5,054</td>
                                 
-                                    <td>$4,904</td>
+                                <td class="wow-na">
+                                    -
+                                </td>
                                 
-                                    <td>$4,842</td>
                                 
-                                    <td>$4,907</td>
                                 
-                                    <td>$5,105</td>
+                                <td class="wow-pos-strong">
+                                    5.24%
+                                </td>
                                 
-                                    <td>$5,120</td>
                                 
-                                    <td>$5,488</td>
                                 
-                                    <td>$5,455</td>
+                                <td class="wow-pos">
+                                    1.81%
+                                </td>
                                 
-                                    <td>$5,354</td>
                                 
-                                    <td>$5,330</td>
                                 
-                                    <td>$5,329</td>
+                                <td class="wow-pos-strong">
+                                    21.87%
+                                </td>
                                 
-                                    <td>$5,329</td>
                                 
-                                    <td>+0.00%</td>
                                 
+                                <td class="wow-neg-strong">
+                                    -23.31%
+                                </td>
+                                
+                                
+                                
+                                <td class="wow-neg-strong">
+                                    -11.30%
+                                </td>
+                                
+                                
+                                
+                                <td class="wow-pos">
+                                    1.87%
+                                </td>
+                                
+                                
+                                
+                                <td class="wow-pos-strong">
+                                    5.45%
+                                </td>
+                                
+                                
+                                
+                                <td class="wow-neg-strong">
+                                    -18.95%
+                                </td>
+                                
+                                
+                                
+                                <td class="wow-pos-strong">
+                                    20.55%
+                                </td>
+                                
+                                
+                                
+                                <td class="wow-neg-strong">
+                                    -4.69%
+                                </td>
+                                
+                                
+                                
+                                <td class="wow-pos-strong">
+                                    9.62%
+                                </td>
+                                
+                                <td class="avg-wow">0.74%</td>
                             </tr>
                             
                             <tr>
+                                <td>3 Bed</td>
                                 
-                                    <td>3 Bed</td>
                                 
-                                    <td>$4,850</td>
                                 
-                                    <td>$4,850</td>
+                                <td class="wow-na">
+                                    -
+                                </td>
                                 
-                                    <td>$4,850</td>
                                 
-                                    <td>$4,850</td>
                                 
-                                    <td>$4,850</td>
+                                <td class="wow-pos-strong">
+                                    335.82%
+                                </td>
                                 
-                                    <td>$4,850</td>
                                 
-                                    <td>$4,850</td>
                                 
-                                    <td>$4,528</td>
+                                <td class="wow-neg-strong">
+                                    -14.77%
+                                </td>
                                 
-                                    <td>$4,099</td>
                                 
-                                    <td>$4,099</td>
                                 
-                                    <td>$4,099</td>
+                                <td class="wow-pos-strong">
+                                    54.72%
+                                </td>
                                 
-                                    <td>$4,099</td>
                                 
-                                    <td>+0.00%</td>
                                 
+                                <td class="wow-neg-strong">
+                                    -45.53%
+                                </td>
+                                
+                                
+                                
+                                <td class="wow-neg-strong">
+                                    -9.99%
+                                </td>
+                                
+                                
+                                
+                                <td class="wow-neg-strong">
+                                    -28.81%
+                                </td>
+                                
+                                
+                                
+                                <td class="wow-pos-strong">
+                                    39.71%
+                                </td>
+                                
+                                
+                                
+                                <td class="wow-neg-strong">
+                                    -15.36%
+                                </td>
+                                
+                                
+                                
+                                <td class="wow-neg-strong">
+                                    -10.17%
+                                </td>
+                                
+                                
+                                
+                                <td class="wow-neg">
+                                    -1.35%
+                                </td>
+                                
+                                
+                                
+                                <td class="wow-pos-strong">
+                                    9.33%
+                                </td>
+                                
+                                <td class="avg-wow">28.51%</td>
                             </tr>
                             
                         </tbody>
@@ -1618,7 +1714,7 @@
         
         <!-- DEBUG INFO -->
         <div class="debug-info">
-            DEBUG: Total Count = 30 | Units Length = 30 | Has Units = YES
+            DEBUG: Total Count = 0 | Units Length = 0 | Has Units = NO
         </div>
         
         <table>
@@ -1641,572 +1737,8 @@
                 <!-- REAL DATA IF AVAILABLE -->
                 
                 <tr>
-                    <td>8009 134th Street</td>
-                    <td>5F</td>
-                    <td>2</td>
-                    <td>1.0</td>
-                    <td>0</td>
-                    <td>
-                        
-                        <span class="status-vacant">Vacant</span>
-                        
-                    </td>
-                    <td>3597.79</td>
-                    <td>2978.76</td>
-                    <td>06/14/25</td>
-                    <td class="urgent">
-                        3d
-                    </td>
-                </tr>
-                
-                <tr>
-                    <td>207 West 109th Street</td>
-                    <td>2R</td>
-                    <td>3</td>
-                    <td>1.0</td>
-                    <td>0</td>
-                    <td>
-                        
-                        <span class="status-occupied">Occupied</span>
-                        
-                    </td>
-                    <td>4300.00</td>
-                    <td>4300.00</td>
-                    <td>06/14/25</td>
-                    <td class="urgent">
-                        3d
-                    </td>
-                </tr>
-                
-                <tr>
-                    <td>211 West 109th Street</td>
-                    <td>2C</td>
-                    <td>2</td>
-                    <td>1.0</td>
-                    <td>0</td>
-                    <td>
-                        
-                        <span class="status-occupied">Occupied</span>
-                        
-                    </td>
-                    <td>4100.00</td>
-                    <td>4100.00</td>
-                    <td>06/20/25</td>
-                    <td class="urgent">
-                        9d
-                    </td>
-                </tr>
-                
-                <tr>
-                    <td>215 West 101st Street</td>
-                    <td>6J</td>
-                    <td>3</td>
-                    <td>1.0</td>
-                    <td>0</td>
-                    <td>
-                        
-                        <span class="status-occupied">Occupied</span>
-                        
-                    </td>
-                    <td>4500.00</td>
-                    <td>4500.00</td>
-                    <td>06/24/25</td>
-                    <td class="urgent">
-                        13d
-                    </td>
-                </tr>
-                
-                <tr>
-                    <td>215 West 101st Street</td>
-                    <td>10H</td>
-                    <td>1</td>
-                    <td>1.0</td>
-                    <td>0</td>
-                    <td>
-                        
-                        <span class="status-occupied">Occupied</span>
-                        
-                    </td>
-                    <td>3850.00</td>
-                    <td>3850.00</td>
-                    <td>06/30/25</td>
-                    <td class="urgent">
-                        19d
-                    </td>
-                </tr>
-                
-                <tr>
-                    <td>215 West 101st Street</td>
-                    <td>2D</td>
-                    <td>2</td>
-                    <td>1.0</td>
-                    <td>0</td>
-                    <td>
-                        
-                        <span class="status-occupied">Occupied</span>
-                        
-                    </td>
-                    <td>5000.00</td>
-                    <td>5000.00</td>
-                    <td>06/30/25</td>
-                    <td class="urgent">
-                        19d
-                    </td>
-                </tr>
-                
-                <tr>
-                    <td>318 West 49th Street</td>
-                    <td>2FW</td>
-                    <td>2</td>
-                    <td>1.0</td>
-                    <td>0</td>
-                    <td>
-                        
-                        <span class="status-occupied">Occupied</span>
-                        
-                    </td>
-                    <td>3857.91</td>
-                    <td>3495.00</td>
-                    <td>06/30/25</td>
-                    <td class="urgent">
-                        19d
-                    </td>
-                </tr>
-                
-                <tr>
-                    <td>324 West 49th Street</td>
-                    <td>5FE</td>
-                    <td>2</td>
-                    <td>1.0</td>
-                    <td>0</td>
-                    <td>
-                        
-                        <span class="status-vacant">Vacant</span>
-                        
-                    </td>
-                    <td>3552.79</td>
-                    <td>3495.00</td>
-                    <td>06/30/25</td>
-                    <td class="urgent">
-                        19d
-                    </td>
-                </tr>
-                
-                <tr>
-                    <td>207 West 109th Street</td>
-                    <td>4R</td>
-                    <td>3</td>
-                    <td>1.0</td>
-                    <td>0</td>
-                    <td>
-                        
-                        <span class="status-occupied">Occupied</span>
-                        
-                    </td>
-                    <td>4100.00</td>
-                    <td>4100.00</td>
-                    <td>06/30/25</td>
-                    <td class="urgent">
-                        19d
-                    </td>
-                </tr>
-                
-                <tr>
-                    <td>212 West 109th Street</td>
-                    <td>1C</td>
-                    <td>2</td>
-                    <td>1.0</td>
-                    <td>0</td>
-                    <td>
-                        
-                        <span class="status-occupied">Occupied</span>
-                        
-                    </td>
-                    <td>3600.00</td>
-                    <td>3600.00</td>
-                    <td>06/30/25</td>
-                    <td class="urgent">
-                        19d
-                    </td>
-                </tr>
-                
-                <tr>
-                    <td>225 West 109th Street</td>
-                    <td>52</td>
-                    <td>4</td>
-                    <td>1.0</td>
-                    <td>0</td>
-                    <td>
-                        
-                        <span class="status-occupied">Occupied</span>
-                        
-                    </td>
-                    <td>4900.00</td>
-                    <td>4900.00</td>
-                    <td>06/30/25</td>
-                    <td class="urgent">
-                        19d
-                    </td>
-                </tr>
-                
-                <tr>
-                    <td>215 West 101st Street</td>
-                    <td>1B</td>
-                    <td>2</td>
-                    <td>1.0</td>
-                    <td>0</td>
-                    <td>
-                        
-                        <span class="status-occupied">Occupied</span>
-                        
-                    </td>
-                    <td>4250.00</td>
-                    <td>4250.00</td>
-                    <td>07/14/25</td>
-                    <td class="soon">
-                        33d
-                    </td>
-                </tr>
-                
-                <tr>
-                    <td>203 West 109th Street</td>
-                    <td>2W</td>
-                    <td>2</td>
-                    <td>1.0</td>
-                    <td>0</td>
-                    <td>
-                        
-                        <span class="status-vacant">Vacant</span>
-                        
-                    </td>
-                    <td>3650.00</td>
-                    <td>3650.00</td>
-                    <td>07/14/25</td>
-                    <td class="soon">
-                        33d
-                    </td>
-                </tr>
-                
-                <tr>
-                    <td>206 West 109th Street</td>
-                    <td>4A</td>
-                    <td>3</td>
-                    <td>1.0</td>
-                    <td>0</td>
-                    <td>
-                        
-                        <span class="status-occupied">Occupied</span>
-                        
-                    </td>
-                    <td>4600.00</td>
-                    <td>4600.00</td>
-                    <td>07/14/25</td>
-                    <td class="soon">
-                        33d
-                    </td>
-                </tr>
-                
-                <tr>
-                    <td>211 West 109th Street</td>
-                    <td>1C</td>
-                    <td>3</td>
-                    <td>1.0</td>
-                    <td>0</td>
-                    <td>
-                        
-                        <span class="status-occupied">Occupied</span>
-                        
-                    </td>
-                    <td>4250.00</td>
-                    <td>4250.00</td>
-                    <td>07/14/25</td>
-                    <td class="soon">
-                        33d
-                    </td>
-                </tr>
-                
-                <tr>
-                    <td>25 East 67th Street</td>
-                    <td>5A</td>
-                    <td>1</td>
-                    <td>1.0</td>
-                    <td>0</td>
-                    <td>
-                        
-                        <span class="status-occupied">Occupied</span>
-                        
-                    </td>
-                    <td>5459.00</td>
-                    <td>5459.00</td>
-                    <td>07/31/25</td>
-                    <td class="soon">
-                        50d
-                    </td>
-                </tr>
-                
-                <tr>
-                    <td>25 East 67th Street</td>
-                    <td>7E</td>
-                    <td>1</td>
-                    <td>1.0</td>
-                    <td>0</td>
-                    <td>
-                        
-                        <span class="status-occupied">Occupied</span>
-                        
-                    </td>
-                    <td>4500.00</td>
-                    <td>4500.00</td>
-                    <td>07/31/25</td>
-                    <td class="soon">
-                        50d
-                    </td>
-                </tr>
-                
-                <tr>
-                    <td>2247 7th Avenue</td>
-                    <td>4D</td>
-                    <td>0</td>
-                    <td>0.0</td>
-                    <td>0</td>
-                    <td>
-                        
-                        <span class="status-occupied">Occupied</span>
-                        
-                    </td>
-                    <td>2797.74</td>
-                    <td>2797.74</td>
-                    <td>07/31/25</td>
-                    <td class="soon">
-                        50d
-                    </td>
-                </tr>
-                
-                <tr>
-                    <td>203 West 109th Street</td>
-                    <td>4R</td>
-                    <td>3</td>
-                    <td>1.0</td>
-                    <td>0</td>
-                    <td>
-                        
-                        <span class="status-occupied">Occupied</span>
-                        
-                    </td>
-                    <td>4250.00</td>
-                    <td>4250.00</td>
-                    <td>07/31/25</td>
-                    <td class="soon">
-                        50d
-                    </td>
-                </tr>
-                
-                <tr>
-                    <td>205 West 109th Street</td>
-                    <td>4R</td>
-                    <td>3</td>
-                    <td>1.0</td>
-                    <td>0</td>
-                    <td>
-                        
-                        <span class="status-occupied">Occupied</span>
-                        
-                    </td>
-                    <td>4400.00</td>
-                    <td>4400.00</td>
-                    <td>07/31/25</td>
-                    <td class="soon">
-                        50d
-                    </td>
-                </tr>
-                
-                <tr>
-                    <td>209 West 109th Street</td>
-                    <td>2E</td>
-                    <td>2</td>
-                    <td>1.0</td>
-                    <td>0</td>
-                    <td>
-                        
-                        <span class="status-occupied">Occupied</span>
-                        
-                    </td>
-                    <td>3137.81</td>
-                    <td>3137.81</td>
-                    <td>07/31/25</td>
-                    <td class="soon">
-                        50d
-                    </td>
-                </tr>
-                
-                <tr>
-                    <td>212 West 109th Street</td>
-                    <td>5B</td>
-                    <td>3</td>
-                    <td>1.0</td>
-                    <td>0</td>
-                    <td>
-                        
-                        <span class="status-vacant">Vacant</span>
-                        
-                    </td>
-                    <td>4600.00</td>
-                    <td>4600.00</td>
-                    <td>07/31/25</td>
-                    <td class="soon">
-                        50d
-                    </td>
-                </tr>
-                
-                <tr>
-                    <td>211 West 109th Street</td>
-                    <td>1D</td>
-                    <td>2</td>
-                    <td>1.0</td>
-                    <td>0</td>
-                    <td>
-                        
-                        <span class="status-occupied">Occupied</span>
-                        
-                    </td>
-                    <td>3600.00</td>
-                    <td>3600.00</td>
-                    <td>08/02/25</td>
-                    <td class="soon">
-                        52d
-                    </td>
-                </tr>
-                
-                <tr>
-                    <td>204 West 109th Street</td>
-                    <td>5B</td>
-                    <td>3</td>
-                    <td>1.0</td>
-                    <td>0</td>
-                    <td>
-                        
-                        <span class="status-occupied">Occupied</span>
-                        
-                    </td>
-                    <td>4650.00</td>
-                    <td>4650.00</td>
-                    <td>08/06/25</td>
-                    <td class="soon">
-                        56d
-                    </td>
-                </tr>
-                
-                <tr>
-                    <td>25 East 67th Street</td>
-                    <td>8D</td>
-                    <td>0</td>
-                    <td>1.0</td>
-                    <td>0</td>
-                    <td>
-                        
-                        <span class="status-occupied">Occupied</span>
-                        
-                    </td>
-                    <td>3550.00</td>
-                    <td>3550.00</td>
-                    <td>08/14/25</td>
-                    <td class="normal">
-                        64d
-                    </td>
-                </tr>
-                
-                <tr>
-                    <td>308 West 49th Street</td>
-                    <td>15</td>
-                    <td>2</td>
-                    <td>1.0</td>
-                    <td>0</td>
-                    <td>
-                        
-                        <span class="status-occupied">Occupied</span>
-                        
-                    </td>
-                    <td>3025.00</td>
-                    <td>3025.00</td>
-                    <td>08/14/25</td>
-                    <td class="normal">
-                        64d
-                    </td>
-                </tr>
-                
-                <tr>
-                    <td>225 West 109th Street</td>
-                    <td>24</td>
-                    <td>2</td>
-                    <td>1.0</td>
-                    <td>0</td>
-                    <td>
-                        
-                        <span class="status-occupied">Occupied</span>
-                        
-                    </td>
-                    <td>3750.00</td>
-                    <td>3750.00</td>
-                    <td>08/14/25</td>
-                    <td class="normal">
-                        64d
-                    </td>
-                </tr>
-                
-                <tr>
-                    <td>367 Edgecombe Avenue</td>
-                    <td>44</td>
-                    <td>1</td>
-                    <td>1.0</td>
-                    <td>0</td>
-                    <td>
-                        
-                        <span class="status-occupied">Occupied</span>
-                        
-                    </td>
-                    <td>2461.68</td>
-                    <td>2300.00</td>
-                    <td>08/31/25</td>
-                    <td class="normal">
-                        81d
-                    </td>
-                </tr>
-                
-                <tr>
-                    <td>204 West 109th Street</td>
-                    <td>3B</td>
-                    <td>3</td>
-                    <td>1.0</td>
-                    <td>0</td>
-                    <td>
-                        
-                        <span class="status-occupied">Occupied</span>
-                        
-                    </td>
-                    <td>4450.00</td>
-                    <td>4450.00</td>
-                    <td>08/31/25</td>
-                    <td class="normal">
-                        81d
-                    </td>
-                </tr>
-                
-                <tr>
-                    <td>225 West 109th Street</td>
-                    <td>41</td>
-                    <td>4</td>
-                    <td>2.0</td>
-                    <td>0</td>
-                    <td>
-                        
-                        <span class="status-occupied">Occupied</span>
-                        
-                    </td>
-                    <td>5050.00</td>
-                    <td>5050.00</td>
-                    <td>08/31/25</td>
-                    <td class="normal">
-                        81d
+                    <td colspan="10" style="text-align: center; color: red; font-weight: bold;">
+                        DEBUG: NO UNITS FOUND IN LOOP
                     </td>
                 </tr>
                 

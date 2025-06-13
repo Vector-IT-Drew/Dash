@@ -73,7 +73,7 @@
         .table-section-cell {
             display: table-cell;
             vertical-align: top;
-            overflow: auto;
+            overflow: visible;
         }
 
         .chart-img {
@@ -87,23 +87,24 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 9px;
-            table-layout: auto;
+            font-size: 8.5px;
+            table-layout: fixed;
         }
 
         th, td {
             border: 1px solid #cbd5e1;
-            padding: 3px 4px;
+            padding: 2px 2px;
             text-align: center;
-            font-size: 9px;
+            font-size: 8.5px;
             word-wrap: break-word;
             vertical-align: middle;
+            overflow: hidden;
         }
 
         th {
             background: #1e293b;
             color: #fff;
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 600;
         }
 
@@ -114,6 +115,7 @@
             text-align: left; 
             font-weight: bold;
             background: #f1f5f9;
+            width: 60px;
         }
 
         th:first-child {
@@ -129,6 +131,32 @@
             font-size: 10px;
             padding: 4px 3px;
         }
+
+        .wow-pos-strong { background: #dcfce7; color: #166534; font-weight: 700; }
+        .wow-pos { background: #f0fdf4; color: #166534; }
+        .wow-neg-strong { background: #fee2e2; color: #991b1b; font-weight: 700; }
+        .wow-neg { background: #fef2f2; color: #991b1b; }
+        .wow-neutral { background: #f1f5f9; color: #64748b; }
+        .wow-na { background: #f8fafc; color: #b0b0b0; }
+        .avg-wow { background: #e0e7ff; color: #3730a3; font-weight: 700; }
+        .trend-legend {
+            margin: 8px 0 16px 0;
+            text-align: center;
+            font-size: 10px;
+        }
+        .trend-legend span {
+            display: inline-block;
+            min-width: 60px;
+            padding: 2px 8px;
+            margin: 0 4px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+        .trend-legend .wow-pos-strong { background: #dcfce7; color: #166534; }
+        .trend-legend .wow-pos { background: #f0fdf4; color: #166534; }
+        .trend-legend .wow-neg-strong { background: #fee2e2; color: #991b1b; }
+        .trend-legend .wow-neg { background: #fef2f2; color: #991b1b; }
+        .trend-legend .wow-neutral { background: #f1f5f9; color: #64748b; }
     </style>
 </head>
 <body>
@@ -140,22 +168,35 @@
                     <img class="chart-img" src="{{ chart_path }}" alt="{{ chart_title or 'Analysis Chart' }}">
                 </div>
             </div>
+            <div class="trend-legend">
+                <span class="wow-pos-strong">Strong ↑</span>
+                <span class="wow-pos">Mild ↑</span>
+                <span class="wow-neutral">Flat</span>
+                <span class="wow-neg">Mild ↓</span>
+                <span class="wow-neg-strong">Strong ↓</span>
+            </div>
             <div class="table-section">
                 <div class="table-section-cell">
-                    <table class="{% if table_columns|length > 10 %}table-wide{% elif table_columns|length < 6 %}table-narrow{% endif %}">
+                    <table class="data-table">
                         <thead>
                             <tr>
                                 {% for col in table_columns %}
-                                    <th>{{ col }}</th>
+                                <th>{{ col }}</th>
                                 {% endfor %}
                             </tr>
                         </thead>
                         <tbody>
                             {% for row in table_rows %}
                             <tr>
-                                {% for col in table_columns %}
-                                    <td>{{ row.get(col, '-') }}</td>
+                                <td>{{ row.Bed }}</td>
+                                {% for w in week_cols %}
+                                {% set val = row[w] %}
+                                {% set cls = color_map.get((row.Bed, w), 'wow-na') %}
+                                <td class="{{ cls }}">
+                                    {% if val == '-' %}-{% else %}{{ '%.2f%%' % val if val is number else val }}{% endif %}
+                                </td>
                                 {% endfor %}
+                                <td class="avg-wow">{% if row['Avg WoW'] == '-' %}-{% else %}{{ '%.2f%%' % row['Avg WoW'] }}{% endif %}</td>
                             </tr>
                             {% endfor %}
                         </tbody>

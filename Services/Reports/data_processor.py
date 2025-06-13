@@ -52,46 +52,70 @@ def get_streeteasy_data():
         return pd.DataFrame()
 
 def create_comp_data(df):
-    """Filter StreetEasy data to create comp data with specific criteria"""
-    if df.empty:
-        print("COMP DEBUG: Input DataFrame is empty")
-        return df
     
-    print(f"COMP DEBUG: Starting with {len(df)} rows")
-    print(f"COMP DEBUG: Columns available: {list(df.columns)}")
-    
-    # Start with the full dataset
     comp_data = df.copy()
-    
-    # Filter 1: is_no_fee = 1
-    if 'is_no_fee' in comp_data.columns:
+
+    comp_data = comp_data[comp_data['bedrooms'] != '']
+   
+    # Filter: bedrooms <= 4
+    if 'bedrooms' in comp_data.columns:
         before_count = len(comp_data)
-        comp_data = comp_data[comp_data['is_no_fee'] == 1]
-        print(f"COMP DEBUG: After no_fee filter: {len(comp_data)} rows (removed {before_count - len(comp_data)})")
+        comp_data = comp_data[comp_data['bedrooms'].astype(float) <= 4]
+        print(f"COMP DEBUG: After bedrooms <= 4 filter: {len(comp_data)} rows (removed {before_count - len(comp_data)})")
     else:
-        print("COMP DEBUG: Warning - 'is_no_fee' column not found")
+        print("COMP DEBUG: Warning - 'bedrooms' column not found")
     
-    # Filter 2: building_amenities includes required amenities
-    if 'building_amenities' in comp_data.columns:
-        before_count = len(comp_data)
-        
-        # Convert building_amenities to string and check for required amenities
-        def has_required_amenities(amenities_str):
-            if pd.isna(amenities_str):
-                return False
-            amenities_str = str(amenities_str).lower()
-            return (
-                'laundry' in amenities_str and
-                'virtual_doorman' in amenities_str and
-                'live_in_super' in amenities_str
-            )
-        
-        comp_data = comp_data[comp_data['building_amenities'].apply(has_required_amenities)]
-        print(f"COMP DEBUG: After building_amenities filter: {len(comp_data)} rows (removed {before_count - len(comp_data)})")
-    else:
-        print("COMP DEBUG: Warning - 'building_amenities' column not found")
+    # # Filter 1: is_no_fee = 1
+    # if 'is_no_fee' in comp_data.columns:
+    #     before_count = len(comp_data)
+    #     comp_data = comp_data[comp_data['is_no_fee'].astype(int) == 1]
+
+    #     print(f"COMP DEBUG: After no_fee filter: {len(comp_data)} rows (removed {before_count - len(comp_data)})")
+    # else:
+    #     print("COMP DEBUG: Warning - 'is_no_fee' column not found")
     
-    print(f"COMP DEBUG: Final comp_data: {len(comp_data)} rows")
+    # # Filter 2: Area must be GreenPoint or East Williamsburg
+    # print('area names:', comp_data['areaName'].unique())
+    # if 'areaName' in comp_data.columns:
+    #     before_count = len(comp_data)
+    #     comp_data = comp_data[comp_data['areaName'].isin(['Greenpoint', 'East Williamsburg'])]
+    #     print(f"COMP DEBUG: After area filter: {len(comp_data)} rows (removed {before_count - len(comp_data)})")
+    # else:
+    #     print("COMP DEBUG: Warning - 'areaName' column not found")
+
+    # print('area names:', comp_data['areaName'].unique())
+    
+    # # Filter 3: building_amenities includes required amenities
+    # if 'amenities' in comp_data.columns:
+    #     before_count = len(comp_data)
+        
+    #     # Convert building_amenities to string and check for required amenities
+    #     def has_required_amenities(amenities_str):
+    #         if pd.isna(amenities_str):
+    #             return False
+    #         amenities_str = str(amenities_str).lower()
+            
+    #         # Check for excluded amenities
+    #         has_doorman = 'doorman' in amenities_str and 'virtual_doorman' not in amenities_str
+    #         has_elevator = 'elevator' in amenities_str
+            
+    #         # Return True if does NOT have excluded amenities (virtual_doorman is optional)
+    #         return (
+    #             (not has_doorman and
+    #             not has_elevator)
+    #         )
+    #     comp_data = comp_data[comp_data['amenities'].apply(has_required_amenities)]
+    #     print(f"COMP DEBUG: After amenities filter: {len(comp_data)} rows (removed {before_count - len(comp_data)})")
+    # else:
+    #     print("COMP DEBUG: Warning - 'building_amenities' column not found")
+    # print(f"COMP DEBUG: Final comp_data: {len(comp_data)} rows")
+
+    # Print amenities for a specific unit if it appears
+    if 'address' in comp_data.columns and 'unit' in comp_data.columns and 'amenities' in comp_data.columns:
+        mask = (comp_data['address'] == '166-20 90th Avenue') & (comp_data['unit'] == '710')
+        if mask.any():
+            print(f"DEBUG: Amenities for 166-20 90th Avenue #710: {comp_data.loc[mask, 'amenities'].values}")
+
     return comp_data
 
 def calculate_general_metrics(comp_data):
@@ -101,10 +125,33 @@ def calculate_general_metrics(comp_data):
     # Handle the new column naming from flat query structure
     rent_col = 'listed_price'  # Now we have the direct column name
     dom_col = 'days_on_market'  # Now we have the direct column name
-    
-    avg_rent = comp_data[rent_col].mean() if rent_col in comp_data.columns else 0
-    avg_days_on_market = comp_data[dom_col].mean() if dom_col in comp_data.columns else 0
-    
+
+    # Try to convert to numeric and catch errors
+    avg_rent = 0
+    avg_days_on_market = 0
+    if rent_col in comp_data.columns:
+        try:
+            comp_data[rent_col] = pd.to_numeric(comp_data[rent_col], errors='raise')
+            avg_rent = comp_data[rent_col].mean()
+        except Exception as e:
+            print(f"ERROR converting {rent_col} to numeric: {e}")
+            for idx, val in enumerate(comp_data[rent_col]):
+                try:
+                    float(val)
+                except Exception as e2:
+                    print(f"BAD VALUE in {rent_col} at index {idx}: {val} -- {e2}")
+    if dom_col in comp_data.columns:
+        try:
+            comp_data[dom_col] = pd.to_numeric(comp_data[dom_col], errors='raise')
+            avg_days_on_market = comp_data[dom_col].mean()
+        except Exception as e:
+            print(f"ERROR converting {dom_col} to numeric: {e}")
+            for idx, val in enumerate(comp_data[dom_col]):
+                try:
+                    float(val)
+                except Exception as e2:
+                    print(f"BAD VALUE in {dom_col} at index {idx}: {val} -- {e2}")
+
     return {
         'total_listings': f"{total_listings:,}",
         'avg_rent': f"${avg_rent:,.0f}",
@@ -113,14 +160,7 @@ def calculate_general_metrics(comp_data):
     }
 
 def process_streeteasy_rent_history(comp_data):
-    """Process comp data to extract rent history trends"""
-    if comp_data.empty:
-        print("RENT DEBUG: Input comp_data DataFrame is empty")
-        return pd.DataFrame()
-    
-    print(f"RENT DEBUG: Processing {len(comp_data)} comp data rows")
-    print(f"RENT DEBUG: Columns available: {list(comp_data.columns)}")
-    
+   
     # Check required columns for flat structure
     if not all(col in comp_data.columns for col in ['listed_price', 'created_at', 'bedrooms']):
         print("RENT DEBUG: Missing required columns: listed_price, created_at, or bedrooms")
@@ -141,11 +181,7 @@ def process_streeteasy_rent_history(comp_data):
     if valid_data.empty:
         print("RENT DEBUG: No valid data after filtering")
         return pd.DataFrame()
-    
-    print(f"RENT DEBUG: Valid data: {len(valid_data)} rows")
-    print(f"RENT DEBUG: Unique bedrooms: {sorted(valid_data['bedrooms'].unique())}")
-    print(f"RENT DEBUG: Date range: {valid_data['created_at'].min()} to {valid_data['created_at'].max()}")
-    
+   
     # Create date range (last 14 months)
     end_date = datetime.now().date()
     start_date = end_date - timedelta(days=425)  # ~14 months
@@ -277,6 +313,8 @@ def get_comparison_tables(comp_data, custom_filters=None):
                        If None, creates default amenities-based filters
     """
     def generate_table_rows(df):
+        if 'bedrooms' not in df.columns or df.empty:
+            return []
         grouped = df.groupby('bedrooms')
         table_rows = []
         for bedrooms, group in grouped:
@@ -322,6 +360,19 @@ def get_comparison_tables(comp_data, custom_filters=None):
 
     # Create default amenities-based filters if none provided
     if custom_filters is None:
+        # Debug: Print all unique amenities in alphabetical order
+        amenities_col = 'amenities' if 'amenities' in comp_data.columns else 'building_amenities'
+        if amenities_col in comp_data.columns:
+            all_amenities = set()
+            for amenities_str in comp_data[amenities_col].dropna():
+                if isinstance(amenities_str, str):
+                    amenities_list = [amenity.strip().lower() for amenity in amenities_str.split(',')]
+                    all_amenities.update(amenities_list)
+            sorted_amenities = sorted(all_amenities)
+            print(f"DEBUG: All unique amenities (alphabetical): {', '.join(sorted_amenities)}")
+        else:
+            print(f"DEBUG: {amenities_col} column not found in comp_data")
+        
         def has_outdoor_no_laundry_unit(amenities_str):
             """Has balcony or terrace, but NOT washer_dryer"""
             if pd.isna(amenities_str):
@@ -343,7 +394,7 @@ def get_comparison_tables(comp_data, custom_filters=None):
         def has_both_outdoor_and_laundry_unit(amenities_str):
             """Has both (balcony or terrace) AND washer_dryer"""
             if pd.isna(amenities_str):
-                return False
+                return False 
             amenities_str = str(amenities_str).lower()
             has_outdoor = 'balcony' in amenities_str or 'terrace' in amenities_str
             has_laundry_unit = 'washer_dryer' in amenities_str
@@ -421,40 +472,56 @@ def get_weekly_trends(comp_data, title="Weekly Rent Price Trends", bedroom_filte
     
     bed_labels = {0: 'Studio', 1: '1 Bed', 2: '2 Bed', 3: '3 Bed', 4: '4 Bed'}
     week_cols = [d.strftime('%b-%d') for d in rent_df['date']]
-    
-    # Create table data
+
+    # Create table data: WoW % change for each week (except first)
     table_rows = []
     available_bedrooms = [bed for bed in bedroom_filter if bed in rent_df.columns]
-    
     for bed in available_bedrooms:
         row = {'Bed': bed_labels.get(bed, str(bed))}
         vals = [rent_df[bed].iloc[i] for i in range(len(rent_df))]
-        for i, v in enumerate(vals):
-            row[week_cols[i]] = f"${v:,.0f}" if pd.notnull(v) else '-'
-        
-        # Calculate WoW change
-        if len(vals) > 1 and pd.notnull(vals[-2]) and pd.notnull(vals[-1]) and vals[-2] != 0:
-            wow = (vals[-1] - vals[-2]) / vals[-2] * 100
-            row['WoW'] = f"{wow:+.2f}%"
+        # Calculate WoW % change for each week (first week is '-')
+        for i in range(len(vals)):
+            if i == 0 or pd.isnull(vals[i-1]) or pd.isnull(vals[i]) or vals[i-1] == 0:
+                row[week_cols[i]] = '-'
+            else:
+                pct = (vals[i] - vals[i-1]) / vals[i-1] * 100
+                row[week_cols[i]] = pct
+        # Add average WoW % change for this bed type
+        pct_changes = [row[w] for w in week_cols if isinstance(row[w], (int, float))]
+        if pct_changes:
+            avg_wow = sum(pct_changes) / len(pct_changes)
+            row['Avg WoW'] = avg_wow
         else:
-            row['WoW'] = '-'
+            row['Avg WoW'] = '-'
         table_rows.append(row)
-    
-    # --- Generate clean line chart ---
+
+    # Prepare color coding info for the template (positive/negative/neutral)
+    color_map = {}
+    for row in table_rows:
+        for w in week_cols:
+            val = row[w]
+            if isinstance(val, (int, float)):
+                if val > 2:
+                    color_map[(row['Bed'], w)] = 'wow-pos-strong'
+                elif val > 0:
+                    color_map[(row['Bed'], w)] = 'wow-pos'
+                elif val < -2:
+                    color_map[(row['Bed'], w)] = 'wow-neg-strong'
+                elif val < 0:
+                    color_map[(row['Bed'], w)] = 'wow-neg'
+                else:
+                    color_map[(row['Bed'], w)] = 'wow-neutral'
+            else:
+                color_map[(row['Bed'], w)] = 'wow-na'
+
+    # --- Generate clean line chart (unchanged) ---
     plt.style.use('default')
-    fig, ax = plt.subplots(figsize=(20, 6))  # Increased width to 20 for 100% page width
-    
-    # Color palette - clean blues like in the image
+    fig, ax = plt.subplots(figsize=(20, 6))
     colors = ['#7FB3D3', '#5B9BD5', '#4472C4', '#2F528F']
-    
-    # Plot lines for each bedroom type
     for i, bed in enumerate(available_bedrooms):
         if bed in rent_df.columns:
-            # Get data and remove NaN values
             x_data = rent_df['date']
             y_data = rent_df[bed]
-            
-            # Plot the line
             ax.plot(x_data, y_data, 
                    color=colors[i % len(colors)], 
                    linewidth=3, 
@@ -464,8 +531,6 @@ def get_weekly_trends(comp_data, title="Weekly Rent Price Trends", bedroom_filte
                    markerfacecolor=colors[i % len(colors)],
                    markeredgecolor='white',
                    markeredgewidth=1)
-            
-            # Add value labels above each point
             for x, y in zip(x_data, y_data):
                 if pd.notnull(y):
                     ax.annotate(f"${y:,.0f}", 
@@ -476,60 +541,43 @@ def get_weekly_trends(comp_data, title="Weekly Rent Price Trends", bedroom_filte
                                fontsize=8, 
                                color=colors[i % len(colors)],
                                fontweight='bold')
-    
-    # Customize the chart
-    ax.set_xlabel('')  # Remove x-axis label for cleaner look
-    ax.set_ylabel('')  # Remove y-axis label for cleaner look
-    
-    # Format y-axis to show currency
+    ax.set_xlabel('')
+    ax.set_ylabel('')
     ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: f'${x:,.0f}'))
     ax.tick_params(axis='y', labelsize=10, colors='#666666')
-    
-    # Format x-axis dates
     ax.set_xticks(rent_df['date'])
     ax.set_xticklabels([d.strftime('%b-%d') for d in rent_df['date']], 
                        fontsize=10, 
                        color='#666666',
                        rotation=0)
-    
-    # Add subtle grid
     ax.grid(True, alpha=0.3, linestyle='-', linewidth=0.5, color='#E5E5E5')
     ax.set_axisbelow(True)
-    
-    # Clean up spines
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
     ax.spines['left'].set_color('#E5E5E5')
     ax.spines['bottom'].set_color('#E5E5E5')
-    
-    # Set background color
     ax.set_facecolor('white')
     fig.patch.set_facecolor('white')
-    
-    # Add legend - positioned to the right, more compact
     legend = ax.legend(loc='center left', 
                       bbox_to_anchor=(1.01, 0.5),
                       frameon=False, 
                       fontsize=10,
                       labelcolor='#333333')
-    
-    # Adjust layout to accommodate legend - more compact
     plt.subplots_adjust(right=0.88)
     plt.tight_layout()
-    
-    # Save chart
     OUTPUT_DIR = os.path.join(os.path.dirname(__file__), 'output')
     chart_path = os.path.join(OUTPUT_DIR, 'weekly_trends_chart.png')
     fig.savefig(chart_path, format='png', bbox_inches='tight', facecolor='white', dpi=150)
     plt.close(fig)
-    
+
     return {
         'table_rows': table_rows,
         'week_cols': week_cols,
-        'table_columns': ['Bed'] + week_cols + ['WoW'],
-        'chart_path': 'weekly_trends_chart.png',  # Return relative path for WeasyPrint
+        'table_columns': ['Bed'] + week_cols + ['Avg WoW'],
+        'chart_path': 'weekly_trends_chart.png',
         'chart_title': title,
-        'bedroom_filter': available_bedrooms
+        'bedroom_filter': available_bedrooms,
+        'color_map': color_map
     }
 
 def get_ytd_ppsf_data(comp_data, custom_filters=None):
@@ -997,7 +1045,7 @@ def get_template_data(template_name, processed_data, **kwargs):
     
     return result_data
 
-def get_inventory_data(limit_units=30):
+def get_inventory_data(limit_units=''):
     """Fetch client data for inventory report - units with future move-out dates
     
     Args:
@@ -1063,11 +1111,7 @@ def get_inventory_data(limit_units=30):
                 if future_moveouts.empty:
                     return {'units': [], 'total_count': 0}
                 
-                # Limit units for testing if specified
-                if limit_units is not None and len(future_moveouts) > limit_units:
-                    print(f"DEBUG: Limiting inventory units to {limit_units}")
-                    future_moveouts = future_moveouts.head(limit_units)
-                
+              
                 # Format the data for display
                 formatted_units = []
                 for _, row in future_moveouts.iterrows():
@@ -1143,11 +1187,7 @@ def get_inventory_data(limit_units=30):
                 # Sort by move_out date (soonest first)
                 formatted_units.sort(key=lambda x: x['days_until_vacant'])
                 
-                # Debug: Print first few units
-                print("DEBUG: Sample inventory data:")
-                for i, unit in enumerate(formatted_units[:3]):
-                    print(f"  Unit {i+1}: {unit['address']} {unit['unit']} - {unit['beds']}BR, {unit['move_out']} ({unit['days_until_vacant']}d)")
-                
+             
                 return {
                     'units': formatted_units,
                     'total_count': len(formatted_units)
